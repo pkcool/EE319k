@@ -1,0 +1,15 @@
+*.iex
+*.d
+*.lst
+*.o
+*.axf
+*.htm
+*.lnp
+*.map
+*.plg
+*.tra
+*.uvgui*
+*.bak
+*.dep
+*.crf
+ccs/
