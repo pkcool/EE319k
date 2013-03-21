@@ -12,4 +12,6 @@
 *.bak
 *.dep
 *.crf
+*.uvopt
+*.__i
 ccs/
