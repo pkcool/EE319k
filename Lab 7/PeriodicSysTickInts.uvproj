@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>SysTick</TargetName>
+      <TargetName>PeriodicSysTickInts</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <TargetOption>
@@ -44,7 +44,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\</OutputDirectory>
-          <OutputName>SysTick</OutputName>
+          <OutputName>PeriodicSysTickInts</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -160,7 +160,7 @@
             <UseTargetDll>1</UseTargetDll>
             <UseExternalTool>0</UseExternalTool>
             <RunIndependent>0</RunIndependent>
-            <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
+            <UpdateFlashBeforeDebugging>0</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
             <DriverSelection>4097</DriverSelection>
           </Flash1>
@@ -210,7 +210,7 @@
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
-            <useUlib>0</useUlib>
+            <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
             <RoSelD>3</RoSelD>
@@ -339,7 +339,7 @@
             <OneElfS>0</OneElfS>
             <Strict>0</Strict>
             <EnumInt>0</EnumInt>
-            <PlainCh>0</PlainCh>
+            <PlainCh>1</PlainCh>
             <Ropi>0</Ropi>
             <Rwpi>0</Rwpi>
             <wLevel>0</wLevel>
@@ -349,7 +349,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>..;..\..\..</IncludePath>
+              <IncludePath>..;..\..\..;..\inc;..\driverlib</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -396,19 +396,24 @@
               <FilePath>.\Startup.s</FilePath>
             </File>
             <File>
-              <FileName>SysTick.c</FileName>
+              <FileName>PeriodicSysTickInts.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\SysTick.c</FilePath>
+              <FilePath>.\PeriodicSysTickInts.c</FilePath>
             </File>
             <File>
-              <FileName>SysTickTestMain.c</FileName>
+              <FileName>SysTickInts.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\SysTickTestMain.c</FilePath>
+              <FilePath>.\SysTickInts.c</FilePath>
             </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Library</GroupName>
+          <Files>
             <File>
-              <FileName>PLL.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\PLL.c</FilePath>
+              <FileName>driverlib.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>..\driverlib\rvmdk\driverlib.lib</FilePath>
             </File>
           </Files>
         </Group>

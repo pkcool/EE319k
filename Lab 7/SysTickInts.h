@@ -1,18 +1,14 @@
-// PLL.h
+// SysTickInts.h
 // Runs on LM3S1968
-// A software function to change the bus speed using the PLL.
-// Commented lines in the function PLL_Init() initialize the PWM
-// to either 25 MHz or 50 MHz.  When using an oscilloscope to
-// look at LED0, it should be clear to see that the LED flashes
-// about 2 (50/25) times faster with a 50 MHz clock than with a
-// 25 MHz clock.
+// Use the SysTick timer to request interrupts at a particular period.
 // Daniel Valvano
-// February 21, 2012
+// June 27, 2011
 
 /* This example accompanies the book
    "Embedded Systems: Real Time Interfacing to the Arm Cortex M3",
    ISBN: 978-1463590154, Jonathan Valvano, copyright (c) 2011
-   Program 2.10, Figure 2.31
+
+   Program 5.12, section 5.7
 
  Copyright 2011 by Jonathan W. Valvano, valvano@mail.utexas.edu
     You may use, edit, run or distribute this file
@@ -26,5 +22,14 @@
  http://users.ece.utexas.edu/~valvano/
  */
 
-// configure the system to get its clock from the PLL
-void PLL_Init(void);
+
+
+// **************SysTick_Init*********************
+// Initialize Systick periodic interrupts
+// Input: interrupt period
+//        Units of period are 20ns
+//        Maximum is 2^24-1
+//        Minimum is determined by length of ISR
+// Output: none
+void SysTick_Init(unsigned long period);
+
