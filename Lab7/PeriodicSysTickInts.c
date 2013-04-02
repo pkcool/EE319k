@@ -26,6 +26,8 @@
 #include "inc/hw_types.h"
 #include "driverlib/sysctl.h"
 #include "SysTickInts.h"
+#include "lm3s1968.h"
+#include "DAC.h"
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -38,7 +40,11 @@ int main(void){       // bus clock at 50 MHz
                  SYSCTL_XTAL_8MHZ);
   SysTick_Init(50000);     // initialize SysTick timer
   EnableInterrupts();
-
+	
+	DAC_Init();
+	DAC_Out(0xA);
+	DAC_Out(0x0);
+	DAC_Out(0xB);
   while(1){                // interrupts every 1ms
     WaitForInterrupt();
   }
