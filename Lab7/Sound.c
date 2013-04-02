@@ -6,7 +6,6 @@
 #include "systick.h"
 
 const unsigned long SAMPLE_RATE = 200;
-
 unsigned int sinArray[SAMPLE_RATE];
 volatile unsigned long index = 0;
 
@@ -20,18 +19,10 @@ void Sound_Init() {
 	}
 }
 
-void SysTick_Handler(void) {
-	DAC_Out(sinArray[index]);
-	index+=1;
-	if (index >= SAMPLE_RATE) {
-		index = 0;
-	}
-}
-
 void Sound_Play(unsigned int n) {
 	unsigned long note = Sound_Note_To_Frequency(n);
 	
-	unsigned long period = 50000000.0 / (SAMPLE_RATE*note);
+	unsigned long period =  0.75 * 50000000.0 / (SAMPLE_RATE*note);
 	SysTickPeriodSet(period);
 }
 

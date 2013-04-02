@@ -25,6 +25,8 @@
 // oscilloscope or LED connected to PD0 for period measurement
 #include "hw_types.h"
 #include "sysctl.h"
+#include "sound.h"
+#include "dac.h"
 // #include "lm3s1968.h"
 
 #define NVIC_SYS_PRI3_R         (*((volatile unsigned long *)0xE000ED20))  // Sys. Handlers 12 to 15 Priority
@@ -44,7 +46,6 @@ void EnableInterrupts(void);  // Enable interrupts
 long StartCritical (void);    // previous I bit, disable interrupts
 void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
-volatile unsigned long Counts = 0;
 #define GPIO_PORTD0             (*((volatile unsigned long *)0x40007004))
 
 // **************SysTick_Init*********************
@@ -56,7 +57,6 @@ volatile unsigned long Counts = 0;
 // Output: none
 void SysTick_Init(unsigned long period){
   SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOD; // activate port D
-  Counts = 0;
   GPIO_PORTD_DIR_R |= 0x01;   // make PD0 out
   GPIO_PORTD_DEN_R |= 0x01;   // enable digital I/O on PD0
   NVIC_ST_CTRL_R = 0;         // disable SysTick during setup
@@ -67,12 +67,15 @@ void SysTick_Init(unsigned long period){
   NVIC_ST_CTRL_R = NVIC_ST_CTRL_ENABLE+NVIC_ST_CTRL_CLK_SRC+NVIC_ST_CTRL_INTEN;
 }
 
-// Interrupt service routine
-// Executed every 20ns*(period)
-//void SysTick_Handler(void){
-//  GPIO_PORTD0 ^= 0x01;        // toggle PD0
-//  Counts = Counts + 1;
-//}
+
+void SysTick_Handler(void) {
+	DAC_Out(sinArray[index]);
+	index+=1;
+	if (index >= SAMPLE_RATE) {
+		index = 0;
+	}
+	GPIO_PORTD0 ^= 0x01;        // toggle PD0
+}
 
 void SysTick_Wait(unsigned long delay) {
 	volatile unsigned long elapsedTime;

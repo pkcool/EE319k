@@ -3,6 +3,7 @@
 #include "SysTickInts.h"
 #include "lm3s1968.h"
 #include "DAC.h"
+#include "Sound.h"
 
 void Piano_Init(void){
 	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOG;

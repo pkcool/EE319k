@@ -26,9 +26,11 @@
 #include "inc/hw_types.h"
 #include "driverlib/sysctl.h"
 #include "SysTickInts.h"
+#include "PLL.h"
 #include "lm3s1968.h"
 #include "DAC.h"
 #include "Sound.h"
+#include "Piano.h"
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -36,16 +38,17 @@ long StartCritical (void);    // previous I bit, disable interrupts
 void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
 
-int main(void){       // bus clock at 50 MHz
-  SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN |
-                 SYSCTL_XTAL_8MHZ);
+int main(void){ 
+	// bus clock at 50 MHz
+  SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN);
+	PLL_Init();
   SysTick_Init(50000);     // initialize SysTick timer
   EnableInterrupts();
 	
 	DAC_Init();
 	Sound_Init();
 	Sound_Play(0x45);
-  while(1){                // interrupts every 1ms
+  while(1){
     WaitForInterrupt();
   }
 }
