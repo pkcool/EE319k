@@ -1,18 +1,17 @@
-
 #include <math.h>
 #include <lm3s1968.h>
 #include <math.h>
+const unsigned long SAMPLE_RATE = 8000;
 
 void Sound_Init() {
-	signed char sinArray[SAMPLERATE];
+	signed int sinArray[SAMPLE_RATE];
 	char sinResult;
 	double pi = 4.0 * atan(1.0);
-  for (int i = 0; i < SAMPLERATE; i++) {
-		sinResult = sin(2*pi*i/SAMPLERATE);
+  int i;
+	for (i = 0; i < SAMPLE_RATE; i++) {
+		sinResult = sin(2*pi*i/SAMPLE_RATE);
 		sinArray[i] = sinResult;
-	}
-	
-	
+	} 
 	// initialize data structures
 }
 
