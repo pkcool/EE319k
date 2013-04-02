@@ -44,7 +44,7 @@ int main(void){       // bus clock at 50 MHz
 	
 	DAC_Init();
 	Sound_Init();
-	Sound_Play(0x30);
+	Sound_Play(0x45);
   while(1){                // interrupts every 1ms
     WaitForInterrupt();
   }

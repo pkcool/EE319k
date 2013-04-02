@@ -69,10 +69,10 @@ void SysTick_Init(unsigned long period){
 
 // Interrupt service routine
 // Executed every 20ns*(period)
-void SysTick_Handler(void){
-  GPIO_PORTD0 ^= 0x01;        // toggle PD0
-  Counts = Counts + 1;
-}
+//void SysTick_Handler(void){
+//  GPIO_PORTD0 ^= 0x01;        // toggle PD0
+//  Counts = Counts + 1;
+//}
 
 void SysTick_Wait(unsigned long delay) {
 	volatile unsigned long elapsedTime;
