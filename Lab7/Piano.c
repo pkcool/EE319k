@@ -13,14 +13,5 @@ void Piano_Init(void){
 }
 
 void Piano_In (void) {
-	if (GPIO_PORTF_DATA_R == 0x01) {
-		Sound_Play;
-	} 
- 	
-	
-	
-	
-	
-	
-	
+	Sound_Play(GPIO_PORTG_DATA_R);
 }
