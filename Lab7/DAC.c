@@ -10,7 +10,7 @@ void DAC_Init(void) {
 }
 
 void DAC_Out(unsigned long packet) {
-	GPIO_PORTF_DATA_R &= 0x0F;
+	GPIO_PORTF_DATA_R &= 0xF0;
 	packet &= 0x0F;
 	GPIO_PORTF_DATA_R |= packet;
 }
