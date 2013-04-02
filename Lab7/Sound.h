@@ -1,6 +1,6 @@
 
-void Sound_Init()
+void Sound_Init(void);
 
-void Sound_Play(unsigned char note)
+void Sound_Play(unsigned char);
 
-double Sound_Note_To_Frequency(unsigned char note)
+unsigned long Sound_Note_To_Frequency(unsigned char);

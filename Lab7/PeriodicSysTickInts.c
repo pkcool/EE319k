@@ -28,6 +28,7 @@
 #include "SysTickInts.h"
 #include "lm3s1968.h"
 #include "DAC.h"
+#include "Sound.h"
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
