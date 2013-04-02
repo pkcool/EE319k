@@ -74,3 +74,11 @@ void SysTick_Handler(void){
   Counts = Counts + 1;
 }
 
+void SysTick_Wait(unsigned long delay) {
+	volatile unsigned long elapsedTime;
+	unsigned long startTime = NVIC_ST_CURRENT_R;
+	do {
+		elapsedTime = (startTime - NVIC_ST_CURRENT_R)&0x00FFFFFF;
+	} while (elapsedTime <= delay);
+}
+
