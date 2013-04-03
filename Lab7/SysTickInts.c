@@ -25,6 +25,7 @@
 // oscilloscope or LED connected to PD0 for period measurement
 #include "hw_types.h"
 #include "sysctl.h"
+#include "lm3s1968.h"
 #include "sound.h"
 #include "dac.h"
 // #include "lm3s1968.h"
@@ -39,14 +40,13 @@
 #define GPIO_PORTD_DIR_R        (*((volatile unsigned long *)0x40007400))
 #define GPIO_PORTD_DEN_R        (*((volatile unsigned long *)0x4000751C))
 #define SYSCTL_RCGC2_R          (*((volatile unsigned long *)0x400FE108))
-#define SYSCTL_RCGC2_GPIOD      0x00000008  // port D Clock Gating Control
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 long StartCritical (void);    // previous I bit, disable interrupts
 void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
-#define GPIO_PORTD0             (*((volatile unsigned long *)0x40007004))
+#define GPIO_PORTG2             (*((volatile unsigned long *)0x40026010))
 
 // **************SysTick_Init*********************
 // Initialize Systick periodic interrupts
@@ -55,10 +55,12 @@ void WaitForInterrupt(void);  // low power mode
 //        Maximum is 2^24-1
 //        Minimum is determined by length of ISR
 // Output: none
-void SysTick_Init(unsigned long period){
-  SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOD; // activate port D
-  GPIO_PORTD_DIR_R |= 0x01;   // make PD0 out
-  GPIO_PORTD_DEN_R |= 0x01;   // enable digital I/O on PD0
+void SysTick_Init(unsigned long period){ int nop;
+  SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOG; // activate port D
+	nop = 0;
+	nop = nop + 1;
+  GPIO_PORTG_DIR_R |= 0x04;   // make PD0 out
+  GPIO_PORTG_DEN_R |= 0x04;   // enable digital I/O on PD0
   NVIC_ST_CTRL_R = 0;         // disable SysTick during setup
   NVIC_ST_RELOAD_R = period-1;// reload value
   NVIC_ST_CURRENT_R = 0;      // any write to current clears it
@@ -74,7 +76,7 @@ void SysTick_Handler(void) {
 	if (index >= SAMPLE_RATE) {
 		index = 0;
 	}
-	GPIO_PORTD0 ^= 0x01;        // toggle PD0
+	GPIO_PORTG2 ^= 0x04;        // toggle PD0
 }
 
 void SysTick_Wait(unsigned long delay) {

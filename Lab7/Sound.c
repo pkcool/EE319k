@@ -5,7 +5,7 @@
 #include "DAC.h"
 #include "systick.h"
 
-const unsigned long SAMPLE_RATE = 200;
+const unsigned long SAMPLE_RATE = 32;
 unsigned int sinArray[SAMPLE_RATE];
 volatile unsigned long index = 0;
 

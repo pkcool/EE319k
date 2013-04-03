@@ -40,14 +40,14 @@ void WaitForInterrupt(void);  // low power mode
 
 int main(void){ 
 	// bus clock at 50 MHz
-  SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN);
+  //SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN);
 	PLL_Init();
   SysTick_Init(50000);     // initialize SysTick timer
   EnableInterrupts();
 	
 	DAC_Init();
 	Sound_Init();
-	Sound_Play(0x45);
+	Sound_Play(0x32);
   while(1){
     WaitForInterrupt();
   }
