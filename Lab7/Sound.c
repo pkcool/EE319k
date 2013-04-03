@@ -15,7 +15,7 @@ void Sound_Init() {
 	double pi = 4.0 * atan(1.0);
   int i;
 	for (i = 0; i < SAMPLE_RATE; i++) {
-		sinResult = (int)(4.0*sin(2.0*pi*i/SAMPLE_RATE)+4.49);
+		sinResult = (int)(7.0*sin(2.0*pi*i/SAMPLE_RATE)+7.49);
 		sinArray[i] = sinResult;
 	}
 }

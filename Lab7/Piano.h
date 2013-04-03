@@ -1,4 +1,3 @@
 
-void Piano_Init(void);
-
+// Take input from buttons, send data to Sound.c
 void Piano_In(void);

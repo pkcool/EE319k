@@ -1,13 +1,7 @@
 #include "inc/hw_types.h"
 #include "driverlib/sysctl.h"
-#include "SysTickInts.h"
 #include "lm3s1968.h"
-#include "DAC.h"
 #include "Sound.h"
-
-void Piano_Init(void){
-
-}
 
 //0x2a - UP, 0x20 - DOWN, 0x26 - LEFT, 0x25 - RIGHT, 0x1e - SELECT
 unsigned int note;

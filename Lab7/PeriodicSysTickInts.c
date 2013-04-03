@@ -57,11 +57,9 @@ int main(void){int i;
 	
 	DAC_Init();
 	Sound_Init();
-	//Sound_Play(0x2a);
 	for (i = 0; i < sizeof(guile_notes)/sizeof(int); i++) {
-		Sound_Play_Timing(guile_notes[i], 1000*guile_times[i]);
+		Sound_Play_Timing(guile_notes[i], guile_times[i]);
 	}
-  //SysTick_Switch(0);
 	while(1){
 		Piano_In();
     //WaitForInterrupt();
