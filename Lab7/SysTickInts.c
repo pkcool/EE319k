@@ -55,12 +55,15 @@ void WaitForInterrupt(void);  // low power mode
 //        Maximum is 2^24-1
 //        Minimum is determined by length of ISR
 // Output: none
-void SysTick_Init(unsigned long period){ int nop;
-  SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOG; // activate port D
+void SysTick_Init(unsigned long period){int nop;
+	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOG;
 	nop = 0;
 	nop = nop + 1;
-  GPIO_PORTG_DIR_R |= 0x04;   // make PD0 out
-  GPIO_PORTG_DEN_R |= 0x04;   // enable digital I/O on PD0
+	GPIO_PORTG_DIR_R &= 0x07;
+	GPIO_PORTG_DIR_R |= 0x04;
+	GPIO_PORTG_AFSEL_R |= 0xF8;
+	GPIO_PORTG_PUR_R |= 0xF8;
+	GPIO_PORTG_DEN_R |= 0xFF;
   NVIC_ST_CTRL_R = 0;         // disable SysTick during setup
   NVIC_ST_RELOAD_R = period-1;// reload value
   NVIC_ST_CURRENT_R = 0;      // any write to current clears it
@@ -69,14 +72,22 @@ void SysTick_Init(unsigned long period){ int nop;
   NVIC_ST_CTRL_R = NVIC_ST_CTRL_ENABLE+NVIC_ST_CTRL_CLK_SRC+NVIC_ST_CTRL_INTEN;
 }
 
+void SysTick_Switch(unsigned int on) {
+	if (on == 0) {
+		NVIC_ST_CTRL_R = 0;
+	} else {
+		NVIC_ST_CTRL_R = NVIC_ST_CTRL_ENABLE+NVIC_ST_CTRL_CLK_SRC+NVIC_ST_CTRL_INTEN;
+	}
+}
+
 
 void SysTick_Handler(void) {
+	GPIO_PORTG2 ^= 0x04;        // toggle PD0
 	DAC_Out(sinArray[index]);
 	index+=1;
 	if (index >= SAMPLE_RATE) {
 		index = 0;
 	}
-	GPIO_PORTG2 ^= 0x04;        // toggle PD0
 }
 
 void SysTick_Wait(unsigned long delay) {

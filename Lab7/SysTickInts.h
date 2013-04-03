@@ -32,5 +32,5 @@
 //        Minimum is determined by length of ISR
 // Output: none
 void SysTick_Init(unsigned long period);
-
+void SysTick_Switch(unsigned int on);
 void SysTick_Wait(unsigned long delay);

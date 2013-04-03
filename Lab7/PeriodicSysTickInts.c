@@ -31,6 +31,16 @@
 #include "DAC.h"
 #include "Sound.h"
 #include "Piano.h"
+#include "math.h"
+
+unsigned int guile_notes[] = {51, 51, 50, 0, 50, 51, 50, 51, 50, 51, 0, 50, 53, 0, 53, 51, 50, 46,
+															51, 51, 50, 0, 50, 51, 50, 51, 50, 51, 0, 50, 53, 0, 53, 51, 50, 46,
+															36, 36, 38, 39, 41, 43, 43, 41, 46, 44, 43, 44, 38, 39, 0, 46, 38, 41, 44, 46, 43, 0, 43, 41, 38,
+															36, 36, 38, 39, 41, 43, 43, 41, 46, 44, 43, 44, 38, 39, 0, 46, 38, 41, 44, 46, 43, 0, 43, 41, 38};
+unsigned int guile_times[] = {1250, 625, 625, 625, 625, 5000, 1250, 625, 1250, 625, 625, 1250, 625, 625, 625, 1250, 1250, 1250,
+															1250, 625, 625, 625, 625, 5000, 1250, 625, 1250, 625, 625, 1250, 625, 625, 625, 1250, 1250, 1250,
+															5000, 1250, 1250, 625, 1875, 1875, 625, 1250, 2500, 1250, 625, 1875, 1875, 1875, 1250, 1250, 1250, 1250, 1875, 1875, 1250, 1250, 1250, 1250, 1250,
+															5000, 1250, 1250, 625, 1875, 1875, 625, 1250, 2500, 1250, 625, 1875, 1875, 1875, 1250, 1250, 1250, 1250, 1875, 1875, 1250, 1250, 1250, 1250, 1250};
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
@@ -38,17 +48,22 @@ long StartCritical (void);    // previous I bit, disable interrupts
 void EndCritical(long sr);    // restore I bit to previous value
 void WaitForInterrupt(void);  // low power mode
 
-int main(void){ 
+int main(void){int i;
 	// bus clock at 50 MHz
   //SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN);
-	PLL_Init();
+ 	PLL_Init();
   SysTick_Init(50000);     // initialize SysTick timer
   EnableInterrupts();
 	
 	DAC_Init();
 	Sound_Init();
-	Sound_Play(0x32);
-  while(1){
-    WaitForInterrupt();
+	//Sound_Play(0x2a);
+	for (i = 0; i < sizeof(guile_notes)/sizeof(int); i++) {
+		Sound_Play_Timing(guile_notes[i], 1000*guile_times[i]);
+	}
+  //SysTick_Switch(0);
+	while(1){
+		Piano_In();
+    //WaitForInterrupt();
   }
 }

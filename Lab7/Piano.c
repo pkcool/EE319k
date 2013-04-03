@@ -6,13 +6,24 @@
 #include "Sound.h"
 
 void Piano_Init(void){
-	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOG;
-	
-	GPIO_PORTG_DIR_R = 0x00;
-	GPIO_PORTF_DEN_R |= 0xFF;
-	GPIO_PORTF_AFSEL_R |= 0x00;
+
 }
 
+//0x2a - UP, 0x20 - DOWN, 0x26 - LEFT, 0x25 - RIGHT, 0x1e - SELECT
+unsigned int note;
 void Piano_In (void) {
-	Sound_Play(GPIO_PORTG_DATA_R);
+	note = GPIO_PORTG_DATA_R & 0xF8;
+	if (note == 0xF0) {	// UP
+		Sound_Play(0x2a);
+	} else if (note == 0xE8) {	// DOWN
+		Sound_Play(0x20);
+	} else if (note == 0xD8) {	// LEFT
+		Sound_Play(0x26);
+	} else if (note == 0xB8) {	// RIGHT
+		Sound_Play(0x25);
+	} else if (note == 0x78) {	// SELECT
+		Sound_Play(0x1e);
+	} else {
+		Sound_Off();
+	}
 }

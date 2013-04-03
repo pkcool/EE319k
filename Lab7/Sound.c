@@ -4,8 +4,9 @@
 #include <math.h>
 #include "DAC.h"
 #include "systick.h"
+#include "systickints.h"
 
-const unsigned long SAMPLE_RATE = 32;
+const unsigned long SAMPLE_RATE = 128;
 unsigned int sinArray[SAMPLE_RATE];
 volatile unsigned long index = 0;
 
@@ -19,13 +20,30 @@ void Sound_Init() {
 	}
 }
 
+void Sound_Off(void) {
+	SysTickPeriodSet(0);
+}
+
 void Sound_Play(unsigned int n) {
 	unsigned long note = Sound_Note_To_Frequency(n);
 	
-	unsigned long period =  0.75 * 50000000.0 / (SAMPLE_RATE*note);
+	unsigned long period = 0.75 * 50000000.0 / (SAMPLE_RATE*note);
 	SysTickPeriodSet(period);
 }
 
+void Sound_Play_Timing(unsigned int note, unsigned long time) {
+	unsigned long mult;
+	if (note != 0) {
+		Sound_Play(note);
+	}
+	for (mult = 500000; mult > 0; mult--) {
+		for (; time > 0; time--) {
+			// stupid wait
+		}
+	}
+	index = 0;
+}
+
 unsigned long Sound_Note_To_Frequency(unsigned int n) {
-	return pow(2.0,(n-49.0)/12.0)*440.0;
+	return pow(2.0,(n-50.0)/12.0)*440.0;
 }
