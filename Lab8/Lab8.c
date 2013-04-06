@@ -1,5 +1,5 @@
 
-#include "inc/sysctl.h"
+#include "inc/hw_sysctl.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_sysctl.h"
 #include "inc/hw_types.h"
@@ -9,15 +9,16 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/systick.h"
 
+#include "Lab8.h"
+#include "globals.h"
+
 unsigned long gSystemClock;
 
-void
-SysTickIntHandler(void) {
+void SysTickIntHandler(void) {
 	HWREGBITW(&gFlags, FLAG_CLOCK_TICK) = 1;
 }
 
-static void
-Delay(unsigned long count) {
+void Delay(unsigned long count) {
     while(count--) {
         while(!HWREGBITW(&gFlags, FLAG_CLOCK_TICK)) { }
         HWREGBITW(&gFlags, FLAG_CLOCK_TICK) = 0;

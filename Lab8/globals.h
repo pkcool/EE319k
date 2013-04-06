@@ -1,4 +1,7 @@
 
+#ifndef __GLOBALS_H__
+#define __GLOBALS_H__
+
 #define CLOCK_RATE              1000000
 
 extern unsigned long gFlags;
@@ -12,3 +15,5 @@ extern unsigned long gFlags;
 #define FLAG_BUTTON_PRESS       7           // The button was just pressed
 
 extern unsigned long gSystemClock;
+
+#endif // __GLOBALS_H__

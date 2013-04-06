@@ -1,10 +1,14 @@
 
+#include "inc/hw_types.h"
+#include "inc/hw_memmap.h"
+#include "driverlib/gpio.h"
+
 #include "Lab8.h"
 #include "LCD.h"
 
 static const command gInit[] = 
 {
-	{0x00, 0, 20000}
+	{0x00, 0, 20000},
 	{0x03, 0,  5000},
 	{0x03, 0,   100},
 	{0x03, 0,   100},
@@ -13,15 +17,20 @@ static const command gInit[] =
 	{0x14, 1,     0},
 	{0x06, 1,     0},
 	{0x0C, 1,     0},
-}
+};
 
 void LCDInit(void) {
-	register i;
+	register char i;
 	command c;
-	GPIOPinTypeGPIOOutput(PGIO_PORTG_BASE, 0x3F);
+	GPIOPinTypeGPIOOutput(GPIO_PORTG_BASE, 0x3F);
 	for (i = 0; i < sizeof(gInit)/sizeof(command); i++) {
 		c = gInit[i];
-		LCDCommandPacket(c.data, c.mode);
+		if (c.mode == 0) {
+			GPIOPinWrite(GPIO_PORTG_BASE, LCD_PIN_RS, 0);
+			LCDOutNibble(c.data);
+		} else {
+			LCDCommandPacket(c.data);
+		}
 		Delay(c.time);
 	}
 }
@@ -37,17 +46,13 @@ void LCDOutNibble(unsigned char packet) {
 
 void LCDOutByte(unsigned char packet) {
 	LCDOutNibble(packet & 0x0F);
-	LCDOutNibble((packet) & 0xF0) >> 4);
+	LCDOutNibble((packet & 0xF0) >> 4);
 	Delay(90);
 }
 
-void LCDCommandPacket(unsigned char packet, unsigned char mode) {
+void LCDCommandPacket(unsigned char packet) {
 	GPIOPinWrite(GPIO_PORTG_BASE, LCD_PIN_RS, 0);
-	if (mode) {
-		LCDOutByte(packet);
-	} else {
-		LCDNibble(packet, 0);
-	}
+	LCDOutByte(packet);
 }
 
 void LCDDataPacket(unsigned int packet) {
@@ -56,9 +61,10 @@ void LCDDataPacket(unsigned int packet) {
 }
 
 void LCDOutString(unsigned char str[]) {
-	register i = 0;
+	register char i = 0;
 	unsigned char c;
-	while (c = str[i] != 0) {
+	while (c != 0) {
+		c = str[i++];
 		LCDDataPacket(c);
 	}
 }
@@ -71,19 +77,20 @@ void LCDClear(void) {
 }
 
 void LCDCursor(unsigned int location) {
-	ASSERT((location & 0x47) == 0);
-	LCDCommandPacket(location + 0x80);
+	if ((location & 0x47) == 0) {
+		LCDCommandPacket(location + 0x80);
+	}
 }
 
 void LCDOutFix(unsigned int number) {
-	register i;
+	register char i;
 	unsigned char out[5];
 	for (i = 4; i >= 0; i--) {
 		out[i] = number % 10;
 		number /= 10;
 		if (i == 2) {
 			i--;
-			out[i] = '.'
+			out[i] = '.';
 		}
 	}
 	LCDOutString(out);

@@ -14,7 +14,7 @@ typedef struct command
 extern void LCDInit(void);
 extern void LCDOutNibble(unsigned char packet);
 extern void LCDOutByte(unsigned char packet);
-extern void LCDCommandPacket(unsigned char packet, unsigned char mode);
+extern void LCDCommandPacket(unsigned char packet);
 extern void LCDDataPacket(unsigned int packet);
 extern void LCDOutString(unsigned char str[]);
 extern void LCDClear(void);
