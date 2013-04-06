@@ -10,8 +10,10 @@
 #include "driverlib/systick.h"
 
 #include "Lab8.h"
+#include "LCD.h"
 #include "globals.h"
 
+unsigned long gFlags;
 unsigned long gSystemClock;
 
 void SysTickIntHandler(void) {
@@ -31,8 +33,8 @@ void init(void) {
 
 	gSystemClock = SysCtlClockGet();
 
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
-    GPIOPinTypeGPIOInput(GPIO_PORTG_BASE,
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
+	GPIOPinTypeGPIOInput(GPIO_PORTG_BASE,
 						(GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7));
 	GPIOPinTypeGPIOOutput(GPIO_PORTG_BASE, GPIO_PIN_2);
 	GPIOPadConfigSet(GPIO_PORTG_BASE,
@@ -46,6 +48,13 @@ void init(void) {
 }
 
 int main(void) {
-    init();
-
+	register int i;
+	init();
+	LCDInit();
+	for (i = 0; i < 9999; i++) {
+		LCDOutFix(i);
+	}
+	while(1) {
+		// pass
+	}
 }
