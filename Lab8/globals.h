@@ -2,7 +2,7 @@
 #ifndef __GLOBALS_H__
 #define __GLOBALS_H__
 
-#define CLOCK_RATE              1000000
+#define CLOCK_RATE              100000
 
 extern unsigned long gFlags;
 #define FLAG_CLOCK_TICK         0           // A timer interrupt has occurred
@@ -14,6 +14,6 @@ extern unsigned long gFlags;
 #define FLAG_DEBOUNCE_HIGH      6           // High bit of the debounce clock
 #define FLAG_BUTTON_PRESS       7           // The button was just pressed
 
-extern unsigned long gSystemClock;
+extern unsigned long gSystemClockFrequency;
 
 #endif // __GLOBALS_H__

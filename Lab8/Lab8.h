@@ -3,5 +3,7 @@
 
 extern void SysTickIntHandler(void);
 extern void Delay(unsigned long);
+unsigned long periodToSysTick(unsigned long);
+void init(void);
 
 #endif // __LAB8_H__

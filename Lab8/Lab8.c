@@ -14,7 +14,22 @@
 #include "globals.h"
 
 unsigned long gFlags;
-unsigned long gSystemClock;
+unsigned long gSystemClockFrequency;
+
+int main(void) {
+	register int i;
+	init();
+	Delay(10);
+	LCDInit();	
+	
+	for (i = 0; i < 9999; i++) {
+		LCDOutFix(i);
+	}
+	while(1) {
+		// pass
+	}
+}
+
 
 void SysTickIntHandler(void) {
 	HWREGBITW(&gFlags, FLAG_CLOCK_TICK) = 1;
@@ -27,11 +42,15 @@ void Delay(unsigned long count) {
     }
 }
 
+unsigned long periodToSysTick(unsigned long period) {
+	return ((3 * gSystemClockFrequency) >> 2) * period;
+}
+
 void init(void) {
 	SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_8MHZ);
     SysCtlPWMClockSet(SYSCTL_PWMDIV_1);
 
-	gSystemClock = SysCtlClockGet();
+	gSystemClockFrequency = SysCtlClockGet();
 
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
 	GPIOPinTypeGPIOInput(GPIO_PORTG_BASE,
@@ -42,19 +61,7 @@ void init(void) {
 					GPIO_STRENGTH_2MA,
 					GPIO_PIN_TYPE_STD_WPU);
 
-	SysTickPeriodSet(gSystemClock / CLOCK_RATE);
+	SysTickPeriodSet( periodToSysTick(CLOCK_RATE) );
 	SysTickIntEnable();
 	SysTickEnable();
-}
-
-int main(void) {
-	register int i;
-	init();
-	LCDInit();
-	for (i = 0; i < 9999; i++) {
-		LCDOutFix(i);
-	}
-	while(1) {
-		// pass
-	}
 }
