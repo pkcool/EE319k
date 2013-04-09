@@ -179,6 +179,8 @@ extern "C"
 // Prototypes for the APIs.
 //
 //*****************************************************************************
+extern void ADC_InitSWTriggerSeq3(unsigned char channelNum);
+extern unsigned long ADC_In(void);
 extern void ADCIntRegister(unsigned long ulBase, unsigned long ulSequenceNum,
                            void (*pfnHandler)(void));
 extern void ADCIntUnregister(unsigned long ulBase,

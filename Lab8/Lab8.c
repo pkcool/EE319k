@@ -13,10 +13,13 @@
 #include "LCD.h"
 #include "globals.h"
 
+#include "ADC.h"
+
 unsigned long gFlags;
 unsigned long gSystemClockFrequency;
+unsigned long Data;
 
-int main(void) {
+int main1(void) {
 	register int i;
 	init();
 	Delay(10);
@@ -30,6 +33,14 @@ int main(void) {
 	}
 }
 
+int main(void) {
+	init();
+	ADC_InitSWTriggerSeq3(2);
+	
+	while(1) {
+		Data = ADC_In();
+	}
+}
 
 void SysTickIntHandler(void) {
 	HWREGBITW(&gFlags, FLAG_CLOCK_TICK) = 1;
