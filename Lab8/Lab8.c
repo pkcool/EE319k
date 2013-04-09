@@ -19,12 +19,14 @@ unsigned long gFlags;
 unsigned long gSystemClockFrequency;
 unsigned long Data;
 char msg[6];
+void LCD_Open(void);
+void LCD_OutString(char str[]);
 
 int main(void) {
 	char welcome[] = "Welcome to 319k!";
 	init();
-	LCDInit();
-	LCDOutString(welcome);
+	LCD_Open();
+	LCD_OutString(welcome);
 	ADC_Init();
 	while (1) {
 		if (HWREGBITW(&gFlags, FLAG_ADC_VALUE)) {
