@@ -1,8 +1,7 @@
 
-#include "inc/hw_sysctl.h"
 #include "inc/hw_memmap.h"
-#include "inc/hw_sysctl.h"
 #include "inc/hw_types.h"
+#include "inc/lm3s1968.h"
 
 #include "driverlib/adc.h"
 #include "driverlib/gpio.h"
@@ -40,13 +39,25 @@ int main2(void) {
 }
 
 int main(void) {
+	unsigned char welcome[] = "Welcome to 319k!";
 	init();
-	Delay(1);
+	LCDInit();
+	Delay(1000);
+	LCDOutString(welcome);
+	while (1) {
+		// pass
+	}
+}
+
+int main3(void) {
+	init();
 	LCDInit();
 	ADC_Init();
-	while (1) {			
+	while (1) {
 		if (HWREGBITW(&gFlags, FLAG_ADC_VALUE)) {
 				HWREGBITW(&gFlags, FLAG_CLOCK_TICK) = 0;
+				LCDClear();
+				LCDCursor(0);
 				LCDOutFix(ADCvalue);
 		}
 	}
@@ -64,16 +75,19 @@ void Delay(unsigned long count) {
 }
 
 unsigned long periodToSysTick(unsigned long period) {
+	// 0.75 * 50Mhz * period
 	return ((3 * gSystemClockFrequency) >> 2) * period;
 }
 
-void init(void) {
+void init(void) { int nop;
 	SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_8MHZ);
     SysCtlPWMClockSet(SYSCTL_PWMDIV_1);
 
 	gSystemClockFrequency = SysCtlClockGet();
 
-	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
+	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOG;
+	nop = 0;
+	nop += 1;
 	GPIOPinTypeGPIOInput(GPIO_PORTG_BASE,
 						(GPIO_PIN_3 | GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7));
 	GPIOPinTypeGPIOOutput(GPIO_PORTG_BASE, GPIO_PIN_2);
@@ -82,7 +96,7 @@ void init(void) {
 					GPIO_STRENGTH_2MA,
 					GPIO_PIN_TYPE_STD_WPU);
 
-	SysTickPeriodSet( periodToSysTick(CLOCK_RATE) );
+	SysTickPeriodSet( 50 );
 	SysTickIntEnable();
 	SysTickEnable();
 }

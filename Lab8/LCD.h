@@ -11,14 +11,14 @@ typedef struct command
 	unsigned short time;	// microseconds
 }command;
 
-extern void LCDInit(void);
-extern void LCDOutNibble(unsigned char packet);
-extern void LCDOutByte(unsigned char packet);
-extern void LCDCommandPacket(unsigned char packet);
-extern void LCDDataPacket(unsigned int packet);
-extern void LCDOutString(unsigned char str[]);
-extern void LCDClear(void);
-extern void LCDCursor(unsigned int location);
-extern void LCDOutFix(unsigned int number);
+void LCDInit(void);
+void LCDOutNibble(unsigned char packet);
+void LCDOutByte(unsigned char packet);
+void LCDCommandPacket(unsigned char packet);
+void LCDDataPacket(unsigned int packet);
+void LCDOutString(unsigned char str[]);
+void LCDClear(void);
+void LCDCursor(unsigned int location);
+void LCDOutFix(unsigned int number);
 
 #endif // __LCD_H__

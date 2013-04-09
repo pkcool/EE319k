@@ -1,7 +1,7 @@
 
 #include "inc/hw_types.h"
 #include "inc/hw_memmap.h"
-#include "inc/hw_sysctl.h"
+#include "inc/lm3s1968.h"
 
 #include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
@@ -9,10 +9,10 @@
 
 #include "Lab8.h"
 #include "LCD.h"
+#include "globals.h"
 
-static const command gInit[9] = 
+static const command gInit[8] = 
 {
-	{0x00, 0, 2000},
 	{0x03, 0,  500},
 	{0x03, 0,   10},
 	{0x03, 0,   10},
@@ -23,12 +23,15 @@ static const command gInit[9] =
 	{0x0C, 1,     0},
 };
 
-void LCDInit(void) {
+void LCDInit(void) { int nop;
 	register char i;
 	command c;
-	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOF;
+	nop = 0;
+	nop += 1;
 	GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, 0x3F);
-	for (i = 0; i < 9; i++) {
+	Delay(2000);
+	for (i = 0; i < 8; i++) {
 		c = gInit[i];
 		if (c.mode == 0) {
 			GPIOPinWrite(GPIO_PORTF_BASE, LCD_PIN_RS, 0);
