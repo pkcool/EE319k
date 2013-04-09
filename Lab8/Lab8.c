@@ -11,6 +11,7 @@
 
 #include "Lab8.h"
 #include "LCD.h"
+#include "ADCDriver.h"
 #include "globals.h"
 
 #include "ADC.h"
@@ -20,25 +21,34 @@ unsigned long gSystemClockFrequency;
 unsigned long Data;
 
 int main1(void) {
-	register int i;
 	init();
-	Delay(10);
-	LCDInit();	
-	
-	for (i = 0; i < 9999; i++) {
-		LCDOutFix(i);
-	}
+	LCDInit();
+	ADC_Init();
+
 	while(1) {
 		// pass
 	}
 }
 
-int main(void) {
+int main2(void) {
 	init();
 	ADC_InitSWTriggerSeq3(2);
 	
 	while(1) {
 		Data = ADC_In();
+	}
+}
+
+int main(void) {
+	init();
+	Delay(1);
+	LCDInit();
+	ADC_Init();
+	while (1) {			
+		if (HWREGBITW(&gFlags, FLAG_ADC_VALUE)) {
+				HWREGBITW(&gFlags, FLAG_CLOCK_TICK) = 0;
+				LCDOutFix(ADCvalue);
+		}
 	}
 }
 

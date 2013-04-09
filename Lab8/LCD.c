@@ -10,7 +10,7 @@
 #include "Lab8.h"
 #include "LCD.h"
 
-static const command gInit[] = 
+static const command gInit[9] = 
 {
 	{0x00, 0, 2000},
 	{0x03, 0,  500},
@@ -28,7 +28,7 @@ void LCDInit(void) {
 	command c;
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
 	GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, 0x3F);
-	for (i = 0; i < sizeof(gInit)/sizeof(command); i++) {
+	for (i = 0; i < 9; i++) {
 		c = gInit[i];
 		if (c.mode == 0) {
 			GPIOPinWrite(GPIO_PORTF_BASE, LCD_PIN_RS, 0);

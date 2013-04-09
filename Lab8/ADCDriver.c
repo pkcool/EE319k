@@ -24,6 +24,11 @@
 
 // Thumbwheel potentiometer with scaling resistor connected to ADC0
 
+#include "inc/hw_types.h"
+
+#include "globals.h"
+#include "ADCDriver.h"
+
 #define ADC_ACTSS_R             (*((volatile unsigned long *)0x40038000))
 #define ADC0_RIS_R              (*((volatile unsigned long *)0x40038004))
 #define ADC0_IM_R               (*((volatile unsigned long *)0x40038008))
@@ -202,9 +207,10 @@ void Timer0A_Handler(void){
   TIMER0_ICR_R = TIMER_ICR_TATOCINT;    // acknowledge timer0A timeout
   GPIO_PORTC_DATA_R |= 0x20;            // turn on LED
   ADCvalue = ADC_In();
+	HWREGBITW(&gFlags, FLAG_ADC_VALUE) = 1;
   GPIO_PORTC_DATA_R &= ~0x20;           // turn off LED
 }
-void ADC_main(void){
+void ADC_Init(void){
   SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOC; // activate port C
   ADC_InitSWTriggerSeq3(0);             // allow time to finish activating
   Timer0A_Init10HzInt();                // set up Timer0A for 10 Hz interrupts
