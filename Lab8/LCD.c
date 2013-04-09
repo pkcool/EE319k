@@ -26,11 +26,11 @@ static const command gInit[8] =
 void LCDInit(void) { int nop;
 	register char i;
 	command c;
+	Delay(20000);
 	SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOF;
 	nop = 0;
 	nop += 1;
 	GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, 0x3F);
-	Delay(20000);
 	for (i = 0; i < 8; i++) {
 		c = gInit[i];
 		if (c.mode == 0) {
@@ -92,7 +92,7 @@ void LCDCursor(unsigned int location) {
 
 void LCDOutFix(unsigned int number) {
 	register char i;
-	unsigned char out[5];
+	char out[5];
 	for (i = 4; i >= 0; i--) {
 		out[i] = '0' + number % 10;
 		number /= 10;

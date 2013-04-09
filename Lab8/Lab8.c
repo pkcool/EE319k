@@ -24,7 +24,9 @@ int main(void) {
 	char welcome[] = "Welcome to 319k!";
 	init();
 	LCDInit();
+	LCDClear();
 	LCDOutString(welcome);
+	while (1) { }
 	ADC_Init();
 	while (1) {
 		if (HWREGBITW(&gFlags, FLAG_ADC_VALUE)) {
