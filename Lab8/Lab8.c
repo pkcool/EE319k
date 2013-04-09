@@ -18,20 +18,13 @@
 unsigned long gFlags;
 unsigned long gSystemClockFrequency;
 unsigned long Data;
+char msg[6];
 
-//Tests for ADC to ensure it is inputting data properly
-int main1(void) { 
-	init();
-	ADC_InitSWTriggerSeq3(2);
-	while(1) {
-		Data = ADC_In();
-	}
-}
-
-int main_Anthony(void) {
-	unsigned char welcome[] = "Welcome to 319k!";
+int main(void) {
+	char welcome[] = "Welcome to 319k!";
 	init();
 	LCDInit();
+	LCDOutString(welcome);
 	ADC_Init();
 	while (1) {
 		if (HWREGBITW(&gFlags, FLAG_ADC_VALUE)) {
@@ -40,6 +33,15 @@ int main_Anthony(void) {
 				LCDCursor(0);
 				LCDOutFix(ADCvalue);
 		}
+	}
+}
+
+//Tests for ADC to ensure it is inputting data properly
+int main1(void) { 
+	init();
+	ADC_InitSWTriggerSeq3(2);
+	while(1) {
+		Data = ADC_In();
 	}
 }
 
@@ -58,16 +60,25 @@ int main2(void){
 			sum = sum+ADC_In(); // sample 10-bit channel 2 
 		} 
 		Data = sum/N; // noise reducing filter 
-//		LCD_GoTo(0); 
+		LCDCursor(0); 
 		LCDOutFix(Data); 
 		LCDOutString(" cm");
 	}
 }
 
 //Converts raw data taken in by the ADC into a centimeter value
-int Convert(int Data){
+void Convert(int Data){
+	register char i;
 	int ConvertedData = Data/340.0; //NEEDS PROPER EQUATION
-	return ConvertedData;
+	msg[5] = ' ';
+	for (i = 4; i >= 0; i--) {
+		msg[i] = '0' + ConvertedData % 10;
+		ConvertedData /= 10;
+		if (i == 2) {
+			i--;
+			msg[i] = '.';
+		}
+	}
 }
 
 //Tests to see if all steps to output to LCD work 
@@ -75,7 +86,7 @@ unsigned long Data; // 10-bit ADC
 unsigned long Position; // 16-bit fixed-point 0.001 cm 
 #define N 256 
 int main3(void){ 
-	int i; unsigned long sum; 
+	int i; unsigned long sum; char msg[6]; 
 	init(); // Bus clock is 50 MHz 
 	LCDInit(); 
 	LCDClear(); 
@@ -86,28 +97,31 @@ int main3(void){
 			sum = sum+ADC_In(); // sample 10-bit channel 2 
 		} 
 		Data = sum/N; // noise reducing filter 
-		Position = Convert(Data); // you write this function 
-//		LCD_GoTo(0); 
-		LCDOutFix(Position); 
+		Convert(Data); // you write this function 
+		LCDCursor(0);
+		LCDOutString(msg);
 	}
 }
 
-int main(void){
+int main4(void){
+	char msg[6];
 	init(); // Bus clock is 50 MHz 
 	LCDInit(); 
 	LCDClear(); 
 	ADC_InitSWTriggerSeq3(2); // turn on ADC, set channel to 2, sequencer 3 
 	SysTickIntEnable();
 	while(1) {
-														// wait for mailbox flag ADCStatus to be true
-		
-														// read the 10-bit ADC sample from the mailbox ADCMail
-		
-														// clear the mailbox flag ADCStatus to signify the mailbox is now empty
-		
-														// convert the sample into a fixed point number
-		
-														// output the fixed point number on the LCD with units
+		// wait for mailbox flag ADCStatus to be true
+		while (HWREGBITW(&gFlags, FLAG_ADC_VALUE)) { }
+		// read the 10-bit ADC sample from the mailbox ADCMail
+		Data = ADCvalue;
+		// clear the mailbox flag ADCStatus to signify the mailbox is now empty
+		HWREGBITW(&gFlags, FLAG_ADC_VALUE) = 0;
+		// convert the sample into a fixed point number
+		Convert(Data);
+		// output the fixed point number on the LCD with units
+		LCDCursor(0);
+		LCDOutString(msg);
 	}
 }	
 

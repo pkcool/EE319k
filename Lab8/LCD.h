@@ -1,8 +1,8 @@
 #ifndef __LCD_H__
 #define __LCD_H__
  
-#define LCD_PIN_RS   0x00000010
-#define LCD_PIN_E    0x00000020
+#define LCD_PIN_E    0x00000010
+#define LCD_PIN_RS   0x00000020
 
 typedef struct command
 {
@@ -16,7 +16,7 @@ void LCDOutNibble(unsigned char packet);
 void LCDOutByte(unsigned char packet);
 void LCDCommandPacket(unsigned char packet);
 void LCDDataPacket(unsigned int packet);
-void LCDOutString(unsigned char str[]);
+void LCDOutString(char str[]);
 void LCDClear(void);
 void LCDCursor(unsigned int location);
 void LCDOutFix(unsigned int number);
