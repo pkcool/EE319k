@@ -29,6 +29,9 @@
 #include "globals.h"
 #include "ADCDriver.h"
 
+#define ADCStatus								(*((volatile unsigned long *)0x00000000))
+#define ADCMail									(*((volatile unsigned long *)0x00000000))
+
 #define ADC_ACTSS_R             (*((volatile unsigned long *)0x40038000))
 #define ADC0_RIS_R              (*((volatile unsigned long *)0x40038004))
 #define ADC0_IM_R               (*((volatile unsigned long *)0x40038008))
@@ -138,9 +141,7 @@ unsigned long ADC_In(void){
   return result;
 }
 
-//debug code
-//
-// This program periodically samples ADC channel 0 and stores the
+//debug cohis program periodically samples ADC channel 0 and stores the
 // result to a global variable that can be accessed with the JTAG
 // debugger and viewed with the variable watch feature.
 #define NVIC_EN0_INT19          0x00080000  // Interrupt 19 enable
