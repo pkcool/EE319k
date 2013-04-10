@@ -3,6 +3,7 @@
 #define __GLOBALS_H__
 
 #define CLOCK_RATE              100000
+#define LENGTH									1950
 
 extern unsigned long gFlags;
 #define FLAG_CLOCK_TICK         0           // A timer interrupt has occurred

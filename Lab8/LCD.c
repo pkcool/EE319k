@@ -53,8 +53,8 @@ void LCDOutNibble(unsigned char packet) {
 }
 
 void LCDOutByte(unsigned char packet) {
-	LCDOutNibble(packet & 0x0F);
 	LCDOutNibble((packet & 0xF0) >> 4);
+	LCDOutNibble(packet & 0x0F);
 	Delay(90);
 }
 
@@ -70,10 +70,10 @@ void LCDDataPacket(unsigned int packet) {
 
 void LCDOutString(char str[]) {
 	register char i = 0;
-	unsigned char c;
+	unsigned char c = str[i++];
 	while (c != 0) {
-		c = str[i++];
 		LCDDataPacket(c);
+		c = str[i++];
 	}
 }
 

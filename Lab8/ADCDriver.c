@@ -25,6 +25,7 @@
 // Thumbwheel potentiometer with scaling resistor connected to ADC0
 
 #include "inc/hw_types.h"
+#include "inc/lm3s1968.h"
 
 #include "globals.h"
 #include "ADCDriver.h"
@@ -53,7 +54,7 @@
 #define ADC_SSPRI_SS1_2ND       0x00000010  // second priority
 #define ADC_SSPRI_SS0_1ST       0x00000000  // first priority
 #define ADC_PSSI_SS3            0x00000008  // SS3 Initiate
-#define ADC_SSMUX3_MUX0_M       0x00000003  // 1st Sample Input Select mask
+//#define ADC_SSMUX3_MUX0_M       0x00000003  // 1st Sample Input Select mask
 #define ADC_SSMUX3_MUX0_S       0           // 1st Sample Input Select lshift
 #define ADC_SSCTL3_TS0          0x00000008  // 1st Sample Temp Sensor Select
 #define ADC_SSCTL3_IE0          0x00000004  // 1st Sample Interrupt Enable
@@ -206,16 +207,12 @@ void Timer0A_Init10HzInt(void){
 }
 void Timer0A_Handler(void){
   TIMER0_ICR_R = TIMER_ICR_TATOCINT;    // acknowledge timer0A timeout
-  GPIO_PORTC_DATA_R |= 0x20;            // turn on LED
+  GPIO_PORTG_DATA_R |= 0x40;            // turn on LED
   ADCvalue = ADC_In();
 	HWREGBITW(&gFlags, FLAG_ADC_VALUE) = 1;
-  GPIO_PORTC_DATA_R &= ~0x20;           // turn off LED
+  GPIO_PORTG_DATA_R &= ~0x40;           // turn off LED
 }
 void ADC_Init(void){
-  SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOC; // activate port C
   ADC_InitSWTriggerSeq3(0);             // allow time to finish activating
   Timer0A_Init10HzInt();                // set up Timer0A for 10 Hz interrupts
-  GPIO_PORTC_DIR_R |= 0x20;             // make PC5 out (PC5 built-in LED)
-  GPIO_PORTC_DEN_R |= 0x20;             // enable digital I/O on PC5 (default setting)
-  GPIO_PORTC_DATA_R &= ~0x20;           // turn off LED
 }
