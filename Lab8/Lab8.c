@@ -83,8 +83,8 @@ int main3(void){
 
 int main(void){
 	init(); // Bus clock is 50 MHz 
-	LCDInit();
-	LCDClear(); 
+	LCD_Open();
+	LCD_Clear(); 
 	ADC_InitSWTriggerSeq3(2); // turn on ADC, set channel to 2, sequencer 3 
 	SysTickInit();
 	while(1) {
@@ -97,9 +97,9 @@ int main(void){
 		// convert the sample into a fixed point number
 		Convert(Data);
 		// output the fixed point number on the LCD with units
-		LCDCursor(0);
-		LCDOutString(msg);
-		LCDOutString("cm");
+		LCD_GoTo(0);
+		LCD_OutString(msg);
+		LCD_OutString("cm");
 	}
 }
 
