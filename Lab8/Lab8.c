@@ -89,7 +89,7 @@ int main(void){
 	SysTickInit();
 	while(1) {
 		// wait for mailbox flag ADCStatus to be true
-		while (HWREGBITW(&gFlags, FLAG_ADC_VALUE)) { }
+		while (HWREGBITW(&gFlags, FLAG_ADC_VALUE) == 0) { }
 		// read the 10-bit ADC sample from the mailbox ADCMail
 		Data = ADCvalue;
 		// clear the mailbox flag ADCStatus to signify the mailbox is now empty
@@ -130,19 +130,8 @@ void Convert(int Data){
 }
 
 void Delay(unsigned long count) {
-	register int i = 0;
-	while(count--) {
-		i = 5;
-		while (i--) {
-			//while(!HWREGBITW(&gFlags, FLAG_CLOCK_TICK)) { }
-			//HWREGBITW(&gFlags, FLAG_CLOCK_TICK) = 0;
-		}
-	}
-}
-
-unsigned long periodToSysTick(unsigned long period) {
-	// 0.75 * 50Mhz * period
-	return ((3 * gSystemClockFrequency) >> 2) * period;
+	count = (count * 50) >> 2;
+	while(count--) { }
 }
 
 void init(void) { int nop;
