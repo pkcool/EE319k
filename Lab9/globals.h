@@ -2,7 +2,6 @@
 #ifndef __GLOBALS_H__
 #define __GLOBALS_H__
 
-#define CLOCK_RATE              100000
 #define LENGTH									2170
 
 #define NOP() do { } while(0);

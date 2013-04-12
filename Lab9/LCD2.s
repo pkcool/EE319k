@@ -149,7 +149,7 @@ LCD_Open
 	
 	LDR R1, =SYSCTL_RCGC2_R
 	LDR R0, [R1]
-	ORR R0, R0, #(SYSCTL_RCGC2_GPIOG|SYSCTL_RCGC2_GPIOF) ; activate port F and port G 
+	ORR R0, R0, #(SYSCTL_RCGC2_GPIOG:OR:SYSCTL_RCGC2_GPIOF) ; activate port F and port G 
 	STR R0, [R1]                 
 	NOP
 	NOP                ; allow time to finish activating
