@@ -3,6 +3,7 @@
 #include "inc/hw_types.h"
 #include "inc/lm3s1968.h"
 
+#include "driverlib/systick.h"
 #include "driverlib/adc.h"
 #include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
@@ -12,6 +13,7 @@
 #include "globals.h"
 #include "SysTick.h"
 #include "ADC.h"
+#include "PLL.h"
 
 unsigned long gFlags;
 unsigned long gSystemClockFrequency;
@@ -22,11 +24,11 @@ unsigned long min = 88;
 unsigned long max = 1022;
 
 int main(void){
-	SysTickInit(2000000);
+	PLL_Init();
 	LCD_Open();
 	LCD_Clear();
 	ADC_InitSWTriggerSeq3(2); // turn on ADC, set channel to 2, sequencer 3 
-	SysTickInterruptEnable();
+	SysTickInit(2000000);
 	while(1) {
 		// wait for mailbox flag ADCStatus to be true
 		while (HWREGBITW(&gFlags, FLAG_ADC_VALUE) == 0) { }

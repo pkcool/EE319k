@@ -1,4 +1,6 @@
 
+#include "PLL.h"
+
 #define SYSCTL_RIS_R            (*((volatile unsigned long *)0x400FE050))
 #define SYSCTL_RIS_PLLLRIS      0x00000040  // PLL Lock Raw Interrupt Status
 #define SYSCTL_RCC_R            (*((volatile unsigned long *)0x400FE060))
@@ -40,11 +42,11 @@ void PLL_Init(void){
   SYSCTL_RCC_R &= ~(SYSCTL_RCC_PWRDN|SYSCTL_RCC_OEN);
   // 4) set the desired system divider and the USESYSDIV bit
   SYSCTL_RCC_R &= ~SYSCTL_RCC_SYSDIV_M; // system clock divider field
-//  SYSCTL_RCC_R += SYSCTL_RCC_SYSDIV_4;  // configure for 50 MHz clock
+  SYSCTL_RCC_R += SYSCTL_RCC_SYSDIV_4;  // configure for 50 MHz clock
 //  SYSCTL_RCC_R += SYSCTL_RCC_SYSDIV_5;  // configure for 40 MHz clock
 //  SYSCTL_RCC_R += SYSCTL_RCC_SYSDIV_6;  // configure for 33.33 MHz clock
 //  SYSCTL_RCC_R += SYSCTL_RCC_SYSDIV_7;  // configure for 28.57 MHz clock
-  SYSCTL_RCC_R += SYSCTL_RCC_SYSDIV_8;  // configure for 25 MHz clock
+//  SYSCTL_RCC_R += SYSCTL_RCC_SYSDIV_8;  // configure for 25 MHz clock
 //  SYSCTL_RCC_R += SYSCTL_RCC_SYSDIV_9;  // configure for 22.22 MHz clock
 //  SYSCTL_RCC_R += SYSCTL_RCC_SYSDIV_10; // configure for 20 MHz clock
 //  SYSCTL_RCC_R += SYSCTL_RCC_SYSDIV_11; // configure for 18.18 MHz clock

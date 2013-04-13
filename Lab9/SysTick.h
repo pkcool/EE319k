@@ -1,9 +1,8 @@
 
-#ifndef __SYSTICK_H__
-#define __SYSTICK_H__
+#ifndef __SYSTICKINT_H__
+#define __SYSTICKINT_H__
 
 extern void SysTickIntHandler(void);
 extern void SysTickInit(unsigned long period);
-extern void SysTickInterruptEnable(void);
 
-#endif // __SYSTICK_H__
+#endif // __SYSTICKINT_H__
