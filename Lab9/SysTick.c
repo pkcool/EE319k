@@ -8,8 +8,8 @@
 #include "ADCDriver.h"
 #include "SysTick.h"
 
-#define N 256
-#define M 8
+#define N 512
+#define M 9
 void SysTickIntHandler(void) {
 	int i;
 	long sum = 0;
@@ -27,9 +27,10 @@ void SysTickInit(unsigned long period) {
 	NOP();
 	GPIO_PORTG_DIR_R |= 0x04;							// make PG2 out
 	GPIO_PORTG_DIR_R &= ~0xF8;							// make PG3-7 in
-  GPIO_PORTG_DEN_R |= 0xFF;							// enable digital I/O on PG2
+	GPIO_PORTG_AFSEL_R |= 0xF8;
 	GPIO_PORTG_PUR_R |= 0xF8;
-
+	GPIO_PORTG_DEN_R |= 0xFF;							// enable digital I/O on PG2
+	
 	NVIC_ST_CTRL_R = 0;										// disable SysTick during setup
   NVIC_ST_RELOAD_R = period - 1;				// maximum reload value
   NVIC_ST_CURRENT_R = 0;								// any write to current clears it
