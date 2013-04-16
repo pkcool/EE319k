@@ -8,8 +8,8 @@
 #include "ADCDriver.h"
 #include "SysTick.h"
 
-#define N 256
-#define M 8
+#define N 512
+#define M 9
 void SysTickIntHandler(void) {
 	int i;
 	long sum = 0;
