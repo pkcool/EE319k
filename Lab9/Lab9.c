@@ -60,8 +60,6 @@ void Transmitter(void) {
 		LCD_GoTo(0);
 		LCD_OutString(msg);
 		LCD_OutString("cm");
-	
-		Delay(1000000);
 	}
 }
 
@@ -80,8 +78,6 @@ void Receiver(void) {
 		LCD_GoTo(0);
 		LCD_OutString(msg);
 		LCD_OutString("cm");
-	
-		Delay(1000000);
 	}
 }
 
