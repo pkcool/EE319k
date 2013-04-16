@@ -29,9 +29,6 @@ unsigned long max = 1022;
 
 int main(void){
 	PLL_Init();
-	LCD_Open();
-	LCD_Clear();
-	ADC_InitSWTriggerSeq3(2); // turn on ADC, set channel to 2, sequencer 3 
 	SysTickInit(2000000);
 	Output_Init();
 	Output_Color(5);
@@ -46,13 +43,17 @@ int main(void){
 }
 
 void Transmitter(void) {
-	UART_Init();	
+	ADC_InitSWTriggerSeq3(2);
+	UART_Init();
+	SysTickIntEnable();
 	while(1) {
 		// pass
 	}
 }
 
 void Receiver(void) {
+	LCD_Open();
+	LCD_Clear();
 	UART_Init();
 	while(1) {
 		// wait for mailbox flag ADCStatus to be true
