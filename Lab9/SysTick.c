@@ -13,10 +13,10 @@
 void SysTickIntHandler(void) {
 	int i;
 	long sum = 0;
-	for(i = 0; i < N; i++){ // take N samples and perform the average 
-		sum = sum+ADC_In(); // sample 10-bit channel 2 
+	for(i = 0; i < N; i++){ // take N samples and perform the average
+		sum = sum+ADC_In(); // sample 10-bit channel 2
 	}
-	ADCvalue = sum >> M; // noise reducing filter 
+	ADCvalue = sum >> M; // noise reducing filter
 	HWREGBITW(&gFlags, FLAG_CLOCK_TICK) = 1;
 	HWREGBITW(&gFlags, FLAG_ADC_VALUE) = 1;
 	GPIO_PORTG_DATA_R ^= 0x04;

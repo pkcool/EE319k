@@ -48,18 +48,7 @@ int main(void){
 void Transmitter(void) {
 	UART_Init();	
 	while(1) {
-		// wait for mailbox flag ADCStatus to be true
-		while (HWREGBITW(&gFlags, FLAG_ADC_VALUE) == 0) { }
-		// read the 10-bit ADC sample from the mailbox ADCMail
-		Data = ADCvalue;
-		// clear the mailbox flag ADCStatus to signify the mailbox is now empty
-		HWREGBITW(&gFlags, FLAG_ADC_VALUE) = 0;
-		// convert the sample into a fixed point number
-		Convert(Data);
-		// output the fixed point number on the LCD with units
-		LCD_GoTo(0);
-		LCD_OutString(msg);
-		LCD_OutString("cm");
+		// pass
 	}
 }
 
