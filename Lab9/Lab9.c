@@ -49,12 +49,12 @@ int main(void){
 void Convert(int Data){
 	register char i;
 	int ConvertedData;
-	
+		
 	if ((GPIO_PORTG_DATA_R & 0x10) == 0) {
-		//min = Data;
+		min = Data;
 	}
 	if ((GPIO_PORTG_DATA_R & 0x08) == 0) {
-		//max = Data;
+		max = Data;
 	}
 	Data = (Data - min);
 	if (Data < 0) {
