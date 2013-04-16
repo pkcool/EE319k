@@ -8,12 +8,16 @@
 #include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
 
+#include <stdio.h>
+
 #include "Lab9.h"
 #include "ADCDriver.h"
 #include "globals.h"
 #include "SysTick.h"
 #include "ADC.h"
 #include "PLL.h"
+#include "Output.h"
+#include "UART.h"
 
 unsigned long gFlags;
 unsigned long gSystemClockFrequency;
@@ -29,6 +33,20 @@ int main(void){
 	LCD_Clear();
 	ADC_InitSWTriggerSeq3(2); // turn on ADC, set channel to 2, sequencer 3 
 	SysTickInit(2000000);
+	Output_Init();
+	Output_Color(5);
+
+	JobSelect();
+	
+	if (HWREGBITW(&gFlags, FLAG_JOB) == 1) {
+		Transmitter();
+	} else {
+		Receiver();
+	}
+}
+
+void Transmitter(void) {
+	UART_Init();	
 	while(1) {
 		// wait for mailbox flag ADCStatus to be true
 		while (HWREGBITW(&gFlags, FLAG_ADC_VALUE) == 0) { }
@@ -42,6 +60,46 @@ int main(void){
 		LCD_GoTo(0);
 		LCD_OutString(msg);
 		LCD_OutString("cm");
+	
+		Delay(1000000);
+	}
+}
+
+void Receiver(void) {
+	UART_Init();
+	while(1) {
+		// wait for mailbox flag ADCStatus to be true
+		while (HWREGBITW(&gFlags, FLAG_ADC_VALUE) == 0) { }
+		// read the 10-bit ADC sample from the mailbox ADCMail
+		Data = ADCvalue;
+		// clear the mailbox flag ADCStatus to signify the mailbox is now empty
+		HWREGBITW(&gFlags, FLAG_ADC_VALUE) = 0;
+		// convert the sample into a fixed point number
+		Convert(Data);
+		// output the fixed point number on the LCD with units
+		LCD_GoTo(0);
+		LCD_OutString(msg);
+		LCD_OutString("cm");
+	
+		Delay(1000000);
+	}
+}
+
+void JobSelect(void) {
+	HWREGBITW(&gFlags, FLAG_SELECT) = 0;
+	while (HWREGBITW(&gFlags, FLAG_SELECT) == 0) {
+		if (((GPIO_PORTG_DATA_R & 0x20) == 0) && (HWREGBITW(&gFlags, FLAG_JOB) == 0)) {
+			HWREGBITW(&gFlags, FLAG_JOB) = 1;
+			printf("Transmitter (y/n)%c", NEWLINE);
+		}
+		if (((GPIO_PORTG_DATA_R & 0x40) == 0) && (HWREGBITW(&gFlags, FLAG_JOB) == 1)) {
+			HWREGBITW(&gFlags, FLAG_JOB) = 0;
+			printf("Receiver (y/n)%c", NEWLINE);
+		}
+		if ((GPIO_PORTG_DATA_R & 0x80) == 0) {
+			HWREGBITW(&gFlags, FLAG_SELECT) = 1;
+			printf("Selection confirmed%c", NEWLINE);
+		}
 	}
 }
 
@@ -49,12 +107,12 @@ int main(void){
 void Convert(int Data){
 	register char i;
 	int ConvertedData;
-		
-	if ((GPIO_PORTG_DATA_R & 0x10) == 0) {
-		min = Data;
-	}
+
 	if ((GPIO_PORTG_DATA_R & 0x08) == 0) {
 		max = Data;
+	}
+	if ((GPIO_PORTG_DATA_R & 0x10) == 0) {
+		min = Data;
 	}
 	Data = (Data - min);
 	if (Data < 0) {
@@ -70,6 +128,11 @@ void Convert(int Data){
 			msg[i] = '.';
 		}
 	}
+}
+
+void OutCRLF(void){
+  UART_OutChar(CR);
+  UART_OutChar(LF);
 }
 
 void Delay(unsigned long count) {

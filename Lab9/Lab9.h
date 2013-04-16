@@ -3,6 +3,10 @@
 
 void SysTickIntHandler(void);
 void Convert(int);
+void OutCRLF(void);
+void JobSelect(void);
+void Transmitter(void);
+void Receiver(void);
 void Delay(unsigned long);
 unsigned long periodToSysTick(unsigned long);
 void init(void);
