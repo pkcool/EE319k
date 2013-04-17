@@ -69,6 +69,7 @@ char Fifo_Get(char *datapt){
   }
   return(FIFOSUCCESS);
 }
+
 // number of elements in pointer FIFO
 // 0 to FIFOSIZE-1
 unsigned short Fifo_Size(void){

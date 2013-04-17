@@ -33,13 +33,13 @@ int main(void){
 	Output_Init();
 	Output_Color(15);
 	
-	//JobSelect();
+	JobSelect();
 	
-	//if (HWREGBITW(&gFlags, FLAG_JOB) == 1) {
-	//	Transmitter();
-	//} else {
+	if (HWREGBITW(&gFlags, FLAG_JOB) == 1) {
+		Transmitter();
+	} else {
 		Receiver();
-	//}
+	}
 }
 
 void Transmitter(void) {
@@ -66,8 +66,8 @@ void Receiver(void) {
 	LCD_Clear();
 	UART_Init();
 	UART_IntEnable();
-		ADC_InitSWTriggerSeq3(2);
-		SysTickIntEnable();
+		//ADC_InitSWTriggerSeq3(2);
+		//SysTickIntEnable();
 	EnableInterrupts();
 	while(1) {
 		while(Fifo_Get(FIFO_raw) == 0) {}
@@ -80,7 +80,6 @@ void Receiver(void) {
 			for (j = 1; j < 7; j++) {
 				output[j-1] = FIFO_data[j];
 			}
-			printf("        ");
 			printf(output);
 			printf("%c",NEWLINE);
 			LCD_GoTo(0);
