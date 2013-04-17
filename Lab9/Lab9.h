@@ -1,6 +1,8 @@
 #ifndef __LAB8_H__
 #define __LAB8_H__
 
+extern char msg[];
+
 void SysTickIntHandler(void);
 void Convert(int);
 void OutCRLF(void);

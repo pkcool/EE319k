@@ -22,7 +22,7 @@
 unsigned long gFlags;
 unsigned long gSystemClockFrequency;
 unsigned long Data;
-char msg[6] = "      ";
+char msg[8];
 
 unsigned long min = 88;
 unsigned long max = 1022;
@@ -105,15 +105,17 @@ void Convert(int Data){
 		Data = 0;
 	}
 	ConvertedData = Data*LENGTH/(max-min);
-	msg[5] = ' ';
-	for (i = 4; i >= 0; i--) {
+	for (i = 5; i >= 1; i--) {
 		msg[i] = '0' + ConvertedData % 10;
 		ConvertedData /= 10;
-		if (i == 2) {
+		if (i == 3) {
 			i--;
 			msg[i] = '.';
 		}
 	}
+	msg[0] = 0x2;
+	msg[6] = ' ';
+	msg[7] = 0x3;
 }
 
 void OutCRLF(void){
