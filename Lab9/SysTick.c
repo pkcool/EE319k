@@ -1,4 +1,6 @@
 
+#include <stdio.h>
+
 #include "inc/hw_types.h"
 #include "inc/lm3s1968.h"
 #include "driverlib/sysctl.h"
@@ -22,6 +24,8 @@ void SysTickIntHandler(void) {
 	ADCvalue = sum >> M; // noise reducing filter 
 	Convert(ADCvalue);
 	GPIO_PORTG_DATA_R ^= 0x04;
+	printf(msg);
+	printf("%c",NEWLINE);
 	UART_OutString(msg);
 	GPIO_PORTG_DATA_R ^= 0x04;
 }

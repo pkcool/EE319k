@@ -27,6 +27,6 @@ extern unsigned long gFlags;
 #define FLAG_SELECT							3						// Selection confirmed
 #define FLAG_FIFO_FULL					4						// FIFO Buffer full
 
-extern unsigned long gSystemClockFrequency;
+void EnableInterrupts(void);
 
 #endif // __GLOBALS_H__

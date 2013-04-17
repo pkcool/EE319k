@@ -27,6 +27,7 @@
 // U0Tx (VCP transmit) connected to PA1
 
 void UART1_Handler(void);
+void UART_IntEnable(void);
 
 //------------UART_InChar------------
 // Wait for new serial port input

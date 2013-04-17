@@ -26,9 +26,12 @@
 // U0Rx (VCP receive) connected to PA0
 // U0Tx (VCP transmit) connected to PA1
 
+#include <stdio.h>
+
 #include "UART.h"
 #include "FIFO.h"
 #include "globals.h"
+#include "hw_ints.h"
 #include "lm3s1968.h"
 #include "inc/hw_types.h"
 
@@ -36,12 +39,14 @@ void UART1_Handler(void) {
 	GPIO_PORTG_DATA_R ^= 0x04;
 	while (HWREGBITW(UART1_FR_R, UART_FR_RXFE) == 0) {
 		Fifo_Put(UART1_DR_R);
-		if (HWREGBITW(&gFlags, FLAG_FIFO_FULL)) {
-			gErrors++;
-		}
 	}
 	UART1_ICR_R = 0x10;
 	GPIO_PORTG_DATA_R ^= 0x04;
+}
+
+void UART_IntEnable(void) {
+	NVIC_EN0_R |= 1 << (INT_UART1 - 16);
+	UART1_IM_R = UART_IM_RXIM;
 }
 
 //------------UART_Init------------
@@ -59,7 +64,6 @@ void UART_Init(unsigned long mode){
   UART1_FBRD_R = 16;                    // FBRD = int(0.25 * 64 + 0.5) = 16
                                         // 8 bit word length (no parity bits, one stop bit, FIFOs)
   UART1_LCRH_R = (UART_LCRH_WLEN_8|UART_LCRH_FEN);
-	UART1_IFLS_R = UART_IFLS_RX4_8;
   UART1_CTL_R |= UART_CTL_UARTEN | mode;       // enable UART
   GPIO_PORTD_AFSEL_R |= 0x0C;           // enable alt funct on PA1-0
   GPIO_PORTD_DEN_R |= 0x0C;             // enable digital I/O on PA1-0

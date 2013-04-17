@@ -21,7 +21,6 @@
 
 unsigned long gFlags;
 unsigned long gErrors;
-unsigned long gSystemClockFrequency;
 unsigned long Data;
 char msg[8];
 
@@ -34,8 +33,8 @@ int main(void){
 	PLL_Init();
 	SysTickInit(2000000);
 	Output_Init();
-	Output_Color(5);
-
+	Output_Color(15);
+	
 	JobSelect();
 	
 	if (HWREGBITW(&gFlags, FLAG_JOB) == 1) {
@@ -60,16 +59,12 @@ long FIFO_input = 0;
 char j;
 
 void Receiver(void) {
-	PLL_Init();
   Fifo_Init(); 
 	LCD_Open();
 	LCD_Clear();
-	SysTickInit(2000000);
-	Output_Init();
-	Output_Color(5);
-	LCD_Open();
-	LCD_Clear();
 	UART_Init(UART_CTL_RXE);
+	UART_IntEnable();
+	EnableInterrupts();
 	while(1) {
 		while(Fifo_Get(FIFO_raw) == 0) {}
 		FIFO_data[FIFO_byte] = *FIFO_raw;
@@ -78,9 +73,11 @@ void Receiver(void) {
 			FIFO_input = 0;																				// Switch off reading mode
 			FIFO_byte = 0;																				// Return pointer to start of array
 			LCD_GoTo(0);																					// Display
-				for (j = 0; j <= 5; j--) {
-					msg[j] = FIFO_data[j+1];
-				}			
+			for (j = 0; j <= 5; j--) {
+				msg[j] = FIFO_data[j+1];
+			}
+			printf(msg);
+			printf("%c",NEWLINE);
 			LCD_OutString(msg);
 			LCD_OutString("cm");			
 		}
