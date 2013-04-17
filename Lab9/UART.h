@@ -35,7 +35,7 @@ void UART_IntEnable(void);
 // 8 bit word length, no parity bits, one stop bit, FIFOs enabled
 // Input: mode (either transmit of receive)
 // Output: none
-void UART_Init(unsigned long);
+void UART_Init(void);
 
 //------------UART_InChar------------
 // Wait for new serial port input

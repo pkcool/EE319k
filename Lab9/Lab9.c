@@ -24,8 +24,6 @@ unsigned long gErrors;
 unsigned long Data;
 char msg[8];
 
-char *FIFO_raw;
-
 unsigned long min = 88;
 unsigned long max = 1022;
 
@@ -35,53 +33,63 @@ int main(void){
 	Output_Init();
 	Output_Color(15);
 	
-	JobSelect();
+	//JobSelect();
 	
-	if (HWREGBITW(&gFlags, FLAG_JOB) == 1) {
-		Transmitter();
-	} else {
+	//if (HWREGBITW(&gFlags, FLAG_JOB) == 1) {
+	//	Transmitter();
+	//} else {
 		Receiver();
-	}
+	//}
 }
 
 void Transmitter(void) {
 	ADC_InitSWTriggerSeq3(2);
-	UART_Init(UART_CTL_TXE);
+	UART_Init();
 	SysTickIntEnable();
 	while(1) {
 		// pass
 	}
 }
 
-long FIFO_data[8];
-long FIFO_byte = 0;
-long FIFO_input = 0;
-char j;
+char FIFO_data[8];
+char *FIFO_raw;
+char FIFO_temp = 0;
+char FIFO_byte = 0;
+char FIFO_input = 0;
+char j; 
 
 void Receiver(void) {
+	char output[6] = "      ";
+	(FIFO_raw) = &FIFO_temp;
   Fifo_Init(); 
 	LCD_Open();
 	LCD_Clear();
-	UART_Init(UART_CTL_RXE);
+	UART_Init();
 	UART_IntEnable();
+		ADC_InitSWTriggerSeq3(2);
+		SysTickIntEnable();
 	EnableInterrupts();
 	while(1) {
 		while(Fifo_Get(FIFO_raw) == 0) {}
 		FIFO_data[FIFO_byte] = *FIFO_raw;
-		if (FIFO_data[FIFO_byte] == 2) { FIFO_input = 1; }		// If start codon, switch to reading mode
-		if (FIFO_data[FIFO_byte] == 3) { 											// If stop codon...
-			FIFO_input = 0;																				// Switch off reading mode
-			FIFO_byte = 0;																				// Return pointer to start of array
-			LCD_GoTo(0);																					// Display
-			for (j = 0; j <= 5; j--) {
-				msg[j] = FIFO_data[j+1];
+		if ((*FIFO_raw) == 2) {
+			FIFO_input = 1;
+		} else if ((*FIFO_raw) == 3) { 							// If stop codon...
+			FIFO_input = 0;														// Switch off reading mode
+			FIFO_byte = 0;														// Return pointer to start of array
+			for (j = 1; j < 7; j++) {
+				output[j-1] = FIFO_data[j];
 			}
-			printf(msg);
+			printf("        ");
+			printf(output);
 			printf("%c",NEWLINE);
-			LCD_OutString(msg);
-			LCD_OutString("cm");			
+			LCD_GoTo(0);
+			LCD_OutString(output);
+			LCD_OutString("cm");
 		}
-		if (FIFO_input == 1) { FIFO_byte += 1; } 							// If in reading mode, increment pointer
+		if (FIFO_input == 1) {
+			FIFO_byte++;
+		}
 	}
 }
 

@@ -37,7 +37,8 @@
 
 void UART1_Handler(void) {
 	GPIO_PORTG_DATA_R ^= 0x04;
-	while (HWREGBITW(UART1_FR_R, UART_FR_RXFE) == 0) {
+	GPIO_PORTG_DATA_R ^= 0x04;
+	while ((UART1_FR_R & 0x10) == 0) {
 		Fifo_Put(UART1_DR_R);
 	}
 	UART1_ICR_R = 0x10;
@@ -45,8 +46,9 @@ void UART1_Handler(void) {
 }
 
 void UART_IntEnable(void) {
-	NVIC_EN0_R |= 1 << (INT_UART1 - 16);
-	UART1_IM_R = UART_IM_RXIM;
+	NVIC_PRI1_R &= 0xFF1FFFFF;
+	NVIC_EN0_R |= 1 << 6;
+	UART1_IM_R = 0x10;
 }
 
 //------------UART_Init------------
@@ -55,7 +57,7 @@ void UART_IntEnable(void) {
 // 8 bit word length, no parity bits, one stop bit, FIFOs enabled
 // Input: none
 // Output: none
-void UART_Init(unsigned long mode){
+void UART_Init(void){
   SYSCTL_RCGC1_R |= SYSCTL_RCGC1_UART1; // activate UART0
   SYSCTL_RCGC2_R |= SYSCTL_RCGC2_GPIOD; // activate port A
 	NOP();
@@ -64,7 +66,7 @@ void UART_Init(unsigned long mode){
   UART1_FBRD_R = 16;                    // FBRD = int(0.25 * 64 + 0.5) = 16
                                         // 8 bit word length (no parity bits, one stop bit, FIFOs)
   UART1_LCRH_R = (UART_LCRH_WLEN_8|UART_LCRH_FEN);
-  UART1_CTL_R |= UART_CTL_UARTEN | mode;       // enable UART
+  UART1_CTL_R |= UART_CTL_UARTEN | UART_CTL_TXE | UART_CTL_RXE ;       // enable UART
   GPIO_PORTD_AFSEL_R |= 0x0C;           // enable alt funct on PA1-0
   GPIO_PORTD_DEN_R |= 0x0C;             // enable digital I/O on PA1-0
 }

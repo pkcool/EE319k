@@ -33,7 +33,7 @@ void EndCritical(long sr);    // restore I bit to previous value
 
 // Two-index implementation of the transmit FIFO
 // can hold 0 to TXFIFOSIZE elements
-#define FIFOSIZE 1000 // must be a power of 2
+#define FIFOSIZE 10000 // must be a power of 2
 #define FIFOSUCCESS 1
 #define FIFOFAIL    0
 
