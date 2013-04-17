@@ -17,11 +17,14 @@
 #include "PLL.h"
 #include "Output.h"
 #include "UART.h"
+#include "FIFO.h"
 
 unsigned long gFlags;
 unsigned long gSystemClockFrequency;
 unsigned long Data;
 char msg[8];
+
+char *FIFO_raw;
 
 unsigned long min = 88;
 unsigned long max = 1022;
@@ -57,7 +60,7 @@ char j;
 
 void Receiver(void) {
 	PLL_Init();
-//	FIFO_Init(); 
+  Fifo_Init(); 
 	LCD_Open();
 	LCD_Clear();
 	SysTickInit(2000000);
@@ -68,7 +71,8 @@ void Receiver(void) {
 	UART_Init();
 
 	while(1) {
-		//FIFO_data[FIFO_byte] = FIFO_Get();
+		while(Fifo_Get(FIFO_raw) == 0) {}
+		FIFO_data[FIFO_byte] = *FIFO_raw;
 		if (FIFO_data[FIFO_byte] == 2) { FIFO_input = 1; }		// If start codon, switch to reading mode
 		if (FIFO_data[FIFO_byte] == 3) { 											// If stop codon...
 			FIFO_input = 0;																				// Switch off reading mode
