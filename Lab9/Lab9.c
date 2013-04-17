@@ -1,4 +1,3 @@
-
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "inc/lm3s1968.h"
@@ -63,21 +62,35 @@ void Transmitter(void) {
 	}
 }
 
+long FIFO_data[8];
+long FIFO_byte = 0;
+long FIFO_input = 0;
+char j;
+
 void Receiver(void) {
+	PLL_Init();
+//	FIFO_Init(); 
+	LCD_Open();
+	LCD_Clear();
+	SysTickInit(2000000);
+	Output_Init();
+	Output_Color(5);
 	UART_Init();
+
 	while(1) {
-		// wait for mailbox flag ADCStatus to be true
-		while (HWREGBITW(&gFlags, FLAG_ADC_VALUE) == 0) { }
-		// read the 10-bit ADC sample from the mailbox ADCMail
-		Data = ADCvalue;
-		// clear the mailbox flag ADCStatus to signify the mailbox is now empty
-		HWREGBITW(&gFlags, FLAG_ADC_VALUE) = 0;
-		// convert the sample into a fixed point number
-		Convert(Data);
-		// output the fixed point number on the LCD with units
-		LCD_GoTo(0);
-		LCD_OutString(msg);
-		LCD_OutString("cm");
+		//FIFO_data[FIFO_byte] = FIFO_Get();
+		if (FIFO_data[FIFO_byte] == 2) { FIFO_input = 1; }		// If start codon, switch to reading mode
+		if (FIFO_data[FIFO_byte] == 3) { 											// If stop codon...
+			FIFO_input = 0;																				// Switch off reading mode
+			FIFO_byte = 0;																				// Return pointer to start of array
+			LCD_GoTo(0);																					// Display
+				for (j = 0; j <= 5; j--) {
+					msg[j] = FIFO_data[j+1];
+				}			
+			LCD_OutString(msg);
+			LCD_OutString("cm");			
+		}
+		if (FIFO_input == 1) { FIFO_byte += 1; } 							// If in reading mode, increment pointer
 	}
 }
 
