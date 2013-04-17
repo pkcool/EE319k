@@ -44,7 +44,7 @@ int main(void){
 
 void Transmitter(void) {
 	ADC_InitSWTriggerSeq3(2);
-	UART_Init();
+	UART_Init(UART_CTL_TXE);
 	SysTickIntEnable();
 	while(1) {
 		// pass
@@ -54,7 +54,7 @@ void Transmitter(void) {
 void Receiver(void) {
 	LCD_Open();
 	LCD_Clear();
-	UART_Init();
+	UART_Init(UART_CTL_RXE);
 	while(1) {
 		// wait for mailbox flag ADCStatus to be true
 		while (HWREGBITW(&gFlags, FLAG_ADC_VALUE) == 0) { }
