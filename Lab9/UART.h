@@ -26,13 +26,15 @@
 // U0Rx (VCP receive) connected to PA0
 // U0Tx (VCP transmit) connected to PA1
 
+void UART1_Handler(void);
+
 //------------UART_InChar------------
 // Wait for new serial port input
 // Initialize the UART for 115,200 baud rate (assuming 50 MHz clock),
 // 8 bit word length, no parity bits, one stop bit, FIFOs enabled
-// Input: none
+// Input: mode (either transmit of receive)
 // Output: none
-void UART_Init(void);
+void UART_Init(unsigned long);
 
 //------------UART_InChar------------
 // Wait for new serial port input

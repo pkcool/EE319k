@@ -46,7 +46,7 @@ int main(void){
 
 void Transmitter(void) {
 	ADC_InitSWTriggerSeq3(2);
-	UART_Init();
+	UART_Init(UART_CTL_TXE);
 	SysTickIntEnable();
 	while(1) {
 		// pass
@@ -68,8 +68,7 @@ void Receiver(void) {
 	Output_Color(5);
 	LCD_Open();
 	LCD_Clear();
-	UART_Init();
-
+	UART_Init(UART_CTL_RXE);
 	while(1) {
 		while(Fifo_Get(FIFO_raw) == 0) {}
 		FIFO_data[FIFO_byte] = *FIFO_raw;
