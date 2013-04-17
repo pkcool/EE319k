@@ -21,16 +21,13 @@
 unsigned long gFlags;
 unsigned long gSystemClockFrequency;
 unsigned long Data;
-char msg[6] = "      ";
+char msg[8];
 
 unsigned long min = 88;
 unsigned long max = 1022;
 
 int main(void){
 	PLL_Init();
-	LCD_Open();
-	LCD_Clear();
-	ADC_InitSWTriggerSeq3(2); // turn on ADC, set channel to 2, sequencer 3 
 	SysTickInit(2000000);
 	Output_Init();
 	Output_Color(5);
@@ -45,20 +42,11 @@ int main(void){
 }
 
 void Transmitter(void) {
-	UART_Init();	
+	ADC_InitSWTriggerSeq3(2);
+	UART_Init();
+	SysTickIntEnable();
 	while(1) {
-		// wait for mailbox flag ADCStatus to be true
-		while (HWREGBITW(&gFlags, FLAG_ADC_VALUE) == 0) { }
-		// read the 10-bit ADC sample from the mailbox ADCMail
-		Data = ADCvalue;
-		// clear the mailbox flag ADCStatus to signify the mailbox is now empty
-		HWREGBITW(&gFlags, FLAG_ADC_VALUE) = 0;
-		// convert the sample into a fixed point number
-		Convert(Data);
-		// output the fixed point number on the LCD with units
-		LCD_GoTo(0);
-		LCD_OutString(msg);
-		LCD_OutString("cm");
+		// pass
 	}
 }
 
@@ -75,6 +63,8 @@ void Receiver(void) {
 	SysTickInit(2000000);
 	Output_Init();
 	Output_Color(5);
+	LCD_Open();
+	LCD_Clear();
 	UART_Init();
 
 	while(1) {
@@ -128,15 +118,17 @@ void Convert(int Data){
 		Data = 0;
 	}
 	ConvertedData = Data*LENGTH/(max-min);
-	msg[5] = ' ';
-	for (i = 4; i >= 0; i--) {
+	for (i = 5; i >= 1; i--) {
 		msg[i] = '0' + ConvertedData % 10;
 		ConvertedData /= 10;
-		if (i == 2) {
+		if (i == 3) {
 			i--;
 			msg[i] = '.';
 		}
 	}
+	msg[0] = 0x2;
+	msg[6] = ' ';
+	msg[7] = 0x3;
 }
 
 void OutCRLF(void){
