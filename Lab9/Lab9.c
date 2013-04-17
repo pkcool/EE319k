@@ -1,4 +1,4 @@
-#include "inc/hw_memmap.h"
+ #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "inc/lm3s1968.h"
 
@@ -20,6 +20,7 @@
 #include "FIFO.h"
 
 unsigned long gFlags;
+unsigned long gErrors;
 unsigned long gSystemClockFrequency;
 unsigned long Data;
 char msg[8];

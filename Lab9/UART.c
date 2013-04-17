@@ -27,6 +27,7 @@
 // U0Tx (VCP transmit) connected to PA1
 
 #include "UART.h"
+#include "FIFO.h"
 #include "globals.h"
 #include "lm3s1968.h"
 #include "inc/hw_types.h"
@@ -34,11 +35,10 @@
 void UART1_Handler(void) {
 	GPIO_PORTG_DATA_R ^= 0x04;
 	while (HWREGBITW(UART1_FR_R, UART_FR_RXFE) == 0) {
-// Waiting for FIFO code
-//		FIFO_Put(UART1_DR_R);
-//		if (HWREGBITW(&gFlags, FLAG_FIFO_FULL)) {
-//			gError++;
-//		}
+		Fifo_Put(UART1_DR_R);
+		if (HWREGBITW(&gFlags, FLAG_FIFO_FULL)) {
+			gErrors++;
+		}
 	}
 	UART1_ICR_R = 0x10;
 	GPIO_PORTG_DATA_R ^= 0x04;

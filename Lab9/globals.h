@@ -19,11 +19,13 @@
 
 #define NOP() do { } while(0);
 
+extern unsigned long gErrors;
 extern unsigned long gFlags;
 #define FLAG_CLOCK_TICK         0           // A timer interrupt has occurred
 #define FLAG_ADC_VALUE          1           // There is a new value in the ADC
 #define FLAG_JOB								2						// Button selection job type
 #define FLAG_SELECT							3						// Selection confirmed
+#define FLAG_FIFO_FULL					4						// FIFO Buffer full
 
 extern unsigned long gSystemClockFrequency;
 
