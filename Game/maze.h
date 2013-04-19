@@ -2,9 +2,10 @@
 #ifndef __MAZE_H_INCLUDED
 #define __MAZE_H_INCLUDED
 
-unsigned char grid[HEIGHT][WIDTH];
+extern unsigned char grid[HEIGHT][WIDTH];
 
 void MazeInit(void);
-void MazeGen(unsigned char x, unsigned char y);
+void MazeGen(int x, int y);
+void MazePrint(void);
 
 #endif // __MAZE_H_INCLUDED
