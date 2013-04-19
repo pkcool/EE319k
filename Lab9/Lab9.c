@@ -80,8 +80,8 @@ void Receiver(void) {
 			for (j = 1; j < 7; j++) {
 				output[j-1] = FIFO_data[j];
 			}
-			printf(output);
-			printf("%c",NEWLINE);
+			//printf(output);
+			//printf("%c",NEWLINE);
 			LCD_GoTo(0);
 			LCD_OutString(output);
 			LCD_OutString("cm");

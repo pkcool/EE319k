@@ -36,13 +36,10 @@
 #include "inc/hw_types.h"
 
 void UART1_Handler(void) {
-	int count = 0;
-	
 	GPIO_PORTG_DATA_R ^= 0x04;
 	GPIO_PORTG_DATA_R ^= 0x04;	
-	while (((UART1_FR_R & 0x10) == 0) && (count < 8)) {
+	while (((UART1_FR_R & 0x10) == 0)) {
 		Fifo_Put(UART1_DR_R);
-		count++;
 	}
 	UART1_ICR_R = 0x10;
 	GPIO_PORTG_DATA_R ^= 0x04;

@@ -436,6 +436,11 @@
               <FileType>1</FileType>
               <FilePath>.\UART.c</FilePath>
             </File>
+            <File>
+              <FileName>FIFO.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\FIFO.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
