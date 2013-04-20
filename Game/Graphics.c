@@ -20,6 +20,31 @@ void SetPixel(unsigned int x, unsigned int y,
 	}
 }
 
+// draw a line from x0, y0 to x1, y1
+// 	line is NOT antialiased
+void DrawLine(unsigned int* x0, unsigned int* y0, 
+		unsigned int* x1, unsigned int* y1) {
+
+	unsigned int dx = x1 - x0;
+	unsigned int dy = y1 - y0;
+	unsigned int D = 2*dy - dx;
+
+	SetPixel(x0, y0, 0xF);
+	unsigned int y = y0;
+	unsigned int x;
+
+	for(x = x0+1; x < x1; x++) {
+		if (D>0) {
+			y++;
+			SetPixel(x, y, 0xF);
+			D += 2*dy-2*dx;
+		} else {
+			SetPixel(x, y, 0xF);
+			D += 2*dy;
+		}
+	}
+}
+
 // draws an image to x, y of width and height
 // 	if any of the nibbles are equal to 0x01
 //  they will be treated as transparent
