@@ -5,6 +5,13 @@
 
 unsigned char g_frame[6144];
 
+void ClearScreen(void) {
+	int i;
+	for (i = 0; i < 6144; i++) {
+		g_frame[i] = 0;
+	}
+}
+
 // set a SINGLE pizel
 // 	sets the pixel corresponding to the x, y location
 // 	to the lower four bits of data

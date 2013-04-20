@@ -45,10 +45,10 @@ int main(void) {
 	SysTick_IntEnable();
 	while (1) {
 		while ((GPIO_PORTG_DATA_R & 0x80) != 0) { }
-		while ((GPIO_PORTG_DATA_R & 0x80) == 0) { }
+		//while ((GPIO_PORTG_DATA_R & 0x80) == 0) { }
 		RandomInit(NVIC_ST_CURRENT_R);
 		RandomGenerate();
-		MazeInit();
+		MazeInit();		
 		MazePrint();
 	}
 }

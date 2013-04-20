@@ -4,6 +4,7 @@
 
 extern unsigned char g_frame[6144];
 
+void ClearScreen(void);
 void SetPixel(unsigned int x, unsigned int y, 
 							unsigned char data);
 void DrawImage(unsigned char* data, unsigned int x, 

@@ -22,18 +22,6 @@ void MazeInit(void) {
 	for (y = 0; y < HEIGHT; y++) {		
 		for (x = 0; x < WIDTH; x++) {
 			grid[y][x] = 0;
-			/*if (y == 0) {
-				grid[y][x] |= NORTH;
-			}
-			if (y == (HEIGHT-1)) {
-				grid[y][x] |= SOUTH;
-			}
-			if (x == 0) {
-				grid[y][x] |= WEST;
-			}
-			if (x == (WIDTH-1)) {
-				grid[y][x] |= EAST;
-			}*/
 		}
 	}
 	MazeGen(1, 1);
@@ -54,58 +42,48 @@ void MazeGen(int cur_x, int cur_y) {
 	}
 }
 
+/*
+		FF FF
+		FF FF
+		FF FF
+		FF FF
+*/
+
 void MazePrint(void) {
 	int x,y;
 	unsigned char datum;
-	unsigned char data[8] = {0xAA, 0xAA, 0xA0, 0x0A, 0xA0, 0x0A, 0xAA, 0xAA};
+	unsigned char data[8] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0xFF, 0x00};
+	unsigned char blank[4] = {0xFF, 0xFF, 0xFF, 0xFF};
+	ClearScreen();
 	for (y = 0; y < HEIGHT; y++) {
 		for (x = 0; x < WIDTH; x++) {
+			// NORTH
 			if ((grid[y][x]&0x1) > 0) {
 				datum = 0x0;
 			} else {
-				datum = 0xA;
+				datum = 0xFF;
 			}
-			data[0] &= 0xA0;
-			data[0] |= datum;
-			data[1] &= 0x0A;
-			data[1] |= (datum << 4);
+			data[1] = datum;
+			data[3] = datum;
 			
+			// WEST
 			if ((grid[y][x]&0x8) > 0) {
 				datum = 0x0;
 			} else {
-				datum = 0xA;
+				datum = 0xFF;
 			}
-			data[2] &= 0x0A;
-			data[2] |= (datum << 4);
-			data[4] &= 0x0A;
-			data[4] |= (datum << 4);
+			data[4] = datum;
+			data[6] = datum;
 			
-			if ((grid[y][x]&0x4) > 0) {
-				datum = 0x0;
-			} else {
-				datum = 0xA;
-			}
-			data[3] &= 0xA0;
-			data[3] |= datum;
-			data[5] &= 0xA0;
-			data[5] |= datum;
-			
-			if ((grid[y][x]&0x2) > 0) {
-				datum = 0x0;
-			} else {
-				datum = 0xA;
-			}
-			data[6] &= 0xA0;
-			data[6] |= datum;
-			data[7] &= 0x0A;
-			data[7] |= (datum << 4);
 			DrawImageFast(data, x*4, y*4, 4, 4);
-			Delay(10000);
 		}
 	}
-	data[0] = data[1] = data[6] = data[7] = 0x11;
-	data[2] = data[4] = 0x1F;
-	data[3] = data[5] = 0xF1;
-	DrawImage(data, 1*4, 1*4, 4, 4);
-	DrawImage(data, (WIDTH-2)*4, (HEIGHT-2)*4, 4, 4);
+	
+	for (y = 0; y < HEIGHT; y++) {
+		DrawImageFast(blank, WIDTH*4, y*4, 2, 4);
+	}
+	for (x = 0; x < WIDTH; x++) {
+		DrawImageFast(blank, x*4, HEIGHT*4, 4, 2);
+	}
+	DrawImageFast(blank, WIDTH*4, HEIGHT*4, 2, 2);
 }
