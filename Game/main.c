@@ -1,6 +1,5 @@
 
 #include <stdio.h>
-#include <time.h>
 
 #include "drivers/rit128x96x4.h"
 #include "inc/lm3s1968.h"
@@ -15,10 +14,11 @@
 #include "SysTick.h"
 #include "PLL.h"
 #include "ADCDriver.h"
-
+#include "graphics.h"
 #include "globals.h"
 #include "random.h"
-#include "maze.h"
+
+volatile unsigned long g_flags;
 
 __asm void
 Delay(unsigned long ulCount){
@@ -43,12 +43,13 @@ int main(void) {
 	ADC_Init(2);
 	RIT128x96x4Init(3500000);
 	SysTick_IntEnable();
-	while (1) {
-		while ((GPIO_PORTG_DATA_R & 0x80) != 0) { }
-		//while ((GPIO_PORTG_DATA_R & 0x80) == 0) { }
-		RandomInit(NVIC_ST_CURRENT_R);
-		RandomGenerate();
-		MazeInit();		
-		MazePrint();
+
+	while ((GPIO_PORTG_DATA_R & 0x80) != 0) { }
+	while ((GPIO_PORTG_DATA_R & 0x80) == 0) { }
+	RandomInit(NVIC_ST_CURRENT_R);
+	RandomGenerate();
+	GameInit();
+	while (1) { 
+		
 	}
 }

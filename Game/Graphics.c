@@ -1,6 +1,6 @@
 
 #include "drivers/rit128x96x4.h"
-
+#include "inc/lm3s1968.h"
 #include "graphics.h"
 
 unsigned char g_frame[6144];
@@ -18,36 +18,50 @@ void ClearScreen(void) {
 void SetPixel(unsigned int x, unsigned int y, 
 							unsigned char data)
 {
-	if ((x%2) == 0) {
-		g_frame[y*64+x/2] &= 0x0F;
-		g_frame[y*64+x/2] |= (data&0x0F) << 4;
-	} else {		
-		g_frame[y*64+x/2] &= 0xF0;
-		g_frame[y*64+x/2] |= (data&0x0F);
+	if ((x < 128) && (y < 96)) {
+		if ((x%2) == 0) {
+			g_frame[y*64+x/2] &= 0x0F;
+			g_frame[y*64+x/2] |= (data&0x0F) << 4;
+		} else {		
+			g_frame[y*64+x/2] &= 0xF0;
+			g_frame[y*64+x/2] |= (data&0x0F);
+		}
 	}
 }
 
 // draw a line from x0, y0 to x1, y1
 // 	line is NOT antialiased
-void DrawLine(unsigned int* x0, unsigned int* y0, 
-		unsigned int* x1, unsigned int* y1) {
-
-	unsigned int dx = x1 - x0;
-	unsigned int dy = y1 - y0;
-	unsigned int D = 2*dy - dx;
-
-	SetPixel(x0, y0, 0xF);
-	unsigned int y = y0;
-	unsigned int x;
-
-	for(x = x0+1; x < x1; x++) {
-		if (D>0) {
-			y++;
-			SetPixel(x, y, 0xF);
-			D += 2*dy-2*dx;
-		} else {
-			SetPixel(x, y, 0xF);
-			D += 2*dy;
+void DrawLine(unsigned int x0, unsigned int y0, 
+		unsigned int x1, unsigned int y1,
+		unsigned char color)
+{
+	signed int tmp, dx, dy, x, y, eps;
+	if (x1 < x0) {
+		tmp = x0; x0 = x1; x1 = tmp;
+		tmp = y0; y0 = y1; y1 = tmp;
+	}
+	dx = x1 - x0;
+	dy = y1 - y0;
+	y = y0;
+	x	= x0;
+	eps = 0;
+	if (y0 <= y1) {
+		for (; x < x1; x++ ) {
+			SetPixel(x,y,color);
+			eps += dy;
+			if ( (eps << 1) >= dx )  {
+				y++;
+				eps -= dx;
+			}
+		}
+	} else {
+		for (; x < x1; x++ ) {
+			SetPixel(x,y,color);
+			eps += dy;
+			if ( (eps << 1) <= -dx )  {
+				y--;
+				eps += dx;
+			}
 		}
 	}
 }

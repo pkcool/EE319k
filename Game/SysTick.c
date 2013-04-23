@@ -1,5 +1,6 @@
 
 #include "drivers/rit128x96x4.h"
+#include "inc/lm3s1968.h"
 #include "graphics.h"
 
 #define NVIC_ST_CTRL_R          (*((volatile unsigned long *)0xE000E010))
@@ -12,6 +13,7 @@
 #define NVIC_ST_RELOAD_M        0x00FFFFFF  // Counter load value
 
 void SysTick_Handler(void) {
+	GPIO_PORTG_DATA_R ^= 0x04;
 	RIT128x96x4ImageDraw(g_frame, 0, 0, 128, 96);
 }
 
