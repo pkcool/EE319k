@@ -8,12 +8,8 @@
 #define NOP() do { } while(0);
 
 extern volatile unsigned long g_flags;
-#define FLAG_BUTTON_UP			0
-#define FLAG_BUTTON_DOWN		1
-#define FLAG_BUTTON_LEFT		2
-#define FLAG_BUTTON_RIGHT		3
-#define FLAG_BUTTON_SELECT	4
-#define FLAG_BUFFER_READY		5
+#define FLAG_BUTTON_SELECT	0
+#define FLAG_BUFFER_READY		1
 
 void Delay(unsigned long ulCount);
 

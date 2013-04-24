@@ -18,6 +18,7 @@ void SysTick_Handler(void) {
 	if (HWREGBITW(&g_flags, FLAG_BUFFER_READY) == 1) {
 		GPIO_PORTG_DATA_R ^= 0x04;
 		RIT128x96x4ImageDraw(g_frame, 0, 0, 128, 96);
+		ClearScreen();
 		HWREGBITW(&g_flags, FLAG_BUFFER_READY) = 0;
 	}
 }

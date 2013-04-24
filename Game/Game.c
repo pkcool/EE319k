@@ -1,6 +1,10 @@
 
+#include "inc/lm3s1968.h"
+#include "inc/hw_types.h"
+
 #include "game.h"
 #include "random.h"
+#include "globals.h"
 #include "timer.h"
 
 unsigned char g_enemySpritesIdle[MAX_DANCE][50] = {
@@ -36,14 +40,58 @@ unsigned char g_playerExplosionSprites[MAX_EXPLOSION][728] = {
 unsigned char g_bulletSprite[2] = { 0xFF, 0xFF };
 
 EnemyR g_enemies[MAX_ENEMIES];
-BulletR g_bullets[MAX_BULLETS];
+BulletR g_enemyBullets[MAX_ENEMY_BULLETS];
+BulletR g_playerBullets[MAX_PLAYER_BULLETS];
 PlayerR g_player;
 
 void GameUpdate(void) {
 	int i;
-	for (i = 0; i < MAX_ENEMIES; i++) {
-		// do enemy stuff
+	switch(g_player.stat) {
+		case P_ALIVE:
+			if ((GPIO_PORTG_DATA_R&0x20) == 0) {
+					g_player.xpos--;
+			} else if ((GPIO_PORTG_DATA_R&0x40) == 0) {
+					g_player.xpos++;
+			}
+			if (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT)) {
+				for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
+					if (g_playerBullets[i].stat == B_DEAD) {
+						g_playerBullets[i].stat = B_ALIVE;
+						g_playerBullets[i].xpos = g_player.xpos+g_player.width/2-2;
+						g_playerBullets[i].ypos = g_player.ypos - 2;
+						break;
+					}
+				}
+			}
+			break;
+		case P_HIT:
+			g_player.animationStep = 0;
+			break;
+		case P_DEAD:
+			break;
 	}
+	for (i = 0; i < MAX_ENEMIES; i++) {
+		// enemy code
+	}
+	for (i = 0; i < MAX_ENEMY_BULLETS; i++) {
+		if (g_enemyBullets[i].stat == B_ALIVE) {
+				g_enemyBullets[i].ypos+=2;
+				if (g_enemyBullets[i].ypos >= 96) {
+					g_enemyBullets[i].stat = B_DEAD;
+				}
+				// collision detections
+		}
+	}
+	for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
+		if (g_playerBullets[i].stat == B_ALIVE) {
+			g_playerBullets[i].ypos-=2;
+			if (g_playerBullets[i].ypos >= 96) {
+				g_playerBullets[i].stat = B_DEAD;
+			}
+			// collision detections
+		}
+	}
+	g_flags &= ~0x1F;
 }
 
 void GameInit(void) {
@@ -62,11 +110,15 @@ void GameInit(void) {
 			g_enemies[y*4+x].stat = E_ALIVE;
 		}
 	}
-	for (y = 0; y < MAX_BULLETS; y++) {
-		g_bullets[y].xpos = 0;
-		g_bullets[y].ypos = 0;
-		g_bullets[y].direction = 0;
-		g_bullets[y].stat = B_DEAD;
+	for (y = 0; y < MAX_PLAYER_BULLETS; y++) {
+		g_playerBullets[y].xpos = 0;
+		g_playerBullets[y].ypos = 0;
+		g_playerBullets[y].stat = B_DEAD;
+	}
+	for (y = 0; y < MAX_ENEMY_BULLETS; y++) {
+		g_enemyBullets[y].xpos = 0;
+		g_enemyBullets[y].ypos = 0;
+		g_enemyBullets[y].stat = B_DEAD;
 	}
 	g_player.xpos = 128/2-12/2;
 	g_player.ypos = 96-14-4;
@@ -77,6 +129,6 @@ void GameInit(void) {
 	g_player.shield = 0;
 	g_player.health = 2;
 	g_player.stat = P_ALIVE;
-	Timer0AInit(*GameUpdate, 10000);
+	Timer1AInit(*GameUpdate, 1000000/100);
 }
 

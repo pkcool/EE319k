@@ -24,6 +24,8 @@
 
 volatile unsigned long g_flags;
 
+unsigned long sc;
+
 __asm void
 Delay(unsigned long ulCount){
 	subs    r0, #1
@@ -34,7 +36,7 @@ Delay(unsigned long ulCount){
 int main(void) {
 	int i;
 	PLL_Init();
-	SysTick_Init(50000000/30);
+	SysTick_Init(1000000/30);
 	
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
 	GPIOPinTypeGPIOInput(GPIO_PORTG_BASE,
@@ -59,6 +61,7 @@ int main(void) {
 	GameInit();
 	while (1) {
 		while (HWREGBITW(&g_flags, FLAG_BUFFER_READY) == 1) { }
+		sc = StartCritical();
 		for (i = 0; i < MAX_ENEMIES; i++) {
 			switch (g_enemies[i].stat) {
 				case E_ALIVE:
@@ -79,15 +82,14 @@ int main(void) {
 					break;
 			}
 		}
-		for (i = 0; i < MAX_BULLETS; i++) {
-			switch (g_bullets[i].stat) {
-				case B_ALIVE:
-					DrawImage(g_bulletSprite, g_bullets[i].xpos, g_bullets[i].ypos, 2, 2);
-					break;
-				case B_HIT:
-					break;
-				case B_DEAD:
-					break;
+		for (i = 0; i < MAX_ENEMY_BULLETS; i++) {
+			if (g_enemyBullets[i].stat == B_ALIVE) {
+					DrawImage(g_bulletSprite, g_enemyBullets[i].xpos, g_enemyBullets[i].ypos, 2, 2);
+			}
+		}
+		for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
+			if (g_playerBullets[i].stat == B_ALIVE) {
+					DrawImage(g_bulletSprite, g_playerBullets[i].xpos, g_playerBullets[i].ypos, 2, 2);
 			}
 		}
 		switch (g_player.stat) {
@@ -105,5 +107,6 @@ int main(void) {
 				break;
 		}
 		HWREGBITW(&g_flags, FLAG_BUFFER_READY) = 1;
+		EndCritical(sc);
 	}
 }

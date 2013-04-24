@@ -2,11 +2,11 @@
 #ifndef __GAME_H__
 #define __GAME_H__
 
-#define MAX_DANCE			6
-#define MAX_EXPLOSION	5
-#define MAX_ENEMIES		12
-#define MAX_BULLETS		8
-#define BULLET_SPEED	4
+#define MAX_DANCE							6
+#define MAX_EXPLOSION					5
+#define MAX_ENEMIES						12
+#define MAX_ENEMY_BULLETS			16
+#define MAX_PLAYER_BULLETS		1
 
 typedef enum {
 	E_ALIVE,													// self explanatory
@@ -23,7 +23,6 @@ typedef enum {
 
 typedef enum {
 	B_ALIVE,													// self explanatory
-	B_HIT,														// we need to explode a bit
 	B_DEAD														// self explanatory
 } BulletStat;
 
@@ -49,7 +48,6 @@ typedef struct {
 
 typedef struct {
 	unsigned char xpos, ypos;				// x and y
-	int direction;									// angle (angle = 15*direction)
 	BulletStat stat;								// used for game state
 } BulletR;
 
@@ -60,7 +58,8 @@ extern unsigned char g_playerExplosionSprites[MAX_EXPLOSION][728];
 extern unsigned char g_bulletSprite[2];
 
 extern EnemyR g_enemies[MAX_ENEMIES];
-extern BulletR g_bullets[MAX_BULLETS];
+extern BulletR g_enemyBullets[MAX_ENEMY_BULLETS];
+extern BulletR g_playerBullets[MAX_PLAYER_BULLETS];
 extern PlayerR g_player;
 
 void GameInit(void);
