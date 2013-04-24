@@ -1,6 +1,5 @@
 
 #include "inc/lm3s1968.h"
-#include "hw_types.h"
 
 #include "input.h"
 #include "globals.h"
@@ -23,5 +22,7 @@ void InputInit(void){
 }
 
 void GPIOPortG_Handler(void){
-  GPIO_PORTG_ICR_R = 0x40;  // acknowledge flag6
+	g_flags &= ~0x1F;
+	g_flags |= GPIO_PORTG_DATA_R >> 3;
+  GPIO_PORTG_ICR_R = 0xF8;  // acknowledge flag3-7
 }
