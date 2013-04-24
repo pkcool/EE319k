@@ -8,6 +8,8 @@ unsigned char g_frame[6144];
 typedef struct { 
 	char x,y;
 } Point;
+int sinarr[24] = {0, 33, 64, 91, 111, 124, 128, 124, 111, 91, 64, 33, 0, -33, -64, -91, -111, -124, -128, -124, -111, -91, -64, -33};
+int cosarr[24] = {128, 124, 111, 91, 64, 33, 0, -33, -64, -91, -111, -124, -128, -124, -111, -91, -64, -33, 0, 33, 64, 91, 111, 124};
 
 
 void ClearScreen(void) {
@@ -121,10 +123,10 @@ void RotateImage(unsigned char* data, unsigned int x,
 	int newM;
 	int centerX = width/2;
 	int centerY = height/2;
-	int mat11 = 128*scale*cos(angle*0.017)/8;
-	int mat12 = -128*scale*sin(angle*0.017)/8;
-	int mat21 = 128*scale*sin(angle*0.017)/8;
-	int mat22 = 128*scale*cos(angle*0.017)/8;
+	int mat11 = 128*scale*cosarr[angle]/1024;
+	int mat12 = -128*scale*sinarr[angle]/1024;
+	int mat21 = 128*scale*sinarr[angle]/1024;
+	int mat22 = 128*scale*cosarr[angle]/1024;
 	for (j = 0; j < height; j++) {
 		for (i = 0; i < width/2; i++) {
 			
