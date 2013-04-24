@@ -77,7 +77,6 @@ void GameInit(void) {
 	g_player.shield = 0;
 	g_player.health = 2;
 	g_player.stat = P_ALIVE;
-	
 	Timer0AInit(*GameUpdate, 10000);
 }
 

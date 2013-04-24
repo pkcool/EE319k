@@ -5,7 +5,6 @@
 #include "inc/lm3s1968.h"
 #include "inc/hw_types.h"
 #include "inc/hw_memmap.h"
-#include "inc/hw_types.h"
 
 #include "driverlib/adc.h"
 #include "driverlib/gpio.h"
@@ -35,7 +34,7 @@ Delay(unsigned long ulCount){
 int main(void) {
 	int i;
 	PLL_Init();
-	SysTick_Init(1000000);
+	SysTick_Init(50000000/30);
 	
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
 	GPIOPinTypeGPIOInput(GPIO_PORTG_BASE,
@@ -59,7 +58,7 @@ int main(void) {
 	RandomGenerate();
 	GameInit();
 	while (1) {
-		ClearScreen();
+		while (HWREGBITW(&g_flags, FLAG_BUFFER_READY) == 1) { }
 		for (i = 0; i < MAX_ENEMIES; i++) {
 			switch (g_enemies[i].stat) {
 				case E_ALIVE:
@@ -105,6 +104,6 @@ int main(void) {
 			case P_DEAD:
 				break;
 		}
-		RIT128x96x4ImageDraw(g_frame, 0, 0, 128, 96);
+		HWREGBITW(&g_flags, FLAG_BUFFER_READY) = 1;
 	}
 }

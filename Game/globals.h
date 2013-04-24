@@ -13,6 +13,7 @@ extern volatile unsigned long g_flags;
 #define FLAG_BUTTON_LEFT		2
 #define FLAG_BUTTON_RIGHT		3
 #define FLAG_BUTTON_SELECT	4
+#define FLAG_BUFFER_READY		5
 
 void Delay(unsigned long ulCount);
 
