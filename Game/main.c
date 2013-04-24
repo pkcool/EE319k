@@ -29,7 +29,7 @@ Delay(unsigned long ulCount){
 }
 
 int main(void) {
-	int i,j;
+	int i;
 	PLL_Init();
 	SysTick_Init(1000000);
 	
@@ -51,41 +51,52 @@ int main(void) {
 	RandomInit(NVIC_ST_CURRENT_R);
 	RandomGenerate();
 	GameInit();
-	j = 8;
 	while (1) {
 		ClearScreen();
 		for (i = 0; i < MAX_ENEMIES; i++) {
 			switch (g_enemies[i].stat) {
-				case ALIVE:
-					RotateImage(g_spriteIdle[g_enemies[i].animationStep], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height, g_enemies[i].direction, j);
-					break;
-				case HIT:
-					DrawImage(g_explosion[g_enemies[i].animationStep], g_enemies[i].xpos, g_enemies[i].ypos, 14, 14);
+				case E_ALIVE:
+					DrawImage(g_enemySpritesIdle[g_enemies[i].animationStep], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
 					g_enemies[i].animationStep++;
-					if (g_enemies[i].animationStep >= MAX_EXPLOSION) {
-						g_enemies[i].stat = DEAD;
+					if (g_enemies[i].animationStep >= MAX_DANCE) {
+						g_enemies[i].animationStep = 0;
 					}
 					break;
-				case DEAD:
+				case E_HIT:
+					DrawImage(g_explosionSprites[g_enemies[i].animationStep], g_enemies[i].xpos, g_enemies[i].ypos, 14, 14);
+					g_enemies[i].animationStep++;
+					if (g_enemies[i].animationStep >= MAX_EXPLOSION) {
+						g_enemies[i].stat = E_DEAD;
+					}
+					break;
+				case E_DEAD:
 					break;
 			}
-			/*if (g_enemies[i].stat == ALIVE) {
-				//if (g_enemies[i].direction == 0) {
-				//	DrawImage(g_spriteIdle[g_enemies[i].danceStep], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
-				//} else {
-					RotateImage(g_spriteIdle[g_enemies[i].animationStep], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height, g_enemies[i].direction, j);
-				//}
-				//g_enemies[i].animationStep = (g_enemies[i].animationStep+1)%MAX_DANCE;
-			}*/
-			g_enemies[i].direction += 1;
-			if (g_enemies[i].direction >= 6) {
-				j=(j+1)%128;
+		}
+		for (i = 0; i < MAX_BULLETS; i++) {
+			switch (g_bullets[i].stat) {
+				case B_ALIVE:
+					DrawImage(g_bulletSprite, g_bullets[i].xpos, g_bullets[i].ypos, 2, 2);
+					break;
+				case B_HIT:
+					break;
+				case B_DEAD:
+					break;
 			}
-			if (g_enemies[i].direction >= 24) {
-				g_enemies[i].direction = g_enemies[i].direction%24;
-				//g_enemies[i].stat = HIT;
-				//g_enemies[i].animationStep = 0;
-			}
+		}
+		switch (g_player.stat) {
+			case P_ALIVE:
+				DrawImage(g_playerSprites[g_player.shield], g_player.xpos, g_player.ypos, g_player.width, g_player.height);
+				break;
+			case P_HIT:
+				DrawImage(g_explosionSprites[g_player.animationStep], g_player.xpos, g_player.ypos, 14, 14);
+				g_player.animationStep++;
+				if (g_player.animationStep >= MAX_EXPLOSION) {
+					g_player.stat = P_DEAD;
+				}
+				break;
+			case P_DEAD:
+				break;
 		}
 		RIT128x96x4ImageDraw(g_frame, 0, 0, 128, 96);
 	}
