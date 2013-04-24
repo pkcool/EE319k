@@ -19,6 +19,9 @@
 #include "random.h"
 #include "game.h"
 #include "input.h"
+#include "sound.h"
+#include "timer.h"
+#include "dac.h"
 
 volatile unsigned long g_flags;
 
@@ -45,6 +48,7 @@ int main(void) {
 
 	ADC_Init(2);
 	InputInit();
+	SoundInit();
 	RIT128x96x4Init(3500000);
 	SysTick_IntEnable();
 	EnableInterrupts();
