@@ -18,6 +18,7 @@
 #include "globals.h"
 #include "random.h"
 #include "game.h"
+#include "input.h"
 
 volatile unsigned long g_flags;
 
@@ -43,9 +44,11 @@ int main(void) {
 					GPIO_PIN_TYPE_STD_WPU);
 
 	ADC_Init(2);
+	InputInit();
 	RIT128x96x4Init(3500000);
 	SysTick_IntEnable();
-
+	EnableInterrupts();
+	
 	while ((GPIO_PORTG_DATA_R & 0x80) != 0) { }
 	while ((GPIO_PORTG_DATA_R & 0x80) == 0) { }
 	RandomInit(NVIC_ST_CURRENT_R);
