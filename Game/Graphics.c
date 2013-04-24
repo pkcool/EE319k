@@ -121,10 +121,10 @@ void RotateImage(unsigned char* data, unsigned int x,
 	int newM;
 	int centerX = width/2;
 	int centerY = height/2;
-	int mat11 = 128.0*scale*cos(angle*180/3.14);
-	int mat12 = -128.0*scale*sin(angle*180/3.14);
-	int mat21 = 128.0*scale*sin(angle*180/3.14);
-	int mat22 = 128.0*scale*cos(angle*180/3.14);
+	int mat11 = 128.0*scale*cos(angle/180.0*3.14)/10.0;
+	int mat12 = -128.0*scale*sin(angle/180.0*3.14)/10.0;
+	int mat21 = 128.0*scale*sin(angle/180.0*3.14)/10.0;
+	int mat22 = 128.0*scale*cos(angle/180.0*3.14)/10.0;
 	for (j = 0; j < height; j++) {
 		for (i = 0; i < width/2; i++) {
 			
