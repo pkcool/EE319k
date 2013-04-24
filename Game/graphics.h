@@ -13,7 +13,10 @@ void DrawLine(unsigned int x0, unsigned int y0,
 void DrawImage(unsigned char* data, unsigned int x, 
 								unsigned int y, unsigned int width, 
 								unsigned int height);
-
+void RotateImage(unsigned char* data, unsigned int x, 
+									unsigned int y, unsigned int width, 
+									unsigned int height, unsigned int angle,
+									unsigned int scale);
 void DrawImageFast(unsigned char* data, unsigned int x, 
 										unsigned int y, unsigned int width, 
 										unsigned int height);
