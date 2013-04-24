@@ -121,17 +121,17 @@ void RotateImage(unsigned char* data, unsigned int x,
 	int newM;
 	int centerX = width/2;
 	int centerY = height/2;
-	int mat11 = 128.0*scale*cos(angle/180.0*3.14)/10.0;
-	int mat12 = -128.0*scale*sin(angle/180.0*3.14)/10.0;
-	int mat21 = 128.0*scale*sin(angle/180.0*3.14)/10.0;
-	int mat22 = 128.0*scale*cos(angle/180.0*3.14)/10.0;
+	int mat11 = 128*scale*cos(angle*0.017)/8;
+	int mat12 = -128*scale*sin(angle*0.017)/8;
+	int mat21 = 128*scale*sin(angle*0.017)/8;
+	int mat22 = 128*scale*cos(angle*0.017)/8;
 	for (j = 0; j < height; j++) {
 		for (i = 0; i < width/2; i++) {
 			
-			newI = centerX + (mat11*(i*2 - centerX) + mat12*(j - centerY))/128 + 0.5;
-			newI2 = centerX + (mat11*(i*2 + 1 - centerX) + mat12*(j - centerY))/128 + 0.5;
-			newJ = centerY + (mat21*(i*2 - centerX) + mat22*(j - centerY))/128 + 0.5;
-			newJ2 = centerY + (mat21*(i*2 + 1 - centerX) + mat22*(j - centerY))/128 + 0.5;
+			newI = centerX + (mat11*(i*2 - centerX) + mat12*(j - centerY))/128;
+			newI2 = centerX + (mat11*(i*2 + 1 - centerX) + mat12*(j - centerY))/128;
+			newJ = centerY + (mat21*(i*2 - centerX) + mat22*(j - centerY))/128;
+			newJ2 = centerY + (mat21*(i*2 + 1 - centerX) + mat22*(j - centerY))/128;
 			
 			newM = (data[j*width/2+i]&0xF0)/16;
 			SetPixel(newI + x, newJ + y, newM);
