@@ -17,6 +17,7 @@
 #include "graphics.h"
 #include "globals.h"
 #include "random.h"
+#include "game.h"
 
 volatile unsigned long g_flags;
 
@@ -28,6 +29,7 @@ Delay(unsigned long ulCount){
 }
 
 int main(void) {
+	int i;
 	PLL_Init();
 	SysTick_Init(1000000);
 	
@@ -49,7 +51,22 @@ int main(void) {
 	RandomInit(NVIC_ST_CURRENT_R);
 	RandomGenerate();
 	GameInit();
-	while (1) { 
-		
+	while (1) {
+		ClearScreen();
+		for (i = 0; i < MAX_ENEMIES; i++) {
+			if (g_enemies[i].stat == ALIVE) {
+				if (g_enemies[i].direction == 0) {
+					DrawImage(g_spriteIdle[g_enemies[i].danceStep], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
+				} else {
+					RotateImage(g_spriteIdle[g_enemies[i].danceStep], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height, g_enemies[i].direction, 1);
+				}
+				g_enemies[i].danceStep = (g_enemies[i].danceStep+1)%MAX_DANCE;
+			}
+			g_enemies[i].direction += 15;
+			if (g_enemies[i].direction > 360) {
+				g_enemies[i].direction = g_enemies[i].direction%360;
+			}
+		}
+		Delay(1000000);
 	}
 }
