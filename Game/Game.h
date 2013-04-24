@@ -56,6 +56,7 @@ typedef struct {
 extern unsigned char g_enemySpritesIdle[MAX_DANCE][50];
 extern unsigned char g_explosionSprites[MAX_EXPLOSION][196];
 extern unsigned char g_playerSprites[2][168];
+extern unsigned char g_playerExplosionSprites[MAX_EXPLOSION][728];
 extern unsigned char g_bulletSprite[2];
 
 extern EnemyR g_enemies[MAX_ENEMIES];

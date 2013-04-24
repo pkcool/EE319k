@@ -89,7 +89,7 @@ int main(void) {
 				DrawImage(g_playerSprites[g_player.shield], g_player.xpos, g_player.ypos, g_player.width, g_player.height);
 				break;
 			case P_HIT:
-				DrawImage(g_explosionSprites[g_player.animationStep], g_player.xpos, g_player.ypos, 14, 14);
+				DrawImage(g_playerExplosionSprites[g_player.animationStep], g_player.xpos, g_player.ypos, 14, 14);
 				g_player.animationStep++;
 				if (g_player.animationStep >= MAX_EXPLOSION) {
 					g_player.stat = P_DEAD;
