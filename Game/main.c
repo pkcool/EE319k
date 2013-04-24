@@ -29,7 +29,7 @@ Delay(unsigned long ulCount){
 }
 
 int main(void) {
-	int i;
+	int i,j;
 	PLL_Init();
 	SysTick_Init(1000000);
 	
@@ -51,22 +51,42 @@ int main(void) {
 	RandomInit(NVIC_ST_CURRENT_R);
 	RandomGenerate();
 	GameInit();
+	j = 8;
 	while (1) {
 		ClearScreen();
 		for (i = 0; i < MAX_ENEMIES; i++) {
-			if (g_enemies[i].stat == ALIVE) {
-				if (g_enemies[i].direction == 0) {
-					DrawImage(g_spriteIdle[g_enemies[i].danceStep], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
-				} else {
-					RotateImage(g_spriteIdle[g_enemies[i].danceStep], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height, g_enemies[i].direction, 1);
-				}
-				g_enemies[i].danceStep = (g_enemies[i].danceStep+1)%MAX_DANCE;
+			switch (g_enemies[i].stat) {
+				case ALIVE:
+					RotateImage(g_spriteIdle[g_enemies[i].animationStep], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height, g_enemies[i].direction, j);
+					break;
+				case HIT:
+					DrawImage(g_explosion[g_enemies[i].animationStep], g_enemies[i].xpos, g_enemies[i].ypos, 14, 14);
+					g_enemies[i].animationStep++;
+					if (g_enemies[i].animationStep >= MAX_EXPLOSION) {
+						g_enemies[i].stat = DEAD;
+					}
+					break;
+				case DEAD:
+					break;
 			}
-			g_enemies[i].direction += 15;
-			if (g_enemies[i].direction > 360) {
-				g_enemies[i].direction = g_enemies[i].direction%360;
+			/*if (g_enemies[i].stat == ALIVE) {
+				//if (g_enemies[i].direction == 0) {
+				//	DrawImage(g_spriteIdle[g_enemies[i].danceStep], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
+				//} else {
+					RotateImage(g_spriteIdle[g_enemies[i].animationStep], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height, g_enemies[i].direction, j);
+				//}
+				//g_enemies[i].animationStep = (g_enemies[i].animationStep+1)%MAX_DANCE;
+			}*/
+			g_enemies[i].direction += 1;
+			if (g_enemies[i].direction >= 6) {
+				j=(j+1)%128;
+			}
+			if (g_enemies[i].direction >= 24) {
+				g_enemies[i].direction = g_enemies[i].direction%24;
+				//g_enemies[i].stat = HIT;
+				//g_enemies[i].animationStep = 0;
 			}
 		}
-		Delay(1000000);
+		RIT128x96x4ImageDraw(g_frame, 0, 0, 128, 96);
 	}
 }

@@ -14,7 +14,7 @@
 
 void SysTick_Handler(void) {
 	GPIO_PORTG_DATA_R ^= 0x04;
-	RIT128x96x4ImageDraw(g_frame, 0, 0, 128, 96);
+	//RIT128x96x4ImageDraw(g_frame, 0, 0, 128, 96);
 }
 
 void SysTick_IntEnable(void) {

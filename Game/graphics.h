@@ -16,7 +16,7 @@ void DrawImage(unsigned char* data, unsigned int x,
 void RotateImage(unsigned char* data, unsigned int x, 
 									unsigned int y, unsigned int width, 
 									unsigned int height, unsigned int angle,
-									unsigned int scale);
+									signed int scale);
 void DrawImageFast(unsigned char* data, unsigned int x, 
 										unsigned int y, unsigned int width, 
 										unsigned int height);

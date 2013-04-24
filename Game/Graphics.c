@@ -8,8 +8,8 @@ unsigned char g_frame[6144];
 typedef struct { 
 	char x,y;
 } Point;
-int sinarr[24] = {0, 33, 64, 91, 111, 124, 128, 124, 111, 91, 64, 33, 0, -33, -64, -91, -111, -124, -128, -124, -111, -91, -64, -33};
-int cosarr[24] = {128, 124, 111, 91, 64, 33, 0, -33, -64, -91, -111, -124, -128, -124, -111, -91, -64, -33, 0, 33, 64, 91, 111, 124};
+signed int sinarr[24] = {0, 33, 64, 91, 111, 124, 128, 124, 111, 91, 64, 33, 0, -33, -64, -91, -111, -124, -128, -124, -111, -91, -64, -33};
+signed int cosarr[24] = {128, 124, 111, 91, 64, 33, 0, -33, -64, -91, -111, -124, -128, -124, -111, -91, -64, -33, 0, 33, 64, 91, 111, 124};
 
 
 void ClearScreen(void) {
@@ -116,24 +116,24 @@ void DrawImageFast(unsigned char* data, unsigned int x,
 
 void RotateImage(unsigned char* data, unsigned int x, 
 								unsigned int y, unsigned int width, 
-								unsigned int height, unsigned int angle, unsigned int scale)
+								unsigned int height, unsigned int angle, signed int scale)
 {
 	int i,j; 
 	int newI, newJ, newI2, newJ2;
 	int newM;
 	int centerX = width/2;
 	int centerY = height/2;
-	int mat11 = 128*scale*cosarr[angle]/1024;
-	int mat12 = -128*scale*sinarr[angle]/1024;
-	int mat21 = 128*scale*sinarr[angle]/1024;
-	int mat22 = 128*scale*cosarr[angle]/1024;
+	signed int mat11 = (cosarr[angle%24])/8;
+	signed int mat21 = (sinarr[angle%24])/8;
+	signed int mat12 = -mat21;
+	signed int mat22 = mat11;
 	for (j = 0; j < height; j++) {
 		for (i = 0; i < width/2; i++) {
 			
-			newI = centerX + (mat11*(i*2 - centerX) + mat12*(j - centerY))/128;
-			newI2 = centerX + (mat11*(i*2 + 1 - centerX) + mat12*(j - centerY))/128;
-			newJ = centerY + (mat21*(i*2 - centerX) + mat22*(j - centerY))/128;
-			newJ2 = centerY + (mat21*(i*2 + 1 - centerX) + mat22*(j - centerY))/128;
+			newI = centerX + scale*(mat11*(i*2 - centerX) + mat12*(j - centerY))/128;
+			newI2 = centerX + scale*(mat11*(i*2 + 1 - centerX) + mat12*(j - centerY))/128;
+			newJ = centerY + scale*(mat21*(i*2 - centerX) + mat22*(j - centerY))/128;
+			newJ2 = centerY + scale*(mat21*(i*2 + 1 - centerX) + mat22*(j - centerY))/128;
 			
 			newM = (data[j*width/2+i]&0xF0)/16;
 			SetPixel(newI + x, newJ + y, newM);
