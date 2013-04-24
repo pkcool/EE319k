@@ -441,6 +441,26 @@
               <FileType>1</FileType>
               <FilePath>.\Graphics.c</FilePath>
             </File>
+            <File>
+              <FileName>Input.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Input.c</FilePath>
+            </File>
+            <File>
+              <FileName>Timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>Sound.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Sound.c</FilePath>
+            </File>
+            <File>
+              <FileName>DAC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DAC.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
