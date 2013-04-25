@@ -36,7 +36,7 @@ Delay(unsigned long ulCount){
 int main(void) {
 	int i;
 	PLL_Init();
-	SysTick_Init(50000000/30);
+	SysTick_Init(50000000/8000);
 	
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
 	GPIOPinTypeGPIOInput(GPIO_PORTG_BASE,
