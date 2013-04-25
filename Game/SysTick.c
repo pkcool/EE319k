@@ -1,4 +1,5 @@
 
+#include "drivers/rit128x96x4.h"
 #include "inc/lm3s1968.h"
 #include "inc/hw_types.h"
 #include "globals.h"
@@ -13,14 +14,13 @@
 #define NVIC_ST_CTRL_ENABLE     0x00000001  // Counter mode
 #define NVIC_ST_RELOAD_M        0x00FFFFFF  // Counter load value
 
-void (*SysTickTask)(void);
-
 void SysTick_Handler(void) {
-	(*SysTickTask)();
-}
-
-void SysTickInterrupt(void(*task)(void)) {
-	SysTickTask = task;
+	if (HWREGBITW(&g_flags, FLAG_BUFFER_READY) == 1) {
+		GPIO_PORTG_DATA_R ^= 0x04;
+		RIT128x96x4ImageDraw(g_frame, 0, 0, 128, 96);
+		ClearScreen();
+		HWREGBITW(&g_flags, FLAG_BUFFER_READY) = 0;
+	}
 }
 
 void SysTick_IntEnable(void) {

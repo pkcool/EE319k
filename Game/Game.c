@@ -1,14 +1,11 @@
 
 #include "inc/lm3s1968.h"
 #include "inc/hw_types.h"
-#include "drivers/rit128x96x4.h"
 
-#include "graphics.h"
 #include "game.h"
 #include "random.h"
 #include "globals.h"
 #include "timer.h"
-#include "sound.h"
 
 unsigned char g_enemySpritesIdle[MAX_DANCE][50] = {
 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x00, 0x55, 0x00, 0x50, 0x05, 0x00, 0xff, 0x00, 0x50, 0x0a, 0x55, 0x55, 0x55, 0xa0, 0x0a, 0xaa, 0x55, 0xaa, 0xa0, 0x00, 0xa0, 0x55, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
@@ -45,19 +42,7 @@ unsigned char g_bulletSprite[2] = { 0xFF, 0xFF };
 EnemyR g_enemies[MAX_ENEMIES];
 BulletR g_enemyBullets[MAX_ENEMY_BULLETS];
 BulletR g_playerBullets[MAX_PLAYER_BULLETS];
-StarR g_stars[MAX_STARS];
 PlayerR g_player;
-
-unsigned long g_step = 0;
-
-void GraphicsUpdate(void) {
-	if (HWREGBITW(&g_flags, FLAG_BUFFER_READY) == 1) {
-		GPIO_PORTG_DATA_R ^= 0x04;
-		RIT128x96x4ImageDraw(g_frame, 0, 0, 128, 96);
-		ClearScreen();
-		HWREGBITW(&g_flags, FLAG_BUFFER_READY) = 0;
-	}
-}
 
 void GameUpdate(void) {
 	int i;
@@ -74,9 +59,6 @@ void GameUpdate(void) {
 						g_playerBullets[i].stat = B_ALIVE;
 						g_playerBullets[i].xpos = g_player.xpos+g_player.width/2-2;
 						g_playerBullets[i].ypos = g_player.ypos - 2;
-						g_soundArray = g_soundShot;
-						g_soundIndex = 0;
-						g_soundMax = SND_BULLET_LENGTH;
 						break;
 					}
 				}
@@ -109,17 +91,7 @@ void GameUpdate(void) {
 			// collision detections
 		}
 	}
-	for (i = 0; i < MAX_STARS; i++) {
-		if ((g_step%2) == 0) {
-			g_stars[i].ypos++;
-			if (g_stars[i].ypos >= 96) {
-				g_stars[i].xpos	= RandomExtract()%128;
-				g_stars[i].ypos	= 0;
-			}
-		}
-	}
-	g_step++;
-	HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) = 0;
+	g_flags &= ~0x1F;
 }
 
 void GameInit(void) {
@@ -148,10 +120,6 @@ void GameInit(void) {
 		g_enemyBullets[y].ypos = 0;
 		g_enemyBullets[y].stat = B_DEAD;
 	}
-	for (y = 0; y < MAX_STARS; y++) {
-		g_stars[y].xpos = RandomExtract()%128;
-		g_stars[y].ypos = RandomExtract()%96;
-	}
 	g_player.xpos = 128/2-12/2;
 	g_player.ypos = 96-14-4;
 	g_player.width = 12;
@@ -161,7 +129,6 @@ void GameInit(void) {
 	g_player.shield = 0;
 	g_player.health = 2;
 	g_player.stat = P_ALIVE;
-	Timer0AInit(*GraphicsUpdate, 1000000/30);
 	Timer1AInit(*GameUpdate, 1000000/100);
 }
 
