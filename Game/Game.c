@@ -45,7 +45,10 @@ unsigned char g_bulletSprite[2] = { 0xFF, 0xFF };
 EnemyR g_enemies[MAX_ENEMIES];
 BulletR g_enemyBullets[MAX_ENEMY_BULLETS];
 BulletR g_playerBullets[MAX_PLAYER_BULLETS];
+StarR g_stars[MAX_STARS];
 PlayerR g_player;
+
+unsigned long g_step = 0;
 
 void GraphicsUpdate(void) {
 	if (HWREGBITW(&g_flags, FLAG_BUFFER_READY) == 1) {
@@ -106,6 +109,16 @@ void GameUpdate(void) {
 			// collision detections
 		}
 	}
+	for (i = 0; i < MAX_STARS; i++) {
+		if ((g_step%2) == 0) {
+			g_stars[i].ypos++;
+			if (g_stars[i].ypos >= 96) {
+				g_stars[i].xpos	= RandomExtract()%128;
+				g_stars[i].ypos	= 0;
+			}
+		}
+	}
+	g_step++;
 	HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) = 0;
 }
 
@@ -134,6 +147,10 @@ void GameInit(void) {
 		g_enemyBullets[y].xpos = 0;
 		g_enemyBullets[y].ypos = 0;
 		g_enemyBullets[y].stat = B_DEAD;
+	}
+	for (y = 0; y < MAX_STARS; y++) {
+		g_stars[y].xpos = RandomExtract()%128;
+		g_stars[y].ypos = RandomExtract()%96;
 	}
 	g_player.xpos = 128/2-12/2;
 	g_player.ypos = 96-14-4;
