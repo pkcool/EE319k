@@ -16,7 +16,7 @@ void Timer0AInit(void(*task)(void), unsigned short period) {
   TIMER0_TAPR_R = 49;																	// 5) 1us timer0A
   TIMER0_ICR_R = 0x00000001;													// 6) clear timer0A timeout flag
   TIMER0_IMR_R |= 0x00000001;													// 7) arm timeout interrupt
-  NVIC_PRI4_R = (NVIC_PRI4_R&0x00FFFFFF)|0x40000000;	// 8) priority 2
+  NVIC_PRI4_R = (NVIC_PRI4_R&0x00FFFFFF)|0xE0000000;	// 8) priority 7
   NVIC_EN0_R |= NVIC_EN0_INT19;												// 9) enable interrupt 19 in NVIC
   TIMER0_CTL_R |= TIMER_CTL_TAEN;											// 10) enable timer0A
 }
@@ -31,7 +31,7 @@ void Timer1AInit(void(*task)(void), unsigned short period) {
   TIMER1_TAPR_R = 49;																	// 5) 1us timer1A
   TIMER1_ICR_R = 0x00000001;													// 6) clear timer0A timeout flag
   TIMER1_IMR_R |= 0x00000001;													// 7) arm timeout interrupt
-  NVIC_PRI4_R = (NVIC_PRI5_R&0xFFFFFF00)|0x00000060;	// 8) priority 3
+  NVIC_PRI4_R = (NVIC_PRI5_R&0xFFFFFF00)|0x00000020;	// 8) priority 1
   NVIC_EN0_R |= NVIC_EN0_INT21;												// 9) enable interrupt 19 in NVIC
   TIMER1_CTL_R |= TIMER_CTL_TAEN;											// 10) enable timer1A
 }

@@ -7,6 +7,7 @@
 #define MAX_ENEMIES						12
 #define MAX_ENEMY_BULLETS			16
 #define MAX_PLAYER_BULLETS		1
+#define MAX_STARS							40
 
 typedef enum {
 	E_ALIVE,													// self explanatory
@@ -51,6 +52,10 @@ typedef struct {
 	BulletStat stat;								// used for game state
 } BulletR;
 
+typedef struct {
+	unsigned char xpos, ypos;				// x and y
+} StarR;
+
 extern unsigned char g_enemySpritesIdle[MAX_DANCE][50];
 extern unsigned char g_explosionSprites[MAX_EXPLOSION][196];
 extern unsigned char g_playerSprites[2][168];
@@ -60,6 +65,7 @@ extern unsigned char g_bulletSprite[2];
 extern EnemyR g_enemies[MAX_ENEMIES];
 extern BulletR g_enemyBullets[MAX_ENEMY_BULLETS];
 extern BulletR g_playerBullets[MAX_PLAYER_BULLETS];
+extern StarR g_stars[MAX_STARS];
 extern PlayerR g_player;
 
 void GameInit(void);

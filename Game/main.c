@@ -62,6 +62,19 @@ int main(void) {
 	while (1) {
 		while (HWREGBITW(&g_flags, FLAG_BUFFER_READY) == 1) { }
 		sc = StartCritical();
+		for (i = 0; i < MAX_STARS; i++) {
+			SetPixel(g_stars[i].xpos, g_stars[i].ypos, 2+(RandomExtract()%10)); 
+		}
+		for (i = 0; i < MAX_ENEMY_BULLETS; i++) {
+			if (g_enemyBullets[i].stat == B_ALIVE) {
+					DrawImage(g_bulletSprite, g_enemyBullets[i].xpos, g_enemyBullets[i].ypos, 2, 2);
+			}
+		}
+		for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
+			if (g_playerBullets[i].stat == B_ALIVE) {
+					DrawImage(g_bulletSprite, g_playerBullets[i].xpos, g_playerBullets[i].ypos, 2, 2);
+			}
+		}
 		for (i = 0; i < MAX_ENEMIES; i++) {
 			switch (g_enemies[i].stat) {
 				case E_ALIVE:
@@ -80,16 +93,6 @@ int main(void) {
 					break;
 				case E_DEAD:
 					break;
-			}
-		}
-		for (i = 0; i < MAX_ENEMY_BULLETS; i++) {
-			if (g_enemyBullets[i].stat == B_ALIVE) {
-					DrawImage(g_bulletSprite, g_enemyBullets[i].xpos, g_enemyBullets[i].ypos, 2, 2);
-			}
-		}
-		for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
-			if (g_playerBullets[i].stat == B_ALIVE) {
-					DrawImage(g_bulletSprite, g_playerBullets[i].xpos, g_playerBullets[i].ypos, 2, 2);
 			}
 		}
 		switch (g_player.stat) {
