@@ -1,11 +1,14 @@
 
 #include "inc/lm3s1968.h"
 #include "inc/hw_types.h"
+#include "drivers/rit128x96x4.h"
 
+#include "graphics.h"
 #include "game.h"
 #include "random.h"
 #include "globals.h"
 #include "timer.h"
+#include "sound.h"
 
 unsigned char g_enemySpritesIdle[MAX_DANCE][50] = {
 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x00, 0x55, 0x00, 0x50, 0x05, 0x00, 0xff, 0x00, 0x50, 0x0a, 0x55, 0x55, 0x55, 0xa0, 0x0a, 0xaa, 0x55, 0xaa, 0xa0, 0x00, 0xa0, 0x55, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
@@ -44,6 +47,15 @@ BulletR g_enemyBullets[MAX_ENEMY_BULLETS];
 BulletR g_playerBullets[MAX_PLAYER_BULLETS];
 PlayerR g_player;
 
+void GraphicsUpdate(void) {
+	if (HWREGBITW(&g_flags, FLAG_BUFFER_READY) == 1) {
+		GPIO_PORTG_DATA_R ^= 0x04;
+		RIT128x96x4ImageDraw(g_frame, 0, 0, 128, 96);
+		ClearScreen();
+		HWREGBITW(&g_flags, FLAG_BUFFER_READY) = 0;
+	}
+}
+
 void GameUpdate(void) {
 	int i;
 	switch(g_player.stat) {
@@ -59,6 +71,9 @@ void GameUpdate(void) {
 						g_playerBullets[i].stat = B_ALIVE;
 						g_playerBullets[i].xpos = g_player.xpos+g_player.width/2-2;
 						g_playerBullets[i].ypos = g_player.ypos - 2;
+						g_soundArray = g_soundShot;
+						g_soundIndex = 0;
+						g_soundMax = SND_BULLET_LENGTH;
 						break;
 					}
 				}
@@ -91,7 +106,7 @@ void GameUpdate(void) {
 			// collision detections
 		}
 	}
-	g_flags &= ~0x1F;
+	HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) = 0;
 }
 
 void GameInit(void) {
@@ -129,6 +144,7 @@ void GameInit(void) {
 	g_player.shield = 0;
 	g_player.health = 2;
 	g_player.stat = P_ALIVE;
+	Timer0AInit(*GraphicsUpdate, 1000000/30);
 	Timer1AInit(*GameUpdate, 1000000/100);
 }
 
