@@ -5,8 +5,8 @@
 #define MAX_DANCE							6
 #define MAX_EXPLOSION					5
 #define MAX_ENEMIES						12
-#define MAX_ENEMY_BULLETS			16
-#define MAX_PLAYER_BULLETS		1
+#define MAX_ENEMY_BULLETS			8
+#define MAX_PLAYER_BULLETS		2
 #define MAX_STARS							40
 
 typedef enum {
@@ -36,6 +36,7 @@ typedef struct {
 	char animationStep;							// used for stepping through dance/explosion (please be nice and set to 0 if you're about to explode
 	char health;										// number of hits before death (decremented on each hit)
 	unsigned char row, col;
+	unsigned char flock;
 	EnemyStat stat;									// used for game state
 } EnemyR;
 

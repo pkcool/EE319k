@@ -110,14 +110,14 @@ void GameUpdate(void) {
 				if ((g_player.stat == P_ALIVE) && (RandomExtract()%50 == 42)) {
 					switch (g_enemies[i].row) {
 						case 0:
-							if ((g_enemies[(g_enemies[i].row+2)*4+g_enemies[i].col].stat == E_ALIVE) &&
-							(g_enemies[(g_enemies[i].row+1)*4+g_enemies[i].col].stat == E_ALIVE)) {
-								break;
-							}
+							//if ((g_enemies[(g_enemies[i].row+2)*4+g_enemies[i].col].stat == E_ALIVE) &&
+							//(g_enemies[(g_enemies[i].row+1)*4+g_enemies[i].col].stat == E_ALIVE)) {
+							//	break;
+							//}
 						case 1:
-							if (g_enemies[(g_enemies[i].row+1)*4+g_enemies[i].col].stat == E_ALIVE) {
-								break;
-							}
+							//if (g_enemies[(g_enemies[i].row+1)*4+g_enemies[i].col].stat == E_ALIVE) {
+							//	break;
+							//}
 						case 2:
 							if (((g_enemies[i].xpos - g_player.xpos) <= g_player.width + 16) && 
 							((g_enemies[i].xpos + 2 - g_player.xpos) > 0 - 16)) {
@@ -131,6 +131,14 @@ void GameUpdate(void) {
 								}
 							}
 					}
+				}
+				
+				//	NAIVE MOVEMENT ALGORITHM
+				if ((g_step%16) == 0) {
+					g_enemies[i].xpos += g_enemies[i].flock;
+				}
+				if ((g_step%128) == 0) {
+					g_enemies[i].flock = -g_enemies[i].flock;
 				}
 					
 				/*	HARD MODE SHOOTING ALGORITHM :D
@@ -253,6 +261,7 @@ void GameInit(void) {
 			g_enemies[y*4+x].height = 10;
 			g_enemies[y*4+x].col = x;
 			g_enemies[y*4+x].row = y;
+			g_enemies[y*4+x].flock = ((y%2)==0) ? 1 : -1;
 			g_enemies[y*4+x].direction = 0;
 			g_enemies[y*4+x].animationStep = 0;
 			g_enemies[y*4+x].health = 1;
