@@ -1,6 +1,4 @@
 
-#include <stdio.h>
-
 #include "drivers/rit128x96x4.h"
 #include "inc/lm3s1968.h"
 #include "inc/hw_types.h"
@@ -36,7 +34,7 @@ Delay(unsigned long ulCount){
 int main(void) {
 	int i;
 	PLL_Init();
-	SysTick_Init(1000000/30);
+	SysTick_Init(50000000/30);
 	
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
 	GPIOPinTypeGPIOInput(GPIO_PORTG_BASE,
@@ -59,6 +57,10 @@ int main(void) {
 	RandomInit(NVIC_ST_CURRENT_R);
 	RandomGenerate();
 	GameInit();
+	HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) = 0;
+	g_soundArray = &g_soundTheme;
+	g_soundIndex = 0;
+	g_soundMax = SND_THEME_LENGTH;
 	while (1) {
 		while (HWREGBITW(&g_flags, FLAG_BUFFER_READY) == 1) { }
 		sc = StartCritical();
