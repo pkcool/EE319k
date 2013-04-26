@@ -7,6 +7,7 @@
 #include "random.h"
 #include "globals.h"
 #include "timer.h"
+#include <math.h>
 
 unsigned char g_enemySpritesIdle[MAX_DANCE][50] = {
 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x00, 0x55, 0x00, 0x50, 0x05, 0x00, 0xff, 0x00, 0x50, 0x0a, 0x55, 0x55, 0x55, 0xa0, 0x0a, 0xaa, 0x55, 0xaa, 0xa0, 0x00, 0xa0, 0x55, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
@@ -49,7 +50,8 @@ PlayerR g_player;
 unsigned long g_step = 0;
 
 void GameUpdate(void) {
-	int i;
+	int i, j;
+	double distance;
 	switch(g_player.stat) {
 		case P_ALIVE:
 			if ((GPIO_PORTG_DATA_R&0x20) == 0) {
@@ -78,15 +80,66 @@ void GameUpdate(void) {
 			break;
 	}
 	for (i = 0; i < MAX_ENEMIES; i++) {
+		if (RandomExtract()%2048 == 1) {
+			for (j = 0; j < MAX_ENEMY_BULLETS;  j++) {
+				if (g_enemyBullets[j].stat == B_DEAD) {
+					g_enemyBullets[j].stat = B_ALIVE;
+					g_enemyBullets[j].xpos = g_enemies[j].xpos+g_enemies[i].width/2-2;
+					g_enemyBullets[j].ypos = g_enemies[i].ypos - 4;
+					// make the bullet go towards the player:
+					g_enemyBullets[j].xpos0 = g_enemyBullets[j].xpos;
+					g_enemyBullets[j].ypos0 = g_enemyBullets[j].ypos;
+					g_enemyBullets[j].xpos1 = g_player.xpos;
+					g_enemyBullets[j].ypos1 = g_player.ypos;
+					g_enemyBullets[j].xposA = g_enemyBullets[j].xpos;
+					g_enemyBullets[j].yposA = g_enemyBullets[j].ypos;					
+					g_enemyBullets[j].xposI = (g_enemyBullets[j].xpos1 - g_enemyBullets[j].xpos0);
+					g_enemyBullets[j].yposI = (g_enemyBullets[j].ypos1 - g_enemyBullets[j].ypos0);
+					distance = sqrt((g_enemyBullets[j].xposI)^2 + (g_enemyBullets[j].yposI)^2);
+					g_enemyBullets[j].xposI = (g_enemyBullets[j].xposI * 8) / distance;
+					g_enemyBullets[j].yposI = (g_enemyBullets[j].yposI * 8) / distance;
+					break;
+				}
+			}		 
+		}
+		for (j = 0; j < MAX_PLAYER_BULLETS; j++) {
+			if ((g_playerBullets[j].xpos - g_enemies[i].xpos) <= g_enemies[i].width) {
+					if (g_enemies[i].xpos0 <= g_enemies[i].xpos) {
+						if (g_enemies[i].ypos0 > g_enemies[j].ypos) {
+							g_enemies[i].xpos--;
+							g_enemies[i].ypos++;
+						} else {
+							g_enemies[i].xpos--;
+							g_enemies[i].ypos--;
+						}
+					} else {
+						if (g_enemies[i].ypos0 > g_enemies[j].ypos) {
+							g_enemies[i].xpos++;
+							g_enemies[i].ypos++;
+						} else {
+							g_enemies[i].xpos++;
+							g_enemies[i].ypos--;
+						}
+					}
+			}
+		}
 		// enemy code
 	}
 	for (i = 0; i < MAX_ENEMY_BULLETS; i++) {
 		if (g_enemyBullets[i].stat == B_ALIVE) {
-				g_enemyBullets[i].ypos+=2;
-				if (g_enemyBullets[i].ypos >= 96) {
+//				g_enemyBullets[i].ypos+=2;
+			g_enemyBullets[i].xposA += g_enemyBullets[i].xposI;
+			g_enemyBullets[i].yposA += g_enemyBullets[i].yposI;
+			g_enemyBullets[i].xpos = g_enemyBullets[i].xposA / 8;
+			g_enemyBullets[i].ypos = g_enemyBullets[i].yposA / 8;
+			
+			if (g_enemyBullets[i].ypos >= 96) {
 					g_enemyBullets[i].stat = B_DEAD;
 				}
-				// collision detections
+				if (((g_enemyBullets[i].xpos - g_player.xpos) <= g_player.width) && ((g_player.ypos - g_enemyBullets[i].ypos) <= g_player.height)) {
+					g_player.health--;
+					g_enemyBullets[i].stat = B_DEAD;
+				}
 		}
 	}
 	for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
@@ -95,7 +148,12 @@ void GameUpdate(void) {
 			if (g_playerBullets[i].ypos >= 96) {
 				g_playerBullets[i].stat = B_DEAD;
 			}
-			// collision detections
+			for (j = 0; j < MAX_ENEMIES; j++) {
+				if (((g_playerBullets[i].xpos - g_enemies[j].xpos) <= g_enemies[j].width) && ((g_enemies[j].ypos - g_playerBullets[i].ypos) <= g_enemies[j].height)) {
+					g_enemies[j].health--;
+					g_playerBullets[i].stat = B_DEAD;
+				}
+			}
 		}
 	}
 	for (i = 0; i < MAX_STARS; i++) {
@@ -135,7 +193,15 @@ void GameInit(void) {
 	for (y = 0; y < MAX_ENEMY_BULLETS; y++) {
 		g_enemyBullets[y].xpos = 0;
 		g_enemyBullets[y].ypos = 0;
+		g_enemyBullets[y].xposA = 0;
+		g_enemyBullets[y].yposA = 0;
+		g_enemyBullets[y].xposI = 0;
+		g_enemyBullets[y].yposI = 0;
 		g_enemyBullets[y].stat = B_DEAD;
+		g_enemyBullets[y].xpos0 = 0;
+		g_enemyBullets[y].ypos0 = 0;
+		g_enemyBullets[y].xpos1 = 0;
+		g_enemyBullets[y].ypos1 = 0;
 	}
 	for (y = 0; y < MAX_STARS; y++) {
 		g_stars[y].xpos = RandomExtract()%128;

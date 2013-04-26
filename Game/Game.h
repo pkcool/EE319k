@@ -50,7 +50,11 @@ typedef struct {
 
 typedef struct {
 	unsigned char xpos, ypos;				// x and y
+	unsigned int xposA, yposA; 		  // accurate x and y position * 8
+	unsigned char xposI, yposI;			// slope of travel * 8
 	BulletStat stat;								// used for game state
+  unsigned char xpos0, ypos0; 		// used for starting position
+	unsigned char xpos1, ypos1;			// used for destination
 } BulletR;
 
 typedef struct {
