@@ -2,6 +2,7 @@
 #include "inc/lm3s1968.h"
 #include "inc/hw_types.h"
 
+#include "sound.h"
 #include "game.h"
 #include "random.h"
 #include "globals.h"
@@ -62,6 +63,9 @@ void GameUpdate(void) {
 						g_playerBullets[i].stat = B_ALIVE;
 						g_playerBullets[i].xpos = g_player.xpos+g_player.width/2-2;
 						g_playerBullets[i].ypos = g_player.ypos - 2;
+						g_soundArray = g_soundShot;
+						g_soundIndex = 0;
+						g_soundMax = SND_BULLET_LENGTH; 
 						break;
 					}
 				}

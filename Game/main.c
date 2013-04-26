@@ -63,7 +63,7 @@ int main(void) {
 		while (HWREGBITW(&g_flags, FLAG_BUFFER_READY) == 1) { }
 		sc = StartCritical();
 		for (i = 0; i < MAX_STARS; i++) {
-			SetPixel(g_stars[i].xpos, g_stars[i].ypos, 2+(RandomExtract()%10)); 
+			SetPixel(g_stars[i].xpos, g_stars[i].ypos, 2+(RandomExtract()%10));
 		}
 		for (i = 0; i < MAX_ENEMY_BULLETS; i++) {
 			if (g_enemyBullets[i].stat == B_ALIVE) {
@@ -78,9 +78,12 @@ int main(void) {
 		for (i = 0; i < MAX_ENEMIES; i++) {
 			switch (g_enemies[i].stat) {
 				case E_ALIVE:
-					DrawImage(g_enemySpritesIdle[g_enemies[i].animationStep], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
+					DrawImage(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
+					break;
+				case E_FIRE:
+					DrawImage(g_enemySpritesIdle[g_enemies[i].animationStep/8], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
 					g_enemies[i].animationStep++;
-					if (g_enemies[i].animationStep >= MAX_DANCE) {
+					if (g_enemies[i].animationStep >= MAX_DANCE*8) {
 						g_enemies[i].animationStep = 0;
 					}
 					break;

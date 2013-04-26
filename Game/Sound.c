@@ -15,7 +15,7 @@ unsigned long g_soundMax;
 
 void SoundInit(void) {
 	DACInit();
-	Timer0AInit(PlaySound, 50000000/8000);
+	Timer0AInit(PlaySound, 1000000/8000);
 }
 
 void PlaySound(void) {

@@ -11,6 +11,7 @@
 
 typedef enum {
 	E_ALIVE,													// self explanatory
+	E_FIRE,														// we need to dance
 	E_HIT,														// we need to explode
 	E_DEAD,														// self explanatory
 	E_ATTACK													// we need to enter attack sequence
