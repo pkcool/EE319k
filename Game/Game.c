@@ -48,7 +48,7 @@ PlayerR g_player;
 unsigned long g_step = 0;
 
 void GameUpdate(void) {
-	int i;
+	int i, j;
 	switch(g_player.stat) {
 		case P_ALIVE:
 			if ((GPIO_PORTG_DATA_R&0x20) == 0) {
@@ -74,6 +74,16 @@ void GameUpdate(void) {
 			break;
 	}
 	for (i = 0; i < MAX_ENEMIES; i++) {
+		if (RandomExtract()%2048 == 1) {
+			for (j = 0; j < MAX_ENEMY_BULLETS; j++) {
+				if (g_enemyBullets[j].stat == B_DEAD) {
+					g_enemyBullets[j].stat = B_ALIVE;
+					g_enemyBullets[j].xpos = g_enemies[j].xpos+g_enemies[i].width/2-2;
+					g_enemyBullets[j].ypos = g_enemies[i].ypos - 4;
+					break;
+				}
+			}			
+		}
 		// enemy code
 	}
 	for (i = 0; i < MAX_ENEMY_BULLETS; i++) {
@@ -82,7 +92,10 @@ void GameUpdate(void) {
 				if (g_enemyBullets[i].ypos >= 96) {
 					g_enemyBullets[i].stat = B_DEAD;
 				}
-				// collision detections
+				if (((g_enemyBullets[i].xpos - g_player.xpos) <= g_player.width) && ((g_player.ypos - g_enemyBullets[i].ypos) <= g_player.height)) {
+					g_player.health--;
+					g_enemyBullets[i].stat = B_DEAD;
+				}
 		}
 	}
 	for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
@@ -91,7 +104,12 @@ void GameUpdate(void) {
 			if (g_playerBullets[i].ypos >= 96) {
 				g_playerBullets[i].stat = B_DEAD;
 			}
-			// collision detections
+			for (j = 0; j < MAX_ENEMIES; j++) {
+				if (((g_playerBullets[i].xpos - g_enemies[j].xpos) <= g_enemies[j].width) && ((g_enemies[j].ypos - g_playerBullets[i].ypos) <= g_enemies[j].height)) {
+					g_enemies[j].health--;
+					g_playerBullets[i].stat = B_DEAD;
+				}
+			}
 		}
 	}
 	for (i = 0; i < MAX_STARS; i++) {
