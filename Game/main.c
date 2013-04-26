@@ -59,6 +59,7 @@ int main(void) {
 	RandomInit(NVIC_ST_CURRENT_R);
 	RandomGenerate();
 	GameInit();
+	HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) = 0;
 	while (1) {
 		while (HWREGBITW(&g_flags, FLAG_BUFFER_READY) == 1) { }
 		sc = StartCritical();

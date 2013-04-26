@@ -60,10 +60,20 @@ void GameUpdate(void) {
 				break;
 			}
 			if ((GPIO_PORTG_DATA_R&0x20) == 0) {
+				if ((g_soundArray == 0) || (g_soundIndex > SND_MOVE_LENGTH/2)) {
+					g_soundArray = &g_soundMove;
+					g_soundIndex = 0;
+					g_soundMax = SND_MOVE_LENGTH; 
+				}
 				if (g_player.xpos > 0) {
 					g_player.xpos--;
 				}
 			} else if ((GPIO_PORTG_DATA_R&0x40) == 0) {
+				if ((g_soundArray == 0) || (g_soundIndex > SND_MOVE_LENGTH/2)) {
+					g_soundArray = &g_soundMove;
+					g_soundIndex = 0;
+					g_soundMax = SND_MOVE_LENGTH; 
+				}
 				if (g_player.xpos < 127) {
 					g_player.xpos++;
 				}
@@ -74,7 +84,7 @@ void GameUpdate(void) {
 						g_playerBullets[i].stat = B_ALIVE;
 						g_playerBullets[i].xpos = g_player.xpos+g_player.width/2-2;
 						g_playerBullets[i].ypos = g_player.ypos - 2;
-						g_soundArray = g_soundShot;
+						g_soundArray = &g_soundBullet;
 						g_soundIndex = 0;
 						g_soundMax = SND_BULLET_LENGTH; 
 						break;
@@ -109,8 +119,8 @@ void GameUpdate(void) {
 								break;
 							}
 						case 2:
-							if (((g_enemies[i].xpos - g_player.xpos) <= g_player.width + 8) && 
-							((g_enemies[i].xpos + 2 - g_player.xpos) > 0 - 8)) {
+							if (((g_enemies[i].xpos - g_player.xpos) <= g_player.width + 16) && 
+							((g_enemies[i].xpos + 2 - g_player.xpos) > 0 - 16)) {
 								for (j = 0; j < MAX_ENEMY_BULLETS;  j++) {
 									if (g_enemyBullets[j].stat == B_DEAD) {
 										g_enemyBullets[j].stat = B_ALIVE;
