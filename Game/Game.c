@@ -109,8 +109,8 @@ void GameUpdate(void) {
 								break;
 							}
 						case 2:
-							if (((g_enemies[i].xpos - g_player.xpos) <= g_player.width + 4) && 
-							((g_enemies[i].xpos + 2 - g_player.xpos) > 0 - 4)) {
+							if (((g_enemies[i].xpos - g_player.xpos) <= g_player.width + 8) && 
+							((g_enemies[i].xpos + 2 - g_player.xpos) > 0 - 8)) {
 								for (j = 0; j < MAX_ENEMY_BULLETS;  j++) {
 									if (g_enemyBullets[j].stat == B_DEAD) {
 										g_enemyBullets[j].stat = B_ALIVE;
@@ -186,7 +186,7 @@ void GameUpdate(void) {
 			g_enemyBullets[i].xpos = g_enemyBullets[i].xposA / 8;
 			g_enemyBullets[i].ypos = g_enemyBullets[i].yposA / 8;
 			*/
-			g_enemyBullets[i].ypos++;
+			g_enemyBullets[i].ypos+=2;
 			if (g_enemyBullets[i].ypos >= 96) {
 				g_enemyBullets[i].stat = B_DEAD;
 			}
