@@ -82,7 +82,28 @@ void GameUpdate(void) {
 					g_enemyBullets[j].ypos = g_enemies[i].ypos - 4;
 					break;
 				}
-			}			
+			}		 
+		}
+		for (j = 0; j < MAX_PLAYER_BULLETS; j++) {
+			if ((g_playerBullets[j].xpos - g_enemies[i].xpos) <= g_enemies[i].width) {
+					if (g_enemies[i].xpos0 <= g_enemies[i].xpos) {
+						if (g_enemies[i].ypos0 > g_enemies[j].ypos) {
+							g_enemies[i].xpos--;
+							g_enemies[i].ypos++;
+						} else {
+							g_enemies[i].xpos--;
+							g_enemies[i].ypos--;
+						}
+					} else {
+						if (g_enemies[i].ypos0 > g_enemies[j].ypos) {
+							g_enemies[i].xpos++;
+							g_enemies[i].ypos++;
+						} else {
+							g_enemies[i].xpos++;
+							g_enemies[i].ypos--;
+						}
+					}
+			}
 		}
 		// enemy code
 	}
