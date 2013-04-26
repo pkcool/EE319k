@@ -67,30 +67,31 @@ int main(void) {
 		}
 		for (i = 0; i < MAX_ENEMY_BULLETS; i++) {
 			if (g_enemyBullets[i].stat == B_ALIVE) {
-					DrawImage(g_bulletSprite, g_enemyBullets[i].xpos, g_enemyBullets[i].ypos, 2, 2);
+					DrawImageFast(g_bulletSprite, g_enemyBullets[i].xpos, g_enemyBullets[i].ypos, 2, 2);
 			}
 		}
 		for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
 			if (g_playerBullets[i].stat == B_ALIVE) {
-					DrawImage(g_bulletSprite, g_playerBullets[i].xpos, g_playerBullets[i].ypos, 2, 2);
+					DrawImageFast(g_bulletSprite, g_playerBullets[i].xpos, g_playerBullets[i].ypos, 2, 2);
 			}
 		}
 		for (i = 0; i < MAX_ENEMIES; i++) {
 			switch (g_enemies[i].stat) {
 				case E_ALIVE:
-					DrawImage(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
+					DrawImageFast(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
 					break;
 				case E_FIRE:
-					DrawImage(g_enemySpritesIdle[g_enemies[i].animationStep/8], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
+					DrawImageFast(g_enemySpritesIdle[g_enemies[i].animationStep/8], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
 					g_enemies[i].animationStep++;
-					if (g_enemies[i].animationStep >= MAX_DANCE*8) {
+					if (g_enemies[i].animationStep > MAX_DANCE*8) {
 						g_enemies[i].animationStep = 0;
 					}
 					break;
 				case E_HIT:
-					DrawImage(g_explosionSprites[g_enemies[i].animationStep], g_enemies[i].xpos, g_enemies[i].ypos, 14, 14);
-					g_enemies[i].animationStep++;
-					if (g_enemies[i].animationStep >= MAX_EXPLOSION) {
+					if (g_enemies[i].animationStep/4 < MAX_EXPLOSION) {
+						DrawImageFast(g_explosionSprites[g_enemies[i].animationStep/4], g_enemies[i].xpos, g_enemies[i].ypos, 14, 14);
+						g_enemies[i].animationStep++;
+					} else {
 						g_enemies[i].stat = E_DEAD;
 					}
 					break;
@@ -100,12 +101,13 @@ int main(void) {
 		}
 		switch (g_player.stat) {
 			case P_ALIVE:
-				DrawImage(g_playerSprites[g_player.shield], g_player.xpos, g_player.ypos, g_player.width, g_player.height);
+				DrawImageFast(g_playerSprites[g_player.shield], g_player.xpos, g_player.ypos, g_player.width, g_player.height);
 				break;
 			case P_HIT:
-				DrawImage(g_playerExplosionSprites[g_player.animationStep], g_player.xpos, g_player.ypos, 14, 14);
-				g_player.animationStep++;
-				if (g_player.animationStep >= MAX_EXPLOSION) {
+				if (g_player.animationStep/4 < MAX_EXPLOSION) {
+					DrawImageFast(g_playerExplosionSprites[g_player.animationStep/4], g_player.xpos - g_player.width/2 - 26/27, g_player.ypos + g_player.height/2 - 28/2, 26, 28);
+					g_player.animationStep++;
+				} else {
 					g_player.stat = P_DEAD;
 				}
 				break;

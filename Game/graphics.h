@@ -5,20 +5,20 @@
 extern unsigned char g_frame[6144];
 
 void ClearScreen(void);
-void SetPixel(unsigned int x, unsigned int y, 
+void SetPixel(signed int x, signed int y, 
 							unsigned char data);
-void DrawLine(unsigned int x0, unsigned int y0, 
-		unsigned int x1, unsigned int y1,
+void DrawLine(signed int x0, signed int y0, 
+		signed int x1, signed int y1,
 		unsigned char color);
-void DrawImage(unsigned char* data, unsigned int x, 
-								unsigned int y, unsigned int width, 
+void DrawImage(unsigned char* data, signed int x, 
+								signed int y, unsigned int width, 
 								unsigned int height);
-void RotateImage(unsigned char* data, unsigned int x, 
-									unsigned int y, unsigned int width, 
+void RotateImage(unsigned char* data, signed int x, 
+									signed int y, unsigned int width, 
 									unsigned int height, unsigned int angle,
 									signed int scale);
-void DrawImageFast(unsigned char* data, unsigned int x, 
-										unsigned int y, unsigned int width, 
+void DrawImageFast(unsigned char* data, signed int x, 
+										signed int y, unsigned int width, 
 										unsigned int height);
 
 #endif // __GRAPHICS_H__

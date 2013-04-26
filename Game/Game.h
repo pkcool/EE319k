@@ -29,17 +29,18 @@ typedef enum {
 } BulletStat;
 
 typedef struct {
-	unsigned char xpos0, ypos0;			// initial x and y (in case we need to return)
-	unsigned char xpos, ypos;				// current x and y
+	signed char xpos0, ypos0;			// initial x and y (in case we need to return)
+	signed char xpos, ypos;				// current x and y
 	unsigned char width, height;		// width and height of sprite in pixels (10x10)
 	int direction;									// angle (angle = 15*direction)
 	char animationStep;							// used for stepping through dance/explosion (please be nice and set to 0 if you're about to explode
 	char health;										// number of hits before death (decremented on each hit)
+	unsigned char row, col;
 	EnemyStat stat;									// used for game state
 } EnemyR;
 
 typedef struct {
-	unsigned char xpos, ypos;				// x and y
+	signed char xpos, ypos;				// x and y
 	unsigned char width, height;		// width and height of sprite in pixels (12x14)
 	int direction;									// angle (angle = 15*direction)
 	char animationStep;							// used for stepping through explosion
@@ -49,16 +50,16 @@ typedef struct {
 } PlayerR;
 
 typedef struct {
-	unsigned char xpos, ypos;				// x and y
-	unsigned int xposA, yposA; 		  // accurate x and y position * 8
-	unsigned char xposI, yposI;			// slope of travel * 8
+	signed char xpos, ypos;				// x and y
+	signed int xposA, yposA; 		  // accurate x and y position * 8
+	signed char xposI, yposI;			// slope of travel * 8
 	BulletStat stat;								// used for game state
-  unsigned char xpos0, ypos0; 		// used for starting position
-	unsigned char xpos1, ypos1;			// used for destination
+  signed char xpos0, ypos0; 		// used for starting position
+	signed char xpos1, ypos1;			// used for destination
 } BulletR;
 
 typedef struct {
-	unsigned char xpos, ypos;				// x and y
+	signed char xpos, ypos;				// x and y
 } StarR;
 
 extern unsigned char g_enemySpritesIdle[MAX_DANCE][50];

@@ -17,4 +17,3 @@ void SoundInit(void);
 void PlaySound(void);
 
 #endif // __SOUND_H__
- 

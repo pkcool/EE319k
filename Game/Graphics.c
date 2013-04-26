@@ -22,10 +22,10 @@ void ClearScreen(void) {
 // set a SINGLE pizel
 // 	sets the pixel corresponding to the x, y location
 // 	to the lower four bits of data
-void SetPixel(unsigned int x, unsigned int y, 
+void SetPixel(signed int x, signed int y, 
 							unsigned char data)
 {
-	if ((x < 128) && (y < 96)) {
+	if ((x >= 0) && (x < 128) && (y >= 0) && (y < 96)) {
 		if ((x%2) == 0) {
 			g_frame[y*64+x/2] &= 0x0F;
 			g_frame[y*64+x/2] |= (data&0x0F) << 4;
@@ -38,8 +38,8 @@ void SetPixel(unsigned int x, unsigned int y,
 
 // draw a line from x0, y0 to x1, y1
 // 	line is NOT antialiased
-void DrawLine(unsigned int x0, unsigned int y0, 
-		unsigned int x1, unsigned int y1,
+void DrawLine(signed int x0, signed int y0, 
+		signed int x1, signed int y1,
 		unsigned char color)
 {
 	signed int tmp, dx, dy, x, y, eps;
@@ -76,8 +76,8 @@ void DrawLine(unsigned int x0, unsigned int y0,
 // draws an image to x, y of width and height
 // 	if any of the nibbles are equal to 0x01
 //  they will be treated as transparent
-void DrawImage(unsigned char* data, unsigned int x, 
-								unsigned int y, unsigned int width, 
+void DrawImage(unsigned char* data, signed int x, 
+								signed int y, unsigned int width, 
 								unsigned int height)
 {
 	int i,j;
@@ -99,14 +99,16 @@ void DrawImage(unsigned char* data, unsigned int x,
 	}
 }
 
-void DrawImageFast(unsigned char* data, unsigned int x, 
-								unsigned int y, unsigned int width, 
+void DrawImageFast(unsigned char* data, signed int x, 
+								signed int y, unsigned int width, 
 								unsigned int height)
 {
 	int i,j;
 	for (j = 0; j < height; j++) {
 		for (i = 0; i < width/2; i++) {
-			g_frame[(j+y)*64+x/2+i] = data[j*width/2+i];
+			if ((x+i >= 0) && (x+i < 128) && (y+j >= 0) && (y+j < 96)) {
+				g_frame[(j+y)*64+x/2+i] = data[j*width/2+i];
+			}
 		}
 	}
 }
@@ -114,8 +116,8 @@ void DrawImageFast(unsigned char* data, unsigned int x,
 
 
 
-void RotateImage(unsigned char* data, unsigned int x, 
-								unsigned int y, unsigned int width, 
+void RotateImage(unsigned char* data, signed int x, 
+								signed int y, unsigned int width, 
 								unsigned int height, unsigned int angle, signed int scale)
 {
 	int i,j; 
