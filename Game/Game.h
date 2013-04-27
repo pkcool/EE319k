@@ -8,6 +8,7 @@
 #define MAX_ENEMY_BULLETS			8
 #define MAX_PLAYER_BULLETS		2
 #define MAX_STARS							40
+#define MAX_LEVELS						5
 
 typedef enum {
 	E_ALIVE,													// self explanatory
@@ -52,11 +53,12 @@ typedef struct {
 
 typedef struct {
 	signed char xpos, ypos;				// x and y
-	signed int xposA, yposA; 		  // accurate x and y position * 8
-	signed char xposI, yposI;			// slope of travel * 8
+	signed int dx1, dx2, dy1, dy2, longest, shortest, numerator, direction;
+	//signed int xposA, yposA; 		  // accurate x and y position * 8
+	//signed char xposI, yposI;			// slope of travel * 8
+  //signed char xpos0, ypos0; 		// used for starting position
+	//signed char xpos1, ypos1;			// used for destination
 	BulletStat stat;								// used for game state
-  signed char xpos0, ypos0; 		// used for starting position
-	signed char xpos1, ypos1;			// used for destination
 } BulletR;
 
 typedef struct {
@@ -75,6 +77,10 @@ extern BulletR g_playerBullets[MAX_PLAYER_BULLETS];
 extern StarR g_stars[MAX_STARS];
 extern PlayerR g_player;
 
+extern void (*EnemyAI[MAX_LEVELS])(EnemyR* enemy);
+
+void BulletTarget(int xpos, int ypos, int xdest, int ydest);
+void EnemyInit(void);
 void GameInit(void);
 
 #endif //__GAME_H__
