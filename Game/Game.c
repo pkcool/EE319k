@@ -95,8 +95,9 @@ void LevelTwo(EnemyR* enemy) {
 	if ((g_step%128) == 0) {
 		(*enemy).flock = -(*enemy).flock;
 	}
+}
 
-	
+void LevelThree(EnemyR* enemy) {
 	/*
 	//	HARD MODE SHOOTING ALGORITHM :D
 	if (RandomExtract()%2048 == 1) {
@@ -144,11 +145,6 @@ void LevelTwo(EnemyR* enemy) {
 		}
 	}
 	*/
-}
-
-void LevelThree(EnemyR* enemy) {
-	
-	
 }
 
 void BulletTarget(int xpos, int ypos, int xdest, int ydest) {
