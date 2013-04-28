@@ -5,7 +5,7 @@
 #define HEIGHT	23
 #define WIDTH		31
 
-#define NOP() do { } while(0);
+#define NOP() __nop(); __nop();
 
 extern volatile unsigned long g_step;
 extern volatile unsigned long g_flags;

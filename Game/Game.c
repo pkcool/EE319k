@@ -52,18 +52,20 @@ void (*EnemyAI[MAX_LEVELS])(EnemyR* enemy);
 unsigned char g_level = 0;
 
 unsigned int rollover = 0;
+unsigned int LEVEL_MAX_BULLETS = 4;
 
 volatile unsigned long g_step = 0;
 
 void LevelOne(EnemyR* enemy) {
 	int j;
+	LEVEL_MAX_BULLETS = 4;
 	//	NAIVE SHOOTING ALGORITHM (for easy AI)
 	//	ONLY SHOOT IF YOU ARE THE FIRST SHIP IN YOUR COLUMN
 	//	AND THE PLAYER IS ALIVE AND RANDOM NUMBER
 	if ((g_player.stat == P_ALIVE) && (RandomExtract()%50 == 42)) {
 		if ((((*enemy).xpos - g_player.xpos) <= g_player.width + 16) && (((*enemy).xpos + 2 - g_player.xpos) > 0 - 16)) {
 			(*enemy).stat = E_FIRE;
-			for (j = 0; j < MAX_ENEMY_BULLETS;  j++) {
+			for (j = 0; j < LEVEL_MAX_BULLETS;  j++) {
 				if (g_enemyBullets[j].stat == B_DEAD) {
 					g_enemyBullets[j].stat = B_ALIVE;
 					g_enemyBullets[j].xpos = (*enemy).xpos+(*enemy).width/2;
@@ -84,12 +86,11 @@ void LevelOne(EnemyR* enemy) {
 }
 
 void LevelTwo(EnemyR* enemy) {
-	
+	LEVEL_MAX_BULLETS = 8;
 	if ((g_player.stat == P_ALIVE) && (RandomExtract()%50 == 42)) {
 		(*enemy).stat = E_FIRE;
 		BulletTarget((*enemy).xpos + (*enemy).width/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
 	}
-	
 	//	NAIVE MOVEMENT ALGORITHM
 	if ((g_step%16) == 0) {
 		(*enemy).xpos += (*enemy).flock;
@@ -100,6 +101,21 @@ void LevelTwo(EnemyR* enemy) {
 }
 
 void LevelThree(EnemyR* enemy) {
+	LEVEL_MAX_BULLETS = 20;
+	if ((g_player.stat == P_ALIVE) && (RandomExtract()%50 == 32)) {
+		(*enemy).stat = E_FIRE;
+		BulletTarget((*enemy).xpos + (*enemy).width/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
+	}
+	//	NAIVE MOVEMENT ALGORITHM
+	if ((g_step%16) == 0) {
+		(*enemy).xpos += (*enemy).flock;
+	}
+	if ((g_step%64) == 0) {
+		(*enemy).flock = -(*enemy).flock;
+	}
+}
+
+void LevelFour(EnemyR* enemy) {
 	/*
 	//	HARD MODE SHOOTING ALGORITHM :D
 	if (RandomExtract()%2048 == 1) {
@@ -151,7 +167,7 @@ void LevelThree(EnemyR* enemy) {
 
 void BulletTarget(int xpos, int ypos, int xdest, int ydest) {
 	int i,tmp;
-	for (i = 0; i < MAX_ENEMY_BULLETS;  i++) {
+	for (i = 0; i < LEVEL_MAX_BULLETS;  i++) {
 		if (g_enemyBullets[i].stat == B_DEAD) {
 			g_enemyBullets[i].stat = B_ALIVE;
 			g_enemyBullets[i].xpos = xpos;
@@ -255,9 +271,13 @@ void GameUpdate(void) {
 	}
 	if (j == 0 && (g_step%400)==0) {
 		EnemyInit();
-		g_level++;
+		g_player.score += 200;
+		g_player.health++;
+		if (g_level < MAX_LEVELS) {
+			g_level++;
+		}
 	}
-	for (i = 0; i < MAX_ENEMY_BULLETS; i++) {
+	for (i = 0; i < LEVEL_MAX_BULLETS; i++) {
 		if (g_enemyBullets[i].stat == B_ALIVE) {
 			
 			//	BULLET DIRECTION
@@ -398,6 +418,8 @@ void GameInit(void) {
 	EnemyAI[0] = LevelOne;
 	EnemyAI[1] = LevelTwo;
 	EnemyAI[2] = LevelThree;
+	EnemyAI[3] = LevelThree;
+	EnemyAI[4] = LevelThree;
 	
 	g_step = 0;
 	g_level = 0;
