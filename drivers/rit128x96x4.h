@@ -26,6 +26,8 @@
 #ifndef __RIT128X96X4_H__
 #define __RIT128X96X4_H__
 
+extern const unsigned char g_pucFont[96][5];
+
 //*****************************************************************************
 //
 // Prototypes for the driver APIs.

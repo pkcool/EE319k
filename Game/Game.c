@@ -214,7 +214,7 @@ void GameUpdate(void) {
 					g_soundIndex = 0;
 					g_soundMax = SND_MOVE_LENGTH; 
 				}
-				if (g_player.xpos < 127) {
+				if (g_player.xpos < (127-g_player.width)) {
 					g_player.xpos++;
 				}
 			}

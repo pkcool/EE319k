@@ -5,6 +5,7 @@
 #include <math.h>
 
 unsigned char g_frame[6144];
+unsigned char g_charBuffer[8];
 typedef struct { 
 	char x,y;
 } Point;
@@ -113,8 +114,34 @@ void DrawImageFast(unsigned char* data, signed int x,
 	}
 }
 
+void DrawString(unsigned char* pcStr, signed int x, signed int y) {
+	unsigned long ulIdx1, ulIdx2;
+	unsigned char ucTemp;
 
+	while(*pcStr != 0) {
+		ucTemp = *pcStr++ & 0x7f;
+		if(ucTemp < ' ') {
+			ucTemp = 0;
+		} else {
+			ucTemp -= ' ';
+		}
+		
+		for(ulIdx1 = 0; ulIdx1 < 6; ulIdx1 += 2) {
+			for(ulIdx2 = 0; ulIdx2 < 8; ulIdx2++) {
+				g_charBuffer[ulIdx2] = 0;
+				if(g_pucFont[ucTemp][ulIdx1] & (1 << ulIdx2)) {
+					g_charBuffer[ulIdx2] = 0xf0;
+				}
+				if((ulIdx1 < 4) && (g_pucFont[ucTemp][ulIdx1 + 1] & (1 << ulIdx2))) {
+					g_charBuffer[ulIdx2] |= 0x0f;
+				}
+			}
 
+			DrawImageFast(g_charBuffer, x, y, 2, 8);
+			x += 2;
+		}
+	}
+}
 
 void RotateImage(unsigned char* data, signed int x, 
 								signed int y, unsigned int width, 

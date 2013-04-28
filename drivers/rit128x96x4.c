@@ -113,7 +113,7 @@ static const unsigned char g_pucRIT128x96x4HorizontalInc[] = { 0xA0, 0x52 };
 // function to the appropriate four bit-per-pixel gray scale format.
 //
 //*****************************************************************************
-static const unsigned char g_pucFont[96][5] =
+const unsigned char g_pucFont[96][5] =
 {
     { 0x00, 0x00, 0x00, 0x00, 0x00 }, // " "
     { 0x00, 0x00, 0x4f, 0x00, 0x00 }, // !

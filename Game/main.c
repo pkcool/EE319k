@@ -35,6 +35,7 @@ Delay(unsigned long ulCount){
 
 int main(void) {
 	int i;
+	unsigned char lives[1] = " ";
 	PLL_Init();
 	SysTick_Init(1000000/30);
 	
@@ -105,6 +106,8 @@ int main(void) {
 		switch (g_player.stat) {
 			case P_ALIVE:
 				DrawImageFast(g_playerSprites[g_player.shield], g_player.xpos, g_player.ypos, g_player.width, g_player.height);
+				lives[0] = g_player.health%10+'0';
+				DrawString(lives, 2, 2);
 				break;
 			case P_HIT:
 				if (g_player.animationStep/4 < MAX_EXPLOSION) {
