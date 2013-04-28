@@ -42,7 +42,7 @@ void IntToString(int a, unsigned char *str, int length) {
 
 int main(void) {
 	int i;
-	unsigned char lives[1] = " ";
+	unsigned char lives[2] = "  ";
 	unsigned char score[5] = "     ";
 	PLL_Init();
 	SysTick_Init(1000000/30);
@@ -112,7 +112,7 @@ int main(void) {
 					break;
 			}
 		}
-		IntToString(g_player.health, lives,1);
+		IntToString(g_player.health, lives,2);
 		IntToString(g_player.score, score,5);
 		DrawString(lives, 0, 0);
 		DrawString(score, 128-5*6, 0);

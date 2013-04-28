@@ -273,7 +273,7 @@ void GameUpdate(void) {
 		EnemyInit();
 		g_player.score += 200;
 		g_player.health++;
-		if (g_level < MAX_LEVELS) {
+		if (g_level < MAX_LEVELS-1) {
 			g_level++;
 		}
 	}
@@ -424,6 +424,6 @@ void GameInit(void) {
 	g_step = 0;
 	g_level = 0;
 	
-	Timer1AInit(*GameUpdate, 1000000/200);
+	Timer1AInit(*GameUpdate, 1000000/100);
 }
 
