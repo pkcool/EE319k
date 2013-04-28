@@ -7,6 +7,7 @@
 
 #define NOP() do { } while(0);
 
+extern volatile unsigned long g_step;
 extern volatile unsigned long g_flags;
 #define FLAG_BUTTON_SELECT	0
 #define FLAG_BUFFER_READY		1

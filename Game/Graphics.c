@@ -20,6 +20,13 @@ void ClearScreen(void) {
 	}
 }
 
+void DimScreen(void) {
+	int i;
+	for (i = 0; i < 6144; i++) {
+		g_frame[i] = g_frame[i]*6/0xF;
+	}
+}
+
 // set a SINGLE pizel
 // 	sets the pixel corresponding to the x, y location
 // 	to the lower four bits of data

@@ -51,7 +51,9 @@ PlayerR g_player;
 void (*EnemyAI[MAX_LEVELS])(EnemyR* enemy);
 unsigned char g_level = 0;
 
-unsigned long g_step = 0;
+unsigned int rollover = 0;
+
+volatile unsigned long g_step = 0;
 
 void LevelOne(EnemyR* enemy) {
 	int j;
@@ -192,50 +194,47 @@ void BulletTarget(int xpos, int ypos, int xdest, int ydest) {
 
 void GameUpdate(void) {
 	int i, j;
-	switch(g_player.stat) {
-		case P_ALIVE:
-			if (g_player.health <= 0) {
-				g_player.stat = P_HIT;
-				g_player.animationStep = 0;
-				break;
+	if (g_player.score > rollover && (g_player.score%500) == 0) {
+		g_player.health++;
+		rollover = g_player.score;
+	}
+	if (g_player.stat != P_DEAD) {
+		if ((g_player.health <= 0) && (g_player.stat == P_ALIVE)) {
+			g_player.stat = P_HIT;
+			g_player.animationStep = 0;
+		}
+		if ((GPIO_PORTG_DATA_R&0x20) == 0) {
+			if ((g_soundArray == 0) || (g_soundIndex > SND_MOVE_LENGTH/2)) {
+				g_soundArray = &g_soundMove;
+				g_soundIndex = 0;
+				g_soundMax = SND_MOVE_LENGTH; 
 			}
-			if ((GPIO_PORTG_DATA_R&0x20) == 0) {
-				if ((g_soundArray == 0) || (g_soundIndex > SND_MOVE_LENGTH/2)) {
-					g_soundArray = &g_soundMove;
+			if (g_player.xpos > 0) {
+				g_player.xpos--;
+			}
+		} else if ((GPIO_PORTG_DATA_R&0x40) == 0) {
+			if ((g_soundArray == 0) || (g_soundIndex > SND_MOVE_LENGTH/2)) {
+				g_soundArray = &g_soundMove;
+				g_soundIndex = 0;
+				g_soundMax = SND_MOVE_LENGTH; 
+			}
+			if (g_player.xpos < (127-g_player.width)) {
+				g_player.xpos++;
+			}
+		}
+		if (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT)) {
+			for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
+				if (g_playerBullets[i].stat == B_DEAD) {
+					g_playerBullets[i].stat = B_ALIVE;
+					g_playerBullets[i].xpos = g_player.xpos+g_player.width/2-2;
+					g_playerBullets[i].ypos = g_player.ypos - 2;
+					g_soundArray = &g_soundBullet;
 					g_soundIndex = 0;
-					g_soundMax = SND_MOVE_LENGTH; 
-				}
-				if (g_player.xpos > 0) {
-					g_player.xpos--;
-				}
-			} else if ((GPIO_PORTG_DATA_R&0x40) == 0) {
-				if ((g_soundArray == 0) || (g_soundIndex > SND_MOVE_LENGTH/2)) {
-					g_soundArray = &g_soundMove;
-					g_soundIndex = 0;
-					g_soundMax = SND_MOVE_LENGTH; 
-				}
-				if (g_player.xpos < (127-g_player.width)) {
-					g_player.xpos++;
+					g_soundMax = SND_BULLET_LENGTH; 
+					break;
 				}
 			}
-			if (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT)) {
-				for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
-					if (g_playerBullets[i].stat == B_DEAD) {
-						g_playerBullets[i].stat = B_ALIVE;
-						g_playerBullets[i].xpos = g_player.xpos+g_player.width/2-2;
-						g_playerBullets[i].ypos = g_player.ypos - 2;
-						g_soundArray = &g_soundBullet;
-						g_soundIndex = 0;
-						g_soundMax = SND_BULLET_LENGTH; 
-						break;
-					}
-				}
-			}
-			break;
-		case P_HIT:
-			break;
-		case P_DEAD:
-			break;
+		}
 	}
 	j=0;
 	for (i = 0; i < MAX_ENEMIES; i++) {
@@ -263,17 +262,17 @@ void GameUpdate(void) {
 			
 			//	BULLET DIRECTION
 			if (g_enemyBullets[i].direction != 0) {		
-				g_enemyBullets[i].numerator += 2*g_enemyBullets[i].shortest;
+				g_enemyBullets[i].numerator += g_enemyBullets[i].shortest;
 				if (g_enemyBullets[i].numerator < g_enemyBullets[i].longest) {
-					g_enemyBullets[i].xpos += 2*g_enemyBullets[i].dx2;
-					g_enemyBullets[i].ypos += 2*g_enemyBullets[i].dy2;
+					g_enemyBullets[i].xpos += g_enemyBullets[i].dx2;
+					g_enemyBullets[i].ypos += g_enemyBullets[i].dy2;
 				} else {
-					g_enemyBullets[i].numerator -= 2*g_enemyBullets[i].longest;
-					g_enemyBullets[i].xpos += 2*g_enemyBullets[i].dx1;
-					g_enemyBullets[i].ypos += 2*g_enemyBullets[i].dy1;
+					g_enemyBullets[i].numerator -= g_enemyBullets[i].longest;
+					g_enemyBullets[i].xpos += g_enemyBullets[i].dx1;
+					g_enemyBullets[i].ypos += g_enemyBullets[i].dy1;
 				}
 			} else {
-				g_enemyBullets[i].ypos+=2;
+				g_enemyBullets[i].ypos++;
 			}
 
 			if ((g_enemyBullets[i].ypos >= 96) || (g_enemyBullets[i].xpos < 0) || (g_enemyBullets[i].xpos > 128)) {
@@ -292,13 +291,18 @@ void GameUpdate(void) {
 				((g_enemyBullets[i].ypos - g_player.ypos) <= g_player.height) && 
 				((g_enemyBullets[i].ypos + 2 - g_player.ypos) > 0)) {
 					g_player.health--;
+					g_player.score -= 25;
+					if (g_player.score < 0) {
+						g_player.score = 0;	
+					}
+					g_player.stat = P_HIT;
 					g_enemyBullets[i].stat = B_DEAD;
 			}
 		}
 	}
 	for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
 		if (g_playerBullets[i].stat == B_ALIVE) {
-			g_playerBullets[i].ypos-=2;
+			g_playerBullets[i].ypos--;
 			if (g_playerBullets[i].ypos < 0) {
 				g_playerBullets[i].stat = B_DEAD;
 			}
@@ -309,6 +313,10 @@ void GameUpdate(void) {
 					((g_playerBullets[i].ypos - g_enemies[j].ypos) <= g_enemies[j].height) && 
 					((g_playerBullets[i].ypos + 2 - g_enemies[j].ypos) > 0)) {
 					g_enemies[j].health--;
+					if (g_enemies[j].health == 0) {
+						g_player.score += 25;
+					}
+					g_player.score += 25;
 					g_playerBullets[i].stat = B_DEAD;
 				}
 			}
@@ -332,9 +340,9 @@ void EnemyInit(void) {
 	for (y = 0; y < 3; y++) {
 		for (x = 0; x < 4; x++) {
 			g_enemies[y*4+x].xpos0 = x*20+24;
-			g_enemies[y*4+x].ypos0 = y*12+8;
+			g_enemies[y*4+x].ypos0 = y*12+4;
 			g_enemies[y*4+x].xpos = x*20+24;
-			g_enemies[y*4+x].ypos = y*12+8;
+			g_enemies[y*4+x].ypos = y*12+4;
 			g_enemies[y*4+x].width = 10;
 			g_enemies[y*4+x].height = 10;
 			g_enemies[y*4+x].col = x;
@@ -383,6 +391,7 @@ void GameInit(void) {
 	g_player.direction = 0;
 	g_player.animationStep = 0;
 	g_player.shield = 0;
+	g_player.score = 0;
 	g_player.health = 5;
 	g_player.stat = P_ALIVE;
 	
@@ -390,6 +399,9 @@ void GameInit(void) {
 	EnemyAI[1] = LevelTwo;
 	EnemyAI[2] = LevelThree;
 	
-	Timer1AInit(*GameUpdate, 1000000/100);
+	g_step = 0;
+	g_level = 0;
+	
+	Timer1AInit(*GameUpdate, 1000000/200);
 }
 

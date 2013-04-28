@@ -33,9 +33,17 @@ Delay(unsigned long ulCount){
 	bx      lr
 }
 
+void IntToString(int a, unsigned char *str, int length) {
+	for (length-=1; length >= 0; length--) {
+		str[length] = (a%10)+'0';
+		a/=10;
+	}
+}
+
 int main(void) {
 	int i;
 	unsigned char lives[1] = " ";
+	unsigned char score[5] = "     ";
 	PLL_Init();
 	SysTick_Init(1000000/30);
 	
@@ -96,6 +104,7 @@ int main(void) {
 						DrawImageFast(g_explosionSprites[g_enemies[i].animationStep/4], g_enemies[i].xpos, g_enemies[i].ypos, 14, 14);
 						g_enemies[i].animationStep++;
 					} else {
+						g_enemies[i].animationStep = 0;
 						g_enemies[i].stat = E_DEAD;
 					}
 					break;
@@ -103,21 +112,42 @@ int main(void) {
 					break;
 			}
 		}
+		IntToString(g_player.health, lives,1);
+		IntToString(g_player.score, score,5);
+		DrawString(lives, 0, 0);
+		DrawString(score, 128-5*6, 0);
 		switch (g_player.stat) {
 			case P_ALIVE:
 				DrawImageFast(g_playerSprites[g_player.shield], g_player.xpos, g_player.ypos, g_player.width, g_player.height);
-				lives[0] = g_player.health%10+'0';
-				DrawString(lives, 2, 2);
 				break;
 			case P_HIT:
-				if (g_player.animationStep/4 < MAX_EXPLOSION) {
-					DrawImageFast(g_playerExplosionSprites[g_player.animationStep/4], g_player.xpos - g_player.width/2 - 26/27, g_player.ypos + g_player.height/2 - 28/2, 26, 28);
-					g_player.animationStep++;
+				if (g_player.health == 0) {
+					if (g_player.animationStep/4 < MAX_EXPLOSION) {
+						DrawImageFast(g_playerExplosionSprites[g_player.animationStep/4], g_player.xpos - g_player.width/2 - 26/2, g_player.ypos + g_player.height/2 - 28/2, 26, 28);
+						g_player.animationStep++;
+					} else {
+						g_player.animationStep = 0;
+						g_player.stat = P_DEAD;
+					}
 				} else {
-					g_player.stat = P_DEAD;
+					if (g_player.animationStep/4 < MAX_EXPLOSION) {
+						DrawImageFast(g_playerSprites[g_player.shield], g_player.xpos, g_player.ypos, g_player.width, g_player.height);
+						RotateImage(g_explosionSprites[g_player.animationStep/4], g_player.xpos - 2, g_player.ypos - 4, 14, 14, 0, 4);
+						g_player.animationStep++;
+					} else {
+						g_player.animationStep = 0;
+						g_player.stat = P_ALIVE;
+					}
 				}
 				break;
 			case P_DEAD:
+				Delay(10000);
+				DimScreen();
+				DrawString("Game Over",128/2-9*3,96/2);
+				if (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) == 1) {
+					GameInit();
+					HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) = 0;
+				}
 				break;
 		}
 		HWREGBITW(&g_flags, FLAG_BUFFER_READY) = 1;

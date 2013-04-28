@@ -5,6 +5,7 @@
 extern unsigned char g_frame[6144];
 
 void ClearScreen(void);
+void DimScreen(void);
 void SetPixel(signed int x, signed int y, 
 							unsigned char data);
 void DrawLine(signed int x0, signed int y0, 
