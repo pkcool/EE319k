@@ -80,7 +80,9 @@ extern PlayerR g_player;
 
 extern void (*EnemyAI[MAX_LEVELS])(EnemyR* enemy);
 
-void BulletTarget(int xpos, int ypos, int xdest, int ydest);
+BulletR* FreshBullet(BulletR (*bullet)[], unsigned int max);
+void BulletAngle(BulletR* bullet, int xpos, int ypos, int angle);
+void BulletTarget(BulletR* bullet, int xpos, int ypos, int xdest, int ydest);
 void EnemyInit(void);
 void GameInit(void);
 

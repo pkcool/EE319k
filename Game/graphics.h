@@ -4,6 +4,9 @@
 
 extern unsigned char g_frame[6144];
 
+extern signed int sinarr[24];
+extern signed int cosarr[24];
+
 void ClearScreen(void);
 void DimScreen(void);
 void SetPixel(signed int x, signed int y, 
