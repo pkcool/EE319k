@@ -398,12 +398,14 @@ void GameUpdate(void) {
 			}
 		}
 	}
-	for (i = 0; i < MAX_STARS; i++) {
-		if ((g_step%2) == 0) {
-			g_stars[i].ypos++;
-			if (g_stars[i].ypos >= 96) {
-				g_stars[i].xpos	= RandomExtract()%128;
-				g_stars[i].ypos	= 0;
+	if(g_levelTimer == 0) {
+		for (i = 0; i < MAX_STARS; i++) {
+			if ((g_step%2) == 0) {
+				g_stars[i].ypos++;
+				if (g_stars[i].ypos >= 96) {
+					g_stars[i].xpos	= RandomExtract()%128;
+					g_stars[i].ypos	= 0;
+				}
 			}
 		}
 	}
@@ -415,6 +417,55 @@ void GameUpdate(void) {
 		g_shotgunTimer--;
 	}
 	if (g_levelTimer > 0) {
+		if (g_levelTimer > 800) {
+			for (i = 0; i < MAX_STARS; i++) {
+				if (((g_step%3) == 0) || ((g_step%3) == 1)) {
+					g_stars[i].ypos++;
+					if (g_stars[i].ypos >= 96) {
+						g_stars[i].xpos	= RandomExtract()%128;
+						g_stars[i].ypos	= 0;
+					}
+				}
+			}			
+		} else if (g_levelTimer > 600) {
+			for (i = 0; i < MAX_STARS; i++) {
+				g_stars[i].ypos++;
+				if (g_stars[i].ypos >= 96) {
+					g_stars[i].xpos	= RandomExtract()%128;
+					g_stars[i].ypos	= 0;
+				}
+			}				
+		} else if (g_levelTimer > 400) {
+			for (i = 0; i < MAX_STARS; i++) {
+				if ((g_step%2) == 0) {
+					g_stars[i].ypos++; 
+				}
+				g_stars[i].ypos++;
+				if (g_stars[i].ypos >= 96) {
+					g_stars[i].xpos	= RandomExtract()%128;
+					g_stars[i].ypos	= 0;
+				}
+			}	
+		} else if (g_levelTimer > 200) {
+			for (i = 0; i < MAX_STARS; i++) {
+				g_stars[i].ypos++;
+				g_stars[i].ypos++;
+				if (g_stars[i].ypos >= 96) {
+					g_stars[i].xpos	= RandomExtract()%128;
+					g_stars[i].ypos	= 0;
+				}
+			}			
+		} else if (g_levelTimer > 0) {
+			for (i = 0; i < MAX_STARS; i++) {
+				g_stars[i].ypos++;
+				g_stars[i].ypos++;
+				g_stars[i].ypos++;
+				if (g_stars[i].ypos >= 96) {
+					g_stars[i].xpos	= RandomExtract()%128;
+					g_stars[i].ypos	= 0;
+				}
+			}				
+		} 				
 		g_levelTimer--;
 	}
 	if (g_shieldTimer > 0) {
