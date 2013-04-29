@@ -22,6 +22,8 @@
 #include "timer.h"
 #include "dac.h"
 
+#include <math.h>
+
 volatile unsigned long g_flags;
 
 unsigned long sc;
@@ -90,11 +92,19 @@ int main(void) {
 		for (i = 0; i < MAX_ENEMIES; i++) {
 			switch (g_enemies[i].stat) {
 				case E_ALIVE:
-					DrawImageFast(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
+					if (g_level >= 3) {
+						RotateImage(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height, ((int)(atan2(g_player.ypos - g_enemies[i].ypos, g_player.xpos - g_enemies[i].xpos)*4)+24+6)%24, 8);
+					} else {
+						DrawImageFast(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
+					}
 					break;
 				case E_FIRE:
 					if (g_enemies[i].animationStep/8 < MAX_DANCE) {
+						if (g_level >= 3) {
+						RotateImage(g_enemySpritesIdle[g_enemies[i].animationStep/8], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height, ((int)(atan2(g_player.ypos - g_enemies[i].ypos, g_player.xpos - g_enemies[i].xpos)*4)+24+6)%24, 8);
+					} else {
 						DrawImageFast(g_enemySpritesIdle[g_enemies[i].animationStep/8], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
+					}
 						g_enemies[i].animationStep++;
 					} else {
 						g_enemies[i].animationStep = 0;
@@ -102,8 +112,8 @@ int main(void) {
 					}
 					break;
 				case E_HIT:
-					if (g_enemies[i].animationStep/4 < MAX_EXPLOSION) {
-						DrawImageFast(g_explosionSprites[g_enemies[i].animationStep/4], g_enemies[i].xpos, g_enemies[i].ypos, 14, 14);
+					if (g_enemies[i].animationStep/8 < MAX_EXPLOSION) {
+						DrawImageFast(g_explosionSprites[g_enemies[i].animationStep/8], g_enemies[i].xpos, g_enemies[i].ypos, 14, 14);
 						g_enemies[i].animationStep++;
 					} else {
 						g_enemies[i].animationStep = 0;
