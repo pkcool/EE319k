@@ -44,6 +44,7 @@ int main(void) {
 	int i;
 	unsigned char lives[2] = "  ";
 	unsigned char score[5] = "     ";
+	unsigned char randomString[21];
 	PLL_Init();
 	SysTick_Init(1000000/30);
 	
@@ -116,6 +117,24 @@ int main(void) {
 		IntToString(g_player.score, score,5);
 		DrawString(lives, 0, 0);
 		DrawString(score, 128-5*6, 0);
+		if (g_levelTimer != 0) {
+			if (g_levelTimer < 450 && g_levelTimer > 350) {
+				if ((g_levelTimer%2) == 0) {
+					for (i = 0; i < 21; i++) {
+						if (randomString[i] != g_Stringz[g_level][i]) {
+							if (RandomExtract()%16 == 1) {
+								randomString[i] = g_Stringz[g_level][i];
+							} else {
+								randomString[i] = (RandomExtract()%96)+' ';
+							}
+						}
+					}
+				}
+				DrawString(randomString, 128/2-21*3, 96/2);
+			} else if (g_levelTimer > 50 && g_levelTimer < 400) {
+				DrawString(g_Stringz[g_level], 128/2-21*3, 96/2);
+			}
+		}
 		switch (g_player.stat) {
 			case P_ALIVE:
 				DrawImageFast(g_playerSprites[g_player.shield], g_player.xpos, g_player.ypos, g_player.width, g_player.height);

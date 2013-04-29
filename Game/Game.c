@@ -51,17 +51,39 @@ PlayerR g_player;
 BulletR emptyBullet;
 
 void (*EnemyAI[MAX_LEVELS])(EnemyR* enemy);
+unsigned char g_Stringz[6][22] = {"  You're hurting us. \0",
+																	"    This isn't fun.  \0",
+																	" I don't wanna fight.\0",
+																	"You killed my family!\0",
+																	" An eye for an eye...\0",
+																	"\0"};
+
 unsigned char g_level = 0;
 
-unsigned int bulletTimer = 0;
-unsigned int shotgunTimer = 0;
+unsigned int g_bulletTimer = 0;
+unsigned int g_shotgunTimer = 0;
+unsigned int g_levelTimer = 0;
 unsigned int rollover = 0;
 unsigned int LEVEL_MAX_BULLETS = 1;
 unsigned int currentEnemies = 0;
 
 volatile unsigned long g_step = 0;
 
+void LevelZero(EnemyR* enemy) {
+	//	Innocence
+}
+
 void LevelOne(EnemyR* enemy) {
+	//	Avoidance
+	if ((g_step%16) == 0) {
+		(*enemy).xpos += (*enemy).flock;
+	}
+	if ((g_step%128) == 0) {
+		(*enemy).flock = -(*enemy).flock;
+	}
+}
+
+void LevelTwo(EnemyR* enemy) {
 	BulletR* bullet;
 	LEVEL_MAX_BULLETS = 4;
 	//	NAIVE SHOOTING ALGORITHM (for easy AI)
@@ -78,50 +100,32 @@ void LevelOne(EnemyR* enemy) {
 			(*bullet).direction = 0;
 		}
 	}
-	//	NAIVE MOVEMENT ALGORITHM
-	if ((g_step%16) == 0) {
-		(*enemy).xpos += (*enemy).flock;
-	}
-	if ((g_step%128) == 0) {
-		(*enemy).flock = -(*enemy).flock;
-	}
+	LevelOne(enemy);
 }
 
-void LevelTwo(EnemyR* enemy) {
+void LevelThree(EnemyR* enemy) {
 	LEVEL_MAX_BULLETS = 10;
 	if ((g_player.stat == P_ALIVE) && (RandomExtract()%100 == 8)) {
 		(*enemy).animationStep = 0;
 		(*enemy).stat = E_FIRE;
 		BulletTarget(FreshBullet(&g_enemyBullets, LEVEL_MAX_BULLETS), (*enemy).xpos + (*enemy).width/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
 	}
-	//	NAIVE MOVEMENT ALGORITHM
-	if ((g_step%16) == 0) {
-		(*enemy).xpos += (*enemy).flock;
-	}
-	if ((g_step%128) == 0) {
-		(*enemy).flock = -(*enemy).flock;
-	}
+	LevelOne(enemy);
 }
 
-void LevelThree(EnemyR* enemy) {
+void LevelFour(EnemyR* enemy) {
 	LEVEL_MAX_BULLETS = 20;
 	if ((g_player.stat == P_ALIVE) && (RandomExtract()%50 == 8)) {
 		(*enemy).animationStep = 0;
 		(*enemy).stat = E_FIRE;
 		BulletTarget(FreshBullet(&g_enemyBullets, LEVEL_MAX_BULLETS), (*enemy).xpos + (*enemy).width/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
 	}
-	//	NAIVE MOVEMENT ALGORITHM
-	if ((g_step%16) == 0) {
-		(*enemy).xpos += (*enemy).flock;
-	}
-	if ((g_step%64) == 0) {
-		(*enemy).flock = -(*enemy).flock;
-	}
+	LevelOne(enemy);
 	//	FACE PLAYER
 	
 }
 
-void LevelFour(EnemyR* enemy) {
+void LevelFive(EnemyR* enemy) {
 	/*
 	//	HARD MODE SHOOTING ALGORITHM :D
 	if (RandomExtract()%2048 == 1) {
@@ -259,7 +263,7 @@ void GameUpdate(void) {
 			}
 		}
 		if (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT)) {
-			if (bulletTimer == 0) {
+			if (g_bulletTimer == 0) {
 				for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
 					if (g_playerBullets[i].stat == B_DEAD) {
 						g_playerBullets[i].stat = B_ALIVE;
@@ -272,18 +276,18 @@ void GameUpdate(void) {
 						break;
 					}
 				}
-				bulletTimer = 50;
+				g_bulletTimer = 25;
 			}
 		}
 		if (HWREGBITW(&g_flags, FLAG_BUTTON_UP)) {
-			if (shotgunTimer == 0) {
+			if (g_shotgunTimer == 0) {
 				bullet = FreshBullet(&g_playerBullets, MAX_PLAYER_BULLETS);
 				BulletAngle(bullet, g_player.xpos, g_player.ypos, 17);
 				bullet = FreshBullet(&g_playerBullets, MAX_PLAYER_BULLETS);
 				BulletAngle(bullet, g_player.xpos, g_player.ypos, 18);
 				bullet = FreshBullet(&g_playerBullets, MAX_PLAYER_BULLETS);
 				BulletAngle(bullet, g_player.xpos, g_player.ypos, 19);
-				shotgunTimer = 100;
+				g_shotgunTimer = 100;
 			}
 		}
 	}
@@ -299,12 +303,16 @@ void GameUpdate(void) {
 		}
 	}
 	currentEnemies = j;
-	if (currentEnemies == 0 && (g_step%400)==0) {
+	if ((currentEnemies == 0) && (g_levelTimer == 0)) {
+		g_levelTimer = 500;
+	}
+	if (g_levelTimer == 1) {
 		EnemyInit();
 		g_player.score += 200;
 		g_player.health++;
 		if (g_level < MAX_LEVELS-1) {
 			g_level++;
+			g_levelTimer = 0;
 		}
 	}
 	for (i = 0; i < MAX_ENEMY_BULLETS; i++) {
@@ -378,10 +386,12 @@ void GameUpdate(void) {
 					((g_playerBullets[i].ypos + 2 - g_enemies[j].ypos) > 0)) {
 					g_enemies[j].health--;
 					if (g_enemies[j].health == 0) {
+						g_enemies[j].stat = E_DEAD;
 						g_player.score += 25;
 					}
 					g_player.score += 25;
 					g_playerBullets[i].stat = B_DEAD;
+					break;
 				}
 			}
 		}
@@ -396,11 +406,14 @@ void GameUpdate(void) {
 		}
 	}
 	g_step++;
-	if (bulletTimer > 0) {
-		bulletTimer--;
+	if (g_bulletTimer > 0) {
+		g_bulletTimer--;
 	}
-	if (shotgunTimer > 0) {
-		shotgunTimer--;
+	if (g_shotgunTimer > 0) {
+		g_shotgunTimer--;
+	}
+	if (g_levelTimer > 0) {
+		g_levelTimer--;
 	}
 	HWREGBITW(&g_flags, FLAG_BUTTON_UP) = 0;
 	HWREGBITW(&g_flags, FLAG_BUTTON_DOWN) = 0;
@@ -469,11 +482,12 @@ void GameInit(void) {
 	g_player.health = 5;
 	g_player.stat = P_ALIVE;
 	
-	EnemyAI[0] = LevelOne;
-	EnemyAI[1] = LevelTwo;
-	EnemyAI[2] = LevelThree;
+	EnemyAI[0] = LevelZero;
+	EnemyAI[1] = LevelOne;
+	EnemyAI[2] = LevelTwo;
 	EnemyAI[3] = LevelThree;
-	EnemyAI[4] = LevelThree;
+	EnemyAI[4] = LevelFour;
+	EnemyAI[5] = LevelFour;
 	
 	g_step = 0;
 	g_level = 0;

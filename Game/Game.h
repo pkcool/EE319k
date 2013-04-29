@@ -6,9 +6,9 @@
 #define MAX_EXPLOSION					5
 #define MAX_ENEMIES						12
 #define MAX_ENEMY_BULLETS			40
-#define MAX_PLAYER_BULLETS		4
+#define MAX_PLAYER_BULLETS		5
 #define MAX_STARS							40
-#define MAX_LEVELS						5
+#define MAX_LEVELS						6
 
 typedef enum {
 	E_ALIVE,													// self explanatory
@@ -77,6 +77,12 @@ extern BulletR g_enemyBullets[MAX_ENEMY_BULLETS];
 extern BulletR g_playerBullets[MAX_PLAYER_BULLETS];
 extern StarR g_stars[MAX_STARS];
 extern PlayerR g_player;
+
+extern unsigned char g_Stringz[6][22];
+extern unsigned char g_level;
+extern unsigned int g_bulletTimer;
+extern unsigned int g_shotgunTimer;
+extern unsigned int g_levelTimer;
 
 extern void (*EnemyAI[MAX_LEVELS])(EnemyR* enemy);
 
