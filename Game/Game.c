@@ -65,6 +65,7 @@ unsigned int g_shotgunTimer = 0;
 unsigned int g_levelTimer = 0;
 unsigned int rollover = 0;
 unsigned int LEVEL_MAX_BULLETS = 1;
+signed int LEVEL_RANDOM = 100;
 unsigned int currentEnemies = 0;
 
 volatile unsigned long g_step = 0;
@@ -86,10 +87,8 @@ void LevelOne(EnemyR* enemy) {
 void LevelTwo(EnemyR* enemy) {
 	BulletR* bullet;
 	LEVEL_MAX_BULLETS = 4;
-	//	NAIVE SHOOTING ALGORITHM (for easy AI)
-	//	ONLY SHOOT IF YOU ARE THE FIRST SHIP IN YOUR COLUMN
-	//	AND THE PLAYER IS ALIVE AND RANDOM NUMBER
-	if ((g_player.stat == P_ALIVE) && (RandomExtract()%100 == 8)) {
+	LEVEL_RANDOM = 100;
+	if ((g_player.stat == P_ALIVE) && (RandomExtract()%LEVEL_RANDOM == 2)) {
 		if ((((*enemy).xpos - g_player.xpos) <= g_player.width + 16) && (((*enemy).xpos + 2 - g_player.xpos) > 0 - 16)) {
 			(*enemy).animationStep = 0;
 			(*enemy).stat = E_FIRE;
@@ -104,25 +103,17 @@ void LevelTwo(EnemyR* enemy) {
 }
 
 void LevelThree(EnemyR* enemy) {
-	LEVEL_MAX_BULLETS = 10;
-	if ((g_player.stat == P_ALIVE) && (RandomExtract()%100 == 8)) {
-		(*enemy).animationStep = 0;
-		(*enemy).stat = E_FIRE;
-		BulletTarget(FreshBullet(&g_enemyBullets, LEVEL_MAX_BULLETS), (*enemy).xpos + (*enemy).width/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
-	}
-	LevelOne(enemy);
-}
-
-void LevelFour(EnemyR* enemy) {
-	LEVEL_MAX_BULLETS = 20;
-	if ((g_player.stat == P_ALIVE) && (RandomExtract()%50 == 8)) {
+	if ((g_player.stat == P_ALIVE) && (RandomExtract()%LEVEL_RANDOM == 2)) {
 		(*enemy).animationStep = 0;
 		(*enemy).stat = E_FIRE;
 		BulletTarget(FreshBullet(&g_enemyBullets, LEVEL_MAX_BULLETS), (*enemy).xpos + (*enemy).width/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
 	}
 	LevelOne(enemy);
 	//	FACE PLAYER
-	
+}
+
+void LevelFour(EnemyR* enemy) {
+	//	SWARM CODE HERE
 }
 
 void LevelFive(EnemyR* enemy) {
@@ -276,7 +267,7 @@ void GameUpdate(void) {
 						break;
 					}
 				}
-				g_bulletTimer = 25;
+				g_bulletTimer = 15;
 			}
 		}
 		if (HWREGBITW(&g_flags, FLAG_BUTTON_UP)) {
@@ -386,7 +377,7 @@ void GameUpdate(void) {
 					((g_playerBullets[i].ypos + 2 - g_enemies[j].ypos) > 0)) {
 					g_enemies[j].health--;
 					if (g_enemies[j].health == 0) {
-						g_enemies[j].stat = E_DEAD;
+						g_enemies[j].stat = E_HIT;
 						g_player.score += 25;
 					}
 					g_player.score += 25;
@@ -424,6 +415,16 @@ void GameUpdate(void) {
 
 void EnemyInit(void) {
 	int x,y;
+	if (g_level > 3) {
+		LEVEL_MAX_BULLETS += 10;
+		if (LEVEL_MAX_BULLETS > MAX_ENEMY_BULLETS) {
+			LEVEL_MAX_BULLETS = MAX_ENEMY_BULLETS;
+		}
+		LEVEL_RANDOM -= 10;
+		if (LEVEL_RANDOM < 5) {
+			LEVEL_RANDOM = 5;
+		}
+	}
 	for (y = 0; y < 3; y++) {
 		for (x = 0; x < 4; x++) {
 			g_enemies[y*4+x].xpos0 = x*20+24;
@@ -486,8 +487,8 @@ void GameInit(void) {
 	EnemyAI[1] = LevelOne;
 	EnemyAI[2] = LevelTwo;
 	EnemyAI[3] = LevelThree;
-	EnemyAI[4] = LevelFour;
-	EnemyAI[5] = LevelFour;
+	EnemyAI[4] = LevelThree;
+	EnemyAI[5] = LevelThree;
 	
 	g_step = 0;
 	g_level = 0;
