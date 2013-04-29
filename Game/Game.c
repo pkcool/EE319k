@@ -110,7 +110,6 @@ void LevelThree(EnemyR* enemy) {
 		BulletTarget(FreshBullet(&g_enemyBullets, LEVEL_MAX_BULLETS), (*enemy).xpos + (*enemy).width/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
 	}
 	LevelOne(enemy);
-	//	FACE PLAYER
 }
 
 void LevelFour(EnemyR* enemy) {
@@ -493,9 +492,9 @@ void EnemyInit(void) {
 	for (y = 0; y < 3; y++) {
 		for (x = 0; x < 4; x++) {
 			g_enemies[y*4+x].xpos0 = x*20+24;
-			g_enemies[y*4+x].ypos0 = y*12+4;
+			g_enemies[y*4+x].ypos0 = y*12+6;
 			g_enemies[y*4+x].xpos = x*20+24;
-			g_enemies[y*4+x].ypos = y*12+4;
+			g_enemies[y*4+x].ypos = y*12+6;
 			g_enemies[y*4+x].width = 10;
 			g_enemies[y*4+x].height = 10;
 			g_enemies[y*4+x].col = x;
@@ -521,16 +520,6 @@ void GameInit(void) {
 		g_enemyBullets[i].xpos = 0;
 		g_enemyBullets[i].ypos = 0;
 		g_enemyBullets[i].direction = 0;
-		/*
-		g_enemyBullets[i].xposA = 0;
-		g_enemyBullets[i].yposA = 0;
-		g_enemyBullets[i].xposI = 0;
-		g_enemyBullets[i].yposI = 0;
-		g_enemyBullets[i].xpos0 = 0;
-		g_enemyBullets[i].ypos0 = 0;
-		g_enemyBullets[i].xpos1 = 0;
-		g_enemyBullets[i].ypos1 = 0;
-		*/
 		g_enemyBullets[i].stat = B_DEAD;
 	}
 	for (i = 0; i < MAX_STARS; i++) {
