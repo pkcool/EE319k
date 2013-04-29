@@ -53,6 +53,8 @@ BulletR emptyBullet;
 void (*EnemyAI[MAX_LEVELS])(EnemyR* enemy);
 unsigned char g_level = 0;
 
+unsigned int bulletTimer = 0;
+unsigned int shotgunTimer = 0;
 unsigned int rollover = 0;
 unsigned int LEVEL_MAX_BULLETS = 1;
 unsigned int currentEnemies = 0;
@@ -61,7 +63,7 @@ volatile unsigned long g_step = 0;
 
 void LevelOne(EnemyR* enemy) {
 	BulletR* bullet;
-	LEVEL_MAX_BULLETS = 1;
+	LEVEL_MAX_BULLETS = 4;
 	//	NAIVE SHOOTING ALGORITHM (for easy AI)
 	//	ONLY SHOOT IF YOU ARE THE FIRST SHIP IN YOUR COLUMN
 	//	AND THE PLAYER IS ALIVE AND RANDOM NUMBER
@@ -69,7 +71,7 @@ void LevelOne(EnemyR* enemy) {
 		if ((((*enemy).xpos - g_player.xpos) <= g_player.width + 16) && (((*enemy).xpos + 2 - g_player.xpos) > 0 - 16)) {
 			(*enemy).animationStep = 0;
 			(*enemy).stat = E_FIRE;
-			bullet = FreshBullet(&g_enemyBullets, LEVEL_MAX_BULLETS*(currentEnemies/2));
+			bullet = FreshBullet(&g_enemyBullets, LEVEL_MAX_BULLETS);
 			(*bullet).stat = B_ALIVE;
 			(*bullet).xpos = (*enemy).xpos+(*enemy).width/2;
 			(*bullet).ypos = (*enemy).ypos + 2;
@@ -86,11 +88,11 @@ void LevelOne(EnemyR* enemy) {
 }
 
 void LevelTwo(EnemyR* enemy) {
-	LEVEL_MAX_BULLETS = 2;
+	LEVEL_MAX_BULLETS = 10;
 	if ((g_player.stat == P_ALIVE) && (RandomExtract()%100 == 8)) {
 		(*enemy).animationStep = 0;
 		(*enemy).stat = E_FIRE;
-		BulletTarget(FreshBullet(&g_enemyBullets, LEVEL_MAX_BULLETS*(currentEnemies/2)), (*enemy).xpos + (*enemy).width/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
+		BulletTarget(FreshBullet(&g_enemyBullets, LEVEL_MAX_BULLETS), (*enemy).xpos + (*enemy).width/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
 	}
 	//	NAIVE MOVEMENT ALGORITHM
 	if ((g_step%16) == 0) {
@@ -102,11 +104,11 @@ void LevelTwo(EnemyR* enemy) {
 }
 
 void LevelThree(EnemyR* enemy) {
-	LEVEL_MAX_BULLETS = 4;
+	LEVEL_MAX_BULLETS = 20;
 	if ((g_player.stat == P_ALIVE) && (RandomExtract()%50 == 8)) {
 		(*enemy).animationStep = 0;
 		(*enemy).stat = E_FIRE;
-		BulletTarget(FreshBullet(&g_enemyBullets, LEVEL_MAX_BULLETS*(currentEnemies/2)), (*enemy).xpos + (*enemy).width/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
+		BulletTarget(FreshBullet(&g_enemyBullets, LEVEL_MAX_BULLETS), (*enemy).xpos + (*enemy).width/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
 	}
 	//	NAIVE MOVEMENT ALGORITHM
 	if ((g_step%16) == 0) {
@@ -115,6 +117,8 @@ void LevelThree(EnemyR* enemy) {
 	if ((g_step%64) == 0) {
 		(*enemy).flock = -(*enemy).flock;
 	}
+	//	FACE PLAYER
+	
 }
 
 void LevelFour(EnemyR* enemy) {
@@ -182,7 +186,7 @@ BulletR* FreshBullet(BulletR (*bullets)[], unsigned int max) {
 }
 
 void BulletAngle(BulletR* bullet, int xpos, int ypos, int angle) {
-	BulletTarget(bullet, xpos, ypos, xpos+(cosarr[angle]/128), ypos+(sinarr[angle]/128));
+	BulletTarget(bullet, xpos, ypos, xpos+cosarr[angle], ypos+sinarr[angle]);
 }
 
 void BulletTarget(BulletR* bullet, int xpos, int ypos, int xdest, int ydest) {
@@ -255,16 +259,31 @@ void GameUpdate(void) {
 			}
 		}
 		if (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT)) {
-			for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
-				if (g_playerBullets[i].stat == B_DEAD) {
-					g_playerBullets[i].stat = B_ALIVE;
-					g_playerBullets[i].xpos = g_player.xpos+g_player.width/2-2;
-					g_playerBullets[i].ypos = g_player.ypos - 2;
-					g_soundArray = &g_soundBullet;
-					g_soundIndex = 0;
-					g_soundMax = SND_BULLET_LENGTH; 
-					break;
+			if (bulletTimer == 0) {
+				for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
+					if (g_playerBullets[i].stat == B_DEAD) {
+						g_playerBullets[i].stat = B_ALIVE;
+						g_playerBullets[i].xpos = g_player.xpos+g_player.width/2-2;
+						g_playerBullets[i].ypos = g_player.ypos - 2;
+						g_playerBullets[i].direction = 0;
+						g_soundArray = &g_soundBullet;
+						g_soundIndex = 0;
+						g_soundMax = SND_BULLET_LENGTH; 
+						break;
+					}
 				}
+				bulletTimer = 50;
+			}
+		}
+		if (HWREGBITW(&g_flags, FLAG_BUTTON_UP)) {
+			if (shotgunTimer == 0) {
+				bullet = FreshBullet(&g_playerBullets, MAX_PLAYER_BULLETS);
+				BulletAngle(bullet, g_player.xpos, g_player.ypos, 17);
+				bullet = FreshBullet(&g_playerBullets, MAX_PLAYER_BULLETS);
+				BulletAngle(bullet, g_player.xpos, g_player.ypos, 18);
+				bullet = FreshBullet(&g_playerBullets, MAX_PLAYER_BULLETS);
+				BulletAngle(bullet, g_player.xpos, g_player.ypos, 19);
+				shotgunTimer = 100;
 			}
 		}
 	}
@@ -377,6 +396,16 @@ void GameUpdate(void) {
 		}
 	}
 	g_step++;
+	if (bulletTimer > 0) {
+		bulletTimer--;
+	}
+	if (shotgunTimer > 0) {
+		shotgunTimer--;
+	}
+	HWREGBITW(&g_flags, FLAG_BUTTON_UP) = 0;
+	HWREGBITW(&g_flags, FLAG_BUTTON_DOWN) = 0;
+	HWREGBITW(&g_flags, FLAG_BUTTON_LEFT) = 0;
+	HWREGBITW(&g_flags, FLAG_BUTTON_RIGHT) = 0;
 	HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) = 0;
 }
 

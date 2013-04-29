@@ -33,7 +33,7 @@ Delay(unsigned long ulCount){
 	bx      lr
 }
 
-void IntToString(int a, unsigned char *str, int length) {
+void IntToString(unsigned int a, unsigned char *str, int length) {
 	for (length-=1; length >= 0; length--) {
 		str[length] = (a%10)+'0';
 		a/=10;
