@@ -64,6 +64,7 @@ void LevelOne(EnemyR* enemy) {
 	//	AND THE PLAYER IS ALIVE AND RANDOM NUMBER
 	if ((g_player.stat == P_ALIVE) && (RandomExtract()%100 == 8)) {
 		if ((((*enemy).xpos - g_player.xpos) <= g_player.width + 16) && (((*enemy).xpos + 2 - g_player.xpos) > 0 - 16)) {
+			(*enemy).animationStep = 0;
 			(*enemy).stat = E_FIRE;
 			for (j = 0; j < LEVEL_MAX_BULLETS*(MAX_ENEMIES<<2);  j++) {
 				if (g_enemyBullets[j].stat == B_DEAD) {
@@ -88,6 +89,7 @@ void LevelOne(EnemyR* enemy) {
 void LevelTwo(EnemyR* enemy) {
 	LEVEL_MAX_BULLETS = 2;
 	if ((g_player.stat == P_ALIVE) && (RandomExtract()%100 == 8)) {
+		(*enemy).animationStep = 0;
 		(*enemy).stat = E_FIRE;
 		BulletTarget((*enemy).xpos + (*enemy).width/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
 	}
@@ -103,6 +105,7 @@ void LevelTwo(EnemyR* enemy) {
 void LevelThree(EnemyR* enemy) {
 	LEVEL_MAX_BULLETS = 4;
 	if ((g_player.stat == P_ALIVE) && (RandomExtract()%50 == 8)) {
+		(*enemy).animationStep = 0;
 		(*enemy).stat = E_FIRE;
 		BulletTarget((*enemy).xpos + (*enemy).width/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
 	}
@@ -213,7 +216,7 @@ void BulletTarget(int xpos, int ypos, int xdest, int ydest) {
 }
 
 void GameUpdate(void) {
-	int i, j;
+	int i, j, enemiesAlive;
 	if (g_player.score > rollover && (g_player.score%500) == 0) {
 		g_player.health++;
 		rollover = g_player.score;
@@ -256,24 +259,18 @@ void GameUpdate(void) {
 			}
 		}
 	}
-	j=0;
+	enemiesAlive=0;
 	for (i = 0; i < MAX_ENEMIES; i++) {
-		switch (g_enemies[i].stat) {
-			case E_ALIVE:
-				if (g_enemies[i].health == 0) {
-					g_enemies[i].stat = E_HIT;
-					g_enemies[i].animationStep = 0;
-				}
-				(*EnemyAI[g_level])(&g_enemies[i]);
-				j++;
-				break;
-			case E_HIT:
-				break;
-			case E_DEAD:
-				break;
+		if ((g_enemies[i].stat == E_ALIVE) || (g_enemies[i].stat == E_ALIVE)) {
+			if (g_enemies[i].health == 0) {
+				g_enemies[i].stat = E_HIT;
+				g_enemies[i].animationStep = 0;
+			}
+			(*EnemyAI[g_level])(&g_enemies[i]);
+			enemiesAlive++;
 		}
 	}
-	if (j == 0 && (g_step%400)==0) {
+	if (enemiesAlive == 0 && (g_step%400)==0) {
 		EnemyInit();
 		g_player.score += 200;
 		g_player.health++;

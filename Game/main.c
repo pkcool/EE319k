@@ -91,7 +91,7 @@ int main(void) {
 					DrawImageFast(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
 					break;
 				case E_FIRE:
-					if (g_enemies[i].animationStep/8 > MAX_DANCE) {
+					if (g_enemies[i].animationStep/8 < MAX_DANCE) {
 						DrawImageFast(g_enemySpritesIdle[g_enemies[i].animationStep/8], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
 						g_enemies[i].animationStep++;
 					} else {
