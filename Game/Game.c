@@ -52,20 +52,20 @@ void (*EnemyAI[MAX_LEVELS])(EnemyR* enemy);
 unsigned char g_level = 0;
 
 unsigned int rollover = 0;
-unsigned int LEVEL_MAX_BULLETS = 4;
+unsigned int LEVEL_MAX_BULLETS = 1;
 
 volatile unsigned long g_step = 0;
 
 void LevelOne(EnemyR* enemy) {
 	int j;
-	LEVEL_MAX_BULLETS = 4;
+	LEVEL_MAX_BULLETS = 1;
 	//	NAIVE SHOOTING ALGORITHM (for easy AI)
 	//	ONLY SHOOT IF YOU ARE THE FIRST SHIP IN YOUR COLUMN
 	//	AND THE PLAYER IS ALIVE AND RANDOM NUMBER
-	if ((g_player.stat == P_ALIVE) && (RandomExtract()%50 == 42)) {
+	if ((g_player.stat == P_ALIVE) && (RandomExtract()%100 == 8)) {
 		if ((((*enemy).xpos - g_player.xpos) <= g_player.width + 16) && (((*enemy).xpos + 2 - g_player.xpos) > 0 - 16)) {
 			(*enemy).stat = E_FIRE;
-			for (j = 0; j < LEVEL_MAX_BULLETS;  j++) {
+			for (j = 0; j < LEVEL_MAX_BULLETS*(MAX_ENEMIES<<2);  j++) {
 				if (g_enemyBullets[j].stat == B_DEAD) {
 					g_enemyBullets[j].stat = B_ALIVE;
 					g_enemyBullets[j].xpos = (*enemy).xpos+(*enemy).width/2;
@@ -86,8 +86,8 @@ void LevelOne(EnemyR* enemy) {
 }
 
 void LevelTwo(EnemyR* enemy) {
-	LEVEL_MAX_BULLETS = 8;
-	if ((g_player.stat == P_ALIVE) && (RandomExtract()%50 == 42)) {
+	LEVEL_MAX_BULLETS = 2;
+	if ((g_player.stat == P_ALIVE) && (RandomExtract()%100 == 8)) {
 		(*enemy).stat = E_FIRE;
 		BulletTarget((*enemy).xpos + (*enemy).width/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
 	}
@@ -101,8 +101,8 @@ void LevelTwo(EnemyR* enemy) {
 }
 
 void LevelThree(EnemyR* enemy) {
-	LEVEL_MAX_BULLETS = 20;
-	if ((g_player.stat == P_ALIVE) && (RandomExtract()%50 == 32)) {
+	LEVEL_MAX_BULLETS = 4;
+	if ((g_player.stat == P_ALIVE) && (RandomExtract()%50 == 8)) {
 		(*enemy).stat = E_FIRE;
 		BulletTarget((*enemy).xpos + (*enemy).width/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
 	}
@@ -141,25 +141,29 @@ void LevelFour(EnemyR* enemy) {
 		}
 	}
 	//	DODGING ALGORITHM
-	for (j = 0; j < MAX_PLAYER_BULLETS; j++) {
-		if ((g_enemies[i].stat == E_ALIVE) && (g_playerBullets[j].xpos - g_enemies[i].xpos) <= g_enemies[i].width) {
-				if (g_enemies[i].xpos0 <= g_enemies[i].xpos) {
-					if (g_enemies[i].ypos0 > g_enemies[j].ypos) {
-						g_enemies[i].xpos--;
-						g_enemies[i].ypos++;
+	for (i = 0; i < MAX_ENEMIES; i++) {
+		for (j = 0; j < MAX_PLAYER_BULLETS; j++) {
+			if ((g_enemies[i].stat == E_ALIVE) && 
+					((g_playerBullets[j].xpos - g_enemies[i].xpos) <= g_enemies[i].width) && 
+					((g_playerBullets[j].xpos + 2 - g_enemies[i].xpos) > 0)) {
+					if (g_enemies[i].xpos0 <= g_enemies[i].xpos - 6) {
+						if (g_enemies[i].ypos0 > g_enemies[j].ypos) {
+							g_enemies[i].xpos--;
+							g_enemies[i].ypos++;
+						} else {
+							g_enemies[i].xpos--;
+							g_enemies[i].ypos--;
+						}
 					} else {
-						g_enemies[i].xpos--;
-						g_enemies[i].ypos--;
+						if (g_enemies[i].ypos0 > g_enemies[j].ypos) {
+							g_enemies[i].xpos++;
+							g_enemies[i].ypos++;
+						} else {
+							g_enemies[i].xpos++;
+							g_enemies[i].ypos--;
+						}
 					}
-				} else {
-					if (g_enemies[i].ypos0 > g_enemies[j].ypos) {
-						g_enemies[i].xpos++;
-						g_enemies[i].ypos++;
-					} else {
-						g_enemies[i].xpos++;
-						g_enemies[i].ypos--;
-					}
-				}
+			}
 		}
 	}
 	*/
@@ -167,7 +171,7 @@ void LevelFour(EnemyR* enemy) {
 
 void BulletTarget(int xpos, int ypos, int xdest, int ydest) {
 	int i,tmp;
-	for (i = 0; i < LEVEL_MAX_BULLETS;  i++) {
+	for (i = 0; i < LEVEL_MAX_BULLETS*(MAX_ENEMIES<<2);  i++) {
 		if (g_enemyBullets[i].stat == B_DEAD) {
 			g_enemyBullets[i].stat = B_ALIVE;
 			g_enemyBullets[i].xpos = xpos;
@@ -277,7 +281,7 @@ void GameUpdate(void) {
 			g_level++;
 		}
 	}
-	for (i = 0; i < LEVEL_MAX_BULLETS; i++) {
+	for (i = 0; i < MAX_ENEMY_BULLETS; i++) {
 		if (g_enemyBullets[i].stat == B_ALIVE) {
 			
 			//	BULLET DIRECTION

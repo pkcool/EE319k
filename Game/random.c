@@ -11,7 +11,7 @@
 
 unsigned int MT[624];
 unsigned int index = 0;
- 
+
 void RandomInit(unsigned long seed) {
     unsigned int i;
     index = 0;
@@ -24,6 +24,7 @@ void RandomInit(unsigned long seed) {
 unsigned int RandomExtract(void) {
     unsigned int y;
     if (index == 0) {
+				index = 0;
         RandomGenerate();
     }
 

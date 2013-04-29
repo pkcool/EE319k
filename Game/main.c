@@ -132,7 +132,7 @@ int main(void) {
 				} else {
 					if (g_player.animationStep/4 < MAX_EXPLOSION) {
 						DrawImageFast(g_playerSprites[g_player.shield], g_player.xpos, g_player.ypos, g_player.width, g_player.height);
-						RotateImage(g_explosionSprites[g_player.animationStep/4], g_player.xpos - 2, g_player.ypos - 4, 14, 14, 0, 4);
+						RotateImage(g_explosionSprites[g_player.animationStep/4], g_player.xpos - 2, g_player.ypos - 4, 14, 14, 0, 6);
 						g_player.animationStep++;
 					} else {
 						g_player.animationStep = 0;

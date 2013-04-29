@@ -47,7 +47,7 @@ typedef struct {
 	int direction;									// angle (angle = 15*direction)
 	char animationStep;							// used for stepping through explosion
 	char shield;										// 0 for normal, 1 for shield (behavior to be determined)
-	char health;										// number of hits before death (decremented on each hit)
+	int health;											// number of hits before death (decremented on each hit)
 	int score;
 	PlayerStat stat;								// used for game state
 } PlayerR;
