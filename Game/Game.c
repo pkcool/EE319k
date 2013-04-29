@@ -62,6 +62,7 @@ unsigned char g_level = 0;
 
 unsigned int g_bulletTimer = 0;
 unsigned int g_shotgunTimer = 0;
+unsigned int g_shieldTimer = 0;
 unsigned int g_levelTimer = 0;
 unsigned int rollover = 0;
 unsigned int LEVEL_MAX_BULLETS = 1;
@@ -281,6 +282,16 @@ void GameUpdate(void) {
 				g_shotgunTimer = 100;
 			}
 		}
+		if (HWREGBITW(&g_flags, FLAG_BUTTON_DOWN)) {
+			if (g_player.score > 500) {
+				g_player.score -= 500;
+				g_player.shield = 1;
+				g_shieldTimer = 200;
+			}
+		}
+		if (g_shieldTimer == 0) {
+			g_player.shield = 0;
+		}
 	}
 	j=0;
 	for (i = 0; i < MAX_ENEMIES; i++) {
@@ -333,7 +344,7 @@ void GameUpdate(void) {
 			g_enemyBullets[i].xpos = g_enemyBullets[i].xposA / 8;
 			g_enemyBullets[i].ypos = g_enemyBullets[i].yposA / 8;
 			*/
-			if ((g_player.stat == P_ALIVE) && 
+			if ((g_player.stat == P_ALIVE) && (g_player.shield == 0) && 
 				((g_enemyBullets[i].xpos - g_player.xpos) <= g_player.width) && 
 				((g_enemyBullets[i].xpos + 2 - g_player.xpos) > 0) && 
 				((g_enemyBullets[i].ypos - g_player.ypos) <= g_player.height) && 
@@ -406,6 +417,9 @@ void GameUpdate(void) {
 	if (g_levelTimer > 0) {
 		g_levelTimer--;
 	}
+	if (g_shieldTimer > 0) {
+		g_shieldTimer--;
+	}
 	HWREGBITW(&g_flags, FLAG_BUTTON_UP) = 0;
 	HWREGBITW(&g_flags, FLAG_BUTTON_DOWN) = 0;
 	HWREGBITW(&g_flags, FLAG_BUTTON_LEFT) = 0;
@@ -438,7 +452,7 @@ void EnemyInit(void) {
 			g_enemies[y*4+x].flock = ((y%2)==0) ? 1 : -1;
 			g_enemies[y*4+x].direction = 0;
 			g_enemies[y*4+x].animationStep = 0;
-			g_enemies[y*4+x].health = 1;
+			g_enemies[y*4+x].health = ((1+g_level/4) < 5) ? 1+g_level/4 : 4;
 			g_enemies[y*4+x].stat = E_ALIVE;
 		}
 	}

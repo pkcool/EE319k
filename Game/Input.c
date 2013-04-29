@@ -12,7 +12,7 @@ void InputInit(void){
   GPIO_PORTG_DEN_R |= 0xF8; // enable digital I/O on PC7
   GPIO_PORTG_IS_R &= ~0xF8; // PC7 is edge-sensitive (default setting)
   GPIO_PORTG_IBE_R &= ~0xF8;// PC7 is not both edges (default setting)
-  GPIO_PORTG_IEV_R |= 0xF8; // PC7 rising edge event
+  GPIO_PORTG_IEV_R |= ~0xF8; // PC7 falling edge event
   GPIO_PORTG_ICR_R = 0xF8;  // clear flag7
   GPIO_PORTG_IM_R |= 0xF8;  // enable interrupt on PC7
 	NVIC_PRI7_R = (NVIC_PRI7_R&0x00FFFFFF)|0x20000000; // bits 29-31

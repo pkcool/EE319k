@@ -43,6 +43,7 @@ void IntToString(unsigned int a, unsigned char *str, int length) {
 int main(void) {
 	int i;
 	unsigned char lives[2] = "  ";
+	unsigned char level[2] = "  ";
 	unsigned char score[5] = "     ";
 	unsigned char randomString[21];
 	PLL_Init();
@@ -115,8 +116,10 @@ int main(void) {
 		}
 		IntToString(g_player.health, lives,2);
 		IntToString(g_player.score, score,5);
+		IntToString(g_level, level, 2);
 		DrawString(lives, 0, 0);
 		DrawString(score, 128-5*6, 0);
+		DrawString(level, 128/2-2*6, 0);
 		if (g_levelTimer != 0) {
 			if (g_levelTimer < 450 && g_levelTimer > 350) {
 				if ((g_levelTimer%2) == 0) {
