@@ -51,6 +51,8 @@ PlayerR g_player;
 
 BulletR emptyBullet;
 
+unsigned long ADC_MID = 700;
+unsigned long ADC_DEV = 25;
 
 void (*EnemyAI[MAX_LEVELS])(EnemyR* enemy);
 unsigned char g_Stringz[6][22] = {"    Why hurt us?     \0",
@@ -206,37 +208,17 @@ void GameUpdate(void) {
 		}
 		if (HWREGBITW(&g_flags, FLAG_ADC_VALUE) == 1) {
 			j = ADCValue;
-			if (abs(j - ADC_MID) <= 50) {
+			if (abs(j - ADC_MID) <= ADC_DEV) {
 				// pass
 			} else if (j > ADC_MID) {
-				if (g_player.xpos < 127)
+				if (g_player.xpos < 127-PLAYER_BOX)
 					g_player.xpos++;
 			} else {
 				if (g_player.xpos > 0)
 					g_player.xpos--;
 			}
+			HWREGBITW(&g_flags, FLAG_ADC_VALUE) = 0;
 		}
-		/*
-		if ((GPIO_PORTG_DATA_R&0x20) == 0) {
-			if ((g_soundArray == 0) || (g_soundIndex > SND_MOVE_LENGTH/2)) {
-				//g_soundArray = &g_soundMove;
-				//g_soundIndex = 0;
-				//g_soundMax = SND_MOVE_LENGTH; 
-			}
-			if (g_player.xpos > 0) {
-				g_player.xpos--;
-			}
-		} else if ((GPIO_PORTG_DATA_R&0x40) == 0) {
-			if ((g_soundArray == 0) || (g_soundIndex > SND_MOVE_LENGTH/2)) {
-				//g_soundArray = &g_soundMove;
-				//g_soundIndex = 0;
-				//g_soundMax = SND_MOVE_LENGTH; 
-			}
-			if (g_player.xpos < (127-PLAYER_BOX)) {
-				g_player.xpos++;
-			}
-		}
-		*/
 		if (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT)) {
 			if (g_bulletTimer == 0) {
 				for (i = 0; i < MAX_PLAYER_BULLETS; i++) {

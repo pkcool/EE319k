@@ -47,7 +47,7 @@ void IntToString(unsigned int a, unsigned char *str, int length) {
 }
 
 int main(void) {
-	int i, j;
+	int i, j, k, l;
 	char stary;
 	unsigned char lives[2] = "  ";
 	unsigned char level[2] = "  ";
@@ -72,12 +72,26 @@ int main(void) {
 	SysTick_IntEnable();
 	EnableInterrupts();
 	
-	while ((GPIO_PORTG_DATA_R & 0x80) != 0) { }
-	while ((GPIO_PORTG_DATA_R & 0x80) == 0) { }
+	j = 1024;
+	k = 0;
+	for (i = 0; i < 32; i++) {
+		while (HWREGBITW(&g_flags, FLAG_ADC_VALUE) == 0) { }
+		l = ADCValue;
+		if (l < j)
+			j = l;
+		if (l > k)
+			k = l;
+		ADC_MID += l;
+		HWREGBITW(&g_flags, FLAG_ADC_VALUE) = 0;
+	}
+	ADC_MID /= 32;
+	ADC_DEV = k-j;
+	
+	while (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) == 0) { }
+	HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) = 0;
 	RandomInit(NVIC_ST_CURRENT_R);
 	RandomGenerate();
 	GameInit();
-	HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) = 0;
 	while (1) {
 		while (HWREGBITW(&g_flags, FLAG_BUFFER_READY) == 1) { }
 		sc = StartCritical();
@@ -90,17 +104,6 @@ int main(void) {
 				if (g_levelTimer == 0) { j = 1; }
 				stary++;
 			}
-		}
-		IntToString(g_player.health, lives,2);
-		IntToString(g_player.score, score,5);
-		IntToString(g_level, level, 2);
-		DrawString(lives, 0, 0);
-		DrawString(score, 128-5*6, 0);
-		DrawString(level, 128/2-2*6, 0);
-		if (g_level == 5 && g_continue == 0) {
-			DimScreen();
-			DrawString("  You're a monster.  ", 128/2-21*3, 96/2-12);
-			DrawString("  Continue anyway?   ", 128/2-21*3, 96/2);
 		}
 		for (i = 0; i < MAX_ENEMY_BULLETS; i++) {
 			if (g_enemyBullets[i].stat == B_ALIVE) {
@@ -139,6 +142,12 @@ int main(void) {
 					break;
 			}
 		}
+		IntToString(g_player.health, lives,2);
+		IntToString(g_player.score, score,5);
+		IntToString(g_level, level, 2);
+		DrawString(lives, 0, 0);
+		DrawString(score, 128-5*6, 0);
+		DrawString(level, 128/2-2*6, 0);
 		if (g_levelTimer != 0) {
 			if (g_levelTimer < 450 && g_levelTimer > 300) {
 				for (i = 0; i < 21; i++) {
@@ -187,6 +196,11 @@ int main(void) {
 					HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) = 0;
 				}
 				break;
+		}
+		if (g_level == 5 && g_continue == 0) {
+			DimScreen();
+			DrawString("  You're a monster.  ", 128/2-21*3, 96/2-12);
+			DrawString("  Continue anyway?   ", 128/2-21*3, 96/2);
 		}
 		HWREGBITW(&g_flags, FLAG_BUFFER_READY) = 1;
 		EndCritical(sc);

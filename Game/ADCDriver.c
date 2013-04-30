@@ -106,7 +106,7 @@ void ADC_Init(unsigned char channelNum){
 unsigned long ADCValue;
 unsigned long tmpValue;
 unsigned int count;
-#define N	64
+#define N	32
 // This function triggers an ADC conversion using sample
 // sequencer 3, waits for the conversion to finish, and returns
 // the result in the lower 10 bits of the return value.  It

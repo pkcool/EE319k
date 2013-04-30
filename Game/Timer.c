@@ -28,7 +28,7 @@ void Timer0BInit(void(*task)(void)) {
   TIMER0_CTL_R &= ~TIMER_CTL_TBEN;										// 1) disable timer0B during setup
   TIMER0_CFG_R = TIMER_CFG_16_BIT;										// 2) configure for 16-bit timer mode
   TIMER0_TBMR_R = TIMER_TBMR_TBMR_PERIOD;							// 3) configure for periodic mode
-  TIMER0_TBILR_R = 3000;															// 4) reload value
+  TIMER0_TBILR_R = 1000;															// 4) reload value
   TIMER0_TBPR_R = 9;																	// 5) 200 Hz timer0B
   TIMER0_ICR_R = TIMER_ICR_TBTOCINT;									// 6) clear timer0B timeout flag
   TIMER0_IMR_R |= TIMER_IMR_TBTOIM;										// 7) arm timeout interrupt

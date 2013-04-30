@@ -10,8 +10,6 @@
 #define MAX_STARS							30
 #define MAX_LEVELS						6
 
-#define ADC_MID		700
-
 #define PLAYER_BOX		12
 #define ENEMY_BOX			10
 
@@ -83,6 +81,9 @@ extern unsigned char g_level;
 extern unsigned int g_bulletTimer;
 extern unsigned int g_shotgunTimer;
 extern unsigned int g_levelTimer;
+
+extern unsigned long ADC_MID;
+extern unsigned long ADC_DEV;
 
 extern void (*EnemyAI[MAX_LEVELS])(EnemyR* enemy);
 
