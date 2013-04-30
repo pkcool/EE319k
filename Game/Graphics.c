@@ -87,6 +87,29 @@ void DrawString(unsigned char* pcStr, signed int x, signed int y) {
 	}
 }
 
+void DrawBoss (unsigned char* data, signed int x, signed int y, unsigned int width, 
+							 unsigned int height, unsigned int angle, signed int scale, 
+							 signed int y_sub)
+{
+	int i;
+	int newI, newJ;
+	signed int mat12, mat22;
+	int centerX = width/2;
+	int centerY = height/2;
+	
+	RotateImage(data, x - centerX, y - centerY, width, height, 0, 8);
+
+	for(i = 0; i < 24; i += 6) {
+		mat22 = (cosarr[(angle+i)%24])/8;
+		mat12 = -(sinarr[(angle+i)%24])/8;
+		
+		newI = scale*(mat12*(y_sub))/128;
+		newJ = scale*(mat22*(y_sub))/128;
+		
+		RotateImage(data, x + newI - width/2, y + newJ - height/2, width, height, (angle+i)%24, 4);
+	}
+}
+
 void RotateImage(unsigned char* data, signed int x, 
 								signed int y, unsigned int width, 
 								unsigned int height, unsigned int angle, signed int scale)

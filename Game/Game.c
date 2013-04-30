@@ -139,7 +139,21 @@ void LevelThree(EnemyR* enemy) {
 }
 
 void LevelFour(EnemyR* enemy) {
-	// SUPER COOL BOSS
+	char i;
+	char enemy_count = 0;
+	for (i = 0; i < MAX_ENEMIES; i++) {
+		if(enemy[i].stat == E_ALIVE) { 
+			enemy_count++; 
+		}
+	}
+	if (enemy_count > 5) {
+		for (i = 0; i < MAX_ENEMIES; i++) {
+			LevelThree(enemy);
+		}
+	} else {
+		
+		
+	}
 }
 
 BulletR* FreshBullet(BulletR (*bullets)[], unsigned int max) {

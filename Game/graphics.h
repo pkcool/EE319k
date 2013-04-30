@@ -17,6 +17,10 @@ void DrawLine(signed int x0, signed int y0,
 void DrawImage(unsigned char* data, signed int x, 
 								signed int y, unsigned int width, 
 								unsigned int height);
+void DrawBoss(unsigned char* data, signed int x, 
+									signed int y, unsigned int width, 
+									unsigned int height, unsigned int angle,
+									signed int scale, signed int y_sub);
 void RotateImage(unsigned char* data, signed int x, 
 									signed int y, unsigned int width, 
 									unsigned int height, unsigned int angle,
