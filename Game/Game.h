@@ -5,9 +5,9 @@
 #define MAX_DANCE							6
 #define MAX_EXPLOSION					5
 #define MAX_ENEMIES						12
-#define MAX_ENEMY_BULLETS			80
+#define MAX_ENEMY_BULLETS			60
 #define MAX_PLAYER_BULLETS		5
-#define MAX_STARS							40
+#define MAX_STARS							30
 #define MAX_LEVELS						6
 
 typedef enum {
@@ -33,7 +33,6 @@ typedef struct {
 	signed char xpos0, ypos0;			// initial x and y (in case we need to return)
 	signed char xpos, ypos;				// current x and y
 	unsigned char width, height;		// width and height of sprite in pixels (10x10)
-	int direction;									// angle (angle = 15*direction)
 	char animationStep;							// used for stepping through dance/explosion (please be nice and set to 0 if you're about to explode
 	char health;										// number of hits before death (decremented on each hit)
 	unsigned char row, col;
@@ -44,7 +43,6 @@ typedef struct {
 typedef struct {
 	signed char xpos, ypos;				// x and y
 	unsigned char width, height;		// width and height of sprite in pixels (12x14)
-	int direction;									// angle (angle = 15*direction)
 	char animationStep;							// used for stepping through explosion
 	char shield;										// 0 for normal, 1 for shield (behavior to be determined)
 	signed int health;							// number of hits before death (decremented on each hit)
@@ -55,10 +53,6 @@ typedef struct {
 typedef struct {
 	signed char xpos, ypos;				// x and y
 	signed int dx1, dx2, dy1, dy2, longest, shortest, numerator, direction;
-	//signed int xposA, yposA; 		  // accurate x and y position * 8
-	//signed char xposI, yposI;			// slope of travel * 8
-  //signed char xpos0, ypos0; 		// used for starting position
-	//signed char xpos1, ypos1;			// used for destination
 	BulletStat stat;								// used for game state
 } BulletR;
 
@@ -78,7 +72,7 @@ extern BulletR g_playerBullets[MAX_PLAYER_BULLETS];
 extern StarR g_stars[MAX_STARS];
 extern PlayerR g_player;
 
-extern unsigned char g_Stringz[6][22];
+extern unsigned char g_Stringz[6][21];
 extern unsigned char g_level;
 extern unsigned int g_bulletTimer;
 extern unsigned int g_shotgunTimer;

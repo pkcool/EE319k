@@ -48,13 +48,3 @@ void RandomGenerate(void) {
         }
     }
 }
-
-void RandomSort(char (*array)[], int size) {
-	char i,j,k;
-	for (i = size - 1; i > 0; i--) {
-		j = RandomExtract()%i;
-		k = (*array)[i];
-		(*array)[i] = (*array)[j];
-		(*array)[j] = k;
-	}
-}

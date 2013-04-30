@@ -51,11 +51,11 @@ PlayerR g_player;
 BulletR emptyBullet;
 
 void (*EnemyAI[MAX_LEVELS])(EnemyR* enemy);
-unsigned char g_Stringz[6][22] = {"  You're hurting us. \0",
-																	"    This isn't fun.  \0",
-																	" I don't wanna fight.\0",
-																	"You killed my family!\0",
-																	" An eye for an eye...\0",
+unsigned char g_Stringz[6][21] = {"  You're hurting us. ",
+																	"    This isn't fun.  ",
+																	" I don't wanna fight.",
+																	"You killed my family!",
+																	" An eye for an eye...",
 																	"\0"};
 
 unsigned char g_level = 0;
@@ -67,7 +67,6 @@ unsigned int g_levelTimer = 0;
 unsigned int rollover = 0;
 unsigned int LEVEL_MAX_BULLETS = 1;
 signed int LEVEL_RANDOM = 100;
-unsigned int currentEnemies = 0;
 
 volatile unsigned long g_step = 0;
 
@@ -118,29 +117,6 @@ void LevelFour(EnemyR* enemy) {
 
 void LevelFive(EnemyR* enemy) {
 	/*
-	//	HARD MODE SHOOTING ALGORITHM :D
-	if (RandomExtract()%2048 == 1) {
-		for (j = 0; j < MAX_ENEMY_BULLETS;  j++) {
-			if (g_enemyBullets[j].stat == B_DEAD) {
-				g_enemyBullets[j].stat = B_ALIVE;
-				g_enemyBullets[j].xpos = g_enemies[i].xpos+g_enemies[i].width/2-2;
-				g_enemyBullets[j].ypos = g_enemies[i].ypos + 2;
-				// make the bullet go towards the player:
-				g_enemyBullets[j].xpos0 = g_enemyBullets[j].xpos;
-				g_enemyBullets[j].ypos0 = g_enemyBullets[j].ypos;
-				g_enemyBullets[j].xpos1 = g_player.xpos;
-				g_enemyBullets[j].ypos1 = g_player.ypos;
-				g_enemyBullets[j].xposA = g_enemyBullets[j].xpos * 8;
-				g_enemyBullets[j].yposA = g_enemyBullets[j].ypos * 8;					
-				g_enemyBullets[j].xposI = (g_enemyBullets[j].xpos1 - g_enemyBullets[j].xpos0);
-				g_enemyBullets[j].yposI = (g_enemyBullets[j].ypos1 - g_enemyBullets[j].ypos0);
-				distance = sqrt((g_enemyBullets[j].xposI)^2 + (g_enemyBullets[j].yposI)^2);
-				g_enemyBullets[j].xposI = (g_enemyBullets[j].xposI * 8) / distance;
-				g_enemyBullets[j].yposI = (g_enemyBullets[j].yposI * 8) / distance;
-				break;
-			}
-		}
-	}
 	//	DODGING ALGORITHM
 	for (i = 0; i < MAX_ENEMIES; i++) {
 		for (j = 0; j < MAX_PLAYER_BULLETS; j++) {
@@ -303,9 +279,8 @@ void GameUpdate(void) {
 			j++;
 		}
 	}
-	currentEnemies = j;
-	if ((currentEnemies == 0) && (g_levelTimer == 0)) {
-		g_levelTimer = 500;
+	if ((j == 0) && (g_levelTimer == 0)) {
+		g_levelTimer = 1000;
 	}
 	if (g_levelTimer == 1) {
 		EnemyInit();
@@ -337,12 +312,6 @@ void GameUpdate(void) {
 					g_enemyBullets[i].stat = B_DEAD;
 			}
 			
-			/*	BULLET DIRECTION ALGORITHM
-			g_enemyBullets[i].xposA += g_enemyBullets[i].xposI / 8;
-			g_enemyBullets[i].yposA += g_enemyBullets[i].yposI / 8;
-			g_enemyBullets[i].xpos = g_enemyBullets[i].xposA / 8;
-			g_enemyBullets[i].ypos = g_enemyBullets[i].yposA / 8;
-			*/
 			if ((g_player.stat == P_ALIVE) && (g_player.shield == 0) && 
 				((g_enemyBullets[i].xpos - g_player.xpos) <= g_player.width) && 
 				((g_enemyBullets[i].xpos + 2 - g_player.xpos) > 0) && 
@@ -500,7 +469,6 @@ void EnemyInit(void) {
 			g_enemies[y*4+x].col = x;
 			g_enemies[y*4+x].row = y;
 			g_enemies[y*4+x].flock = ((y%2)==0) ? 1 : -1;
-			g_enemies[y*4+x].direction = 0;
 			g_enemies[y*4+x].animationStep = 0;
 			g_enemies[y*4+x].health = ((1+g_level/4) < 5) ? 1+g_level/4 : 4;
 			g_enemies[y*4+x].stat = E_ALIVE;
@@ -512,14 +480,9 @@ void GameInit(void) {
 	int i;
 	EnemyInit();
 	for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
-		g_playerBullets[i].xpos = 0;
-		g_playerBullets[i].ypos = 0;
 		g_playerBullets[i].stat = B_DEAD;
 	}
 	for (i = 0; i < MAX_ENEMY_BULLETS; i++) {
-		g_enemyBullets[i].xpos = 0;
-		g_enemyBullets[i].ypos = 0;
-		g_enemyBullets[i].direction = 0;
 		g_enemyBullets[i].stat = B_DEAD;
 	}
 	for (i = 0; i < MAX_STARS; i++) {
@@ -530,8 +493,6 @@ void GameInit(void) {
 	g_player.ypos = 96-14-4;
 	g_player.width = 12;
 	g_player.height = 12;
-	g_player.direction = 0;
-	g_player.animationStep = 0;
 	g_player.shield = 0;
 	g_player.score = 0;
 	g_player.health = 5;

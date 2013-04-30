@@ -1,6 +1,4 @@
 
-#include <stdio.h>
-
 #include "drivers/rit128x96x4.h"
 #include "inc/lm3s1968.h"
 #include "inc/hw_types.h"

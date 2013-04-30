@@ -44,43 +44,6 @@ void SetPixel(signed int x, signed int y,
 	}
 }
 
-// draw a line from x0, y0 to x1, y1
-// 	line is NOT antialiased
-void DrawLine(signed int x0, signed int y0, 
-		signed int x1, signed int y1,
-		unsigned char color)
-{
-	signed int tmp, dx, dy, x, y, eps;
-	if (x1 < x0) {
-		tmp = x0; x0 = x1; x1 = tmp;
-		tmp = y0; y0 = y1; y1 = tmp;
-	}
-	dx = x1 - x0;
-	dy = y1 - y0;
-	y = y0;
-	x	= x0;
-	eps = 0;
-	if (y0 <= y1) {
-		for (; x < x1; x++ ) {
-			SetPixel(x,y,color);
-			eps += dy;
-			if ( (eps << 1) >= dx )  {
-				y++;
-				eps -= dx;
-			}
-		}
-	} else {
-		for (; x < x1; x++ ) {
-			SetPixel(x,y,color);
-			eps += dy;
-			if ( (eps << 1) <= -dx )  {
-				y--;
-				eps += dx;
-			}
-		}
-	}
-}
-
 // draws an image to x, y of width and height
 // 	if any of the nibbles are equal to 0x01
 //  they will be treated as transparent
