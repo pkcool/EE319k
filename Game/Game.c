@@ -198,8 +198,7 @@ void GameUpdate(void) {
 	int i, j;
 	BulletR* bullet;
 	if (g_level == 5 && g_continue == 0) {
-		while (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) == 0) { }
-		g_continue = 1;
+		return;
 	}
 	if (g_player.stat != P_DEAD) {
 		if ((g_player.health <= 0) && (g_player.stat == P_ALIVE)) {

@@ -201,6 +201,10 @@ int main(void) {
 			DimScreen();
 			DrawString("  You're a monster.  ", 128/2-21*3, 96/2-12);
 			DrawString("  Continue anyway?   ", 128/2-21*3, 96/2);
+			if (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) == 1) {
+				g_continue = 1;
+				HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) = 0;
+			}
 		}
 		HWREGBITW(&g_flags, FLAG_BUFFER_READY) = 1;
 		EndCritical(sc);
