@@ -66,7 +66,6 @@ unsigned int g_bulletTimer = 0;
 unsigned int g_shotgunTimer = 0;
 unsigned int g_shieldTimer = 0;
 unsigned int g_levelTimer = 0;
-unsigned int rollover = 0;
 unsigned int LEVEL_MAX_BULLETS = 1;
 signed int LEVEL_RANDOM = 100;
 
@@ -112,8 +111,8 @@ void LevelOne(EnemyR* enemy) {
 
 void LevelTwo(EnemyR* enemy) {
 	BulletR* bullet;
-	LEVEL_MAX_BULLETS = 4;
-	LEVEL_RANDOM = 100;
+	LEVEL_MAX_BULLETS = 10;
+	LEVEL_RANDOM = 75;
 	if ((g_player.stat == P_ALIVE) && (RandomExtract()%LEVEL_RANDOM == 2)) {
 		if ((((*enemy).xpos - g_player.xpos) <= PLAYER_BOX + 16) && (((*enemy).xpos + 2 - g_player.xpos) > 0 - 16)) {
 			(*enemy).animationStep = 0;
@@ -199,10 +198,6 @@ void GameUpdate(void) {
 	if (g_level == 5 && g_continue == 0) {
 		while (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) == 0) { }
 		g_continue = 1;
-	}
-	if (g_player.score > rollover && (g_player.score%500) == 0) {
-		g_player.health++;
-		rollover = g_player.score;
 	}
 	if (g_player.stat != P_DEAD) {
 		if ((g_player.health <= 0) && (g_player.stat == P_ALIVE)) {
@@ -342,6 +337,7 @@ void GameUpdate(void) {
 					((g_playerBullets[i].ypos + 1 - g_enemies[j].ypos) > 0)) {
 					g_enemies[j].health--;
 					if (g_enemies[j].health == 0) {
+						g_enemies[i].animationStep = 0;
 						g_enemies[j].stat = E_HIT;
 						g_player.score += 25;
 					}
@@ -409,7 +405,7 @@ void GameUpdate(void) {
 
 void EnemyInit(void) {
 	int x,y;
-	if (g_level == 5) {
+	if (g_level >= 3) {
 		LEVEL_MAX_BULLETS += 10;
 		if (LEVEL_MAX_BULLETS > MAX_ENEMY_BULLETS) {
 			LEVEL_MAX_BULLETS = MAX_ENEMY_BULLETS;
