@@ -89,12 +89,12 @@ void LevelTwo(EnemyR* enemy) {
 	LEVEL_MAX_BULLETS = 4;
 	LEVEL_RANDOM = 100;
 	if ((g_player.stat == P_ALIVE) && (RandomExtract()%LEVEL_RANDOM == 2)) {
-		if ((((*enemy).xpos - g_player.xpos) <= g_player.width + 16) && (((*enemy).xpos + 2 - g_player.xpos) > 0 - 16)) {
+		if ((((*enemy).xpos - g_player.xpos) <= PLAYER_BOX + 16) && (((*enemy).xpos + 2 - g_player.xpos) > 0 - 16)) {
 			(*enemy).animationStep = 0;
 			(*enemy).stat = E_FIRE;
 			bullet = FreshBullet(&g_enemyBullets, LEVEL_MAX_BULLETS);
 			(*bullet).stat = B_ALIVE;
-			(*bullet).xpos = (*enemy).xpos+(*enemy).width/2;
+			(*bullet).xpos = (*enemy).xpos+ENEMY_BOX/2;
 			(*bullet).ypos = (*enemy).ypos + 2;
 			(*bullet).direction = 0;
 		}
@@ -106,7 +106,7 @@ void LevelThree(EnemyR* enemy) {
 	if ((g_player.stat == P_ALIVE) && (RandomExtract()%LEVEL_RANDOM == 2)) {
 		(*enemy).animationStep = 0;
 		(*enemy).stat = E_FIRE;
-		BulletTarget(FreshBullet(&g_enemyBullets, LEVEL_MAX_BULLETS), (*enemy).xpos + (*enemy).width/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
+		BulletTarget(FreshBullet(&g_enemyBullets, LEVEL_MAX_BULLETS), (*enemy).xpos + ENEMY_BOX/2, (*enemy).ypos + 2, g_player.xpos, g_player.ypos);
 	}
 	LevelOne(enemy);
 }
@@ -228,13 +228,13 @@ void GameUpdate(void) {
 			g_player.stat = P_HIT;
 			g_player.animationStep = 0;
 		}
+		/*
 		j = (ADC_In()-ADC_MIN)*128/(ADC_MAX-ADC_MIN);
 		if (j > 0 && j < 128) {
 			g_soundArray = &g_soundMove;
 			g_soundIndex = 0;
 			g_soundMax = SND_MOVE_LENGTH;
-		}
-		/*
+		}*/
 		if ((GPIO_PORTG_DATA_R&0x20) == 0) {
 			if ((g_soundArray == 0) || (g_soundIndex > SND_MOVE_LENGTH/2)) {
 				g_soundArray = &g_soundMove;
@@ -250,17 +250,16 @@ void GameUpdate(void) {
 				g_soundIndex = 0;
 				g_soundMax = SND_MOVE_LENGTH; 
 			}
-			if (g_player.xpos < (127-g_player.width)) {
+			if (g_player.xpos < (127-PLAYER_BOX)) {
 				g_player.xpos++;
 			}
 		}
-		*/
 		if (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT)) {
 			if (g_bulletTimer == 0) {
 				for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
 					if (g_playerBullets[i].stat == B_DEAD) {
 						g_playerBullets[i].stat = B_ALIVE;
-						g_playerBullets[i].xpos = g_player.xpos+g_player.width/2-2;
+						g_playerBullets[i].xpos = g_player.xpos+PLAYER_BOX/2-2;
 						g_playerBullets[i].ypos = g_player.ypos - 2;
 						g_playerBullets[i].direction = 0;
 						g_soundArray = &g_soundBullet;
@@ -339,9 +338,9 @@ void GameUpdate(void) {
 			}
 			
 			if ((g_player.stat == P_ALIVE) && (g_player.shield == 0) && 
-				((g_enemyBullets[i].xpos - g_player.xpos) <= g_player.width) && 
+				((g_enemyBullets[i].xpos - g_player.xpos) <= PLAYER_BOX) && 
 				((g_enemyBullets[i].xpos + 2 - g_player.xpos) > 0) && 
-				((g_enemyBullets[i].ypos - g_player.ypos) <= g_player.height) && 
+				((g_enemyBullets[i].ypos - g_player.ypos) <= PLAYER_BOX) && 
 				((g_enemyBullets[i].ypos + 2 - g_player.ypos) > 0)) {
 					g_player.health--;
 					g_player.score -= 25;
@@ -376,9 +375,9 @@ void GameUpdate(void) {
 
 			for (j = 0; j < MAX_ENEMIES; j++) {
 				if (((g_enemies[j].stat == E_ALIVE) || (g_enemies[j].stat == E_FIRE)) && 
-					((g_playerBullets[i].xpos - g_enemies[j].xpos) <= g_enemies[j].width) && 
+					((g_playerBullets[i].xpos - g_enemies[j].xpos) <= ENEMY_BOX) && 
 					((g_playerBullets[i].xpos + 2 - g_enemies[j].xpos) > 0) && 
-					((g_playerBullets[i].ypos - g_enemies[j].ypos) <= g_enemies[j].height) && 
+					((g_playerBullets[i].ypos - g_enemies[j].ypos) <= ENEMY_BOX) && 
 					((g_playerBullets[i].ypos + 2 - g_enemies[j].ypos) > 0)) {
 					g_enemies[j].health--;
 					if (g_enemies[j].health == 0) {
@@ -490,8 +489,6 @@ void EnemyInit(void) {
 			g_enemies[y*4+x].ypos0 = y*12+6;
 			g_enemies[y*4+x].xpos = x*24+12;
 			g_enemies[y*4+x].ypos = y*12+6;
-			g_enemies[y*4+x].width = 10;
-			g_enemies[y*4+x].height = 10;
 			g_enemies[y*4+x].col = x;
 			g_enemies[y*4+x].row = y;
 			g_enemies[y*4+x].flock = ((y%2)==0) ? 1 : -1;
@@ -517,8 +514,6 @@ void GameInit(void) {
 	}
 	g_player.xpos = 128/2-12/2;
 	g_player.ypos = 96-14-4;
-	g_player.width = 12;
-	g_player.height = 12;
 	g_player.shield = 0;
 	g_player.score = 0;
 	g_player.health = 5;
