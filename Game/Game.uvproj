@@ -397,11 +397,6 @@
               <FilePath>.\main.c</FilePath>
             </File>
             <File>
-              <FileName>maze.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\maze.c</FilePath>
-            </File>
-            <File>
               <FileName>random.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\random.c</FilePath>

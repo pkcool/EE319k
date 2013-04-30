@@ -338,6 +338,9 @@ void GameUpdate(void) {
 					if (g_enemies[j].health == 0) {
 						g_enemies[j].animationStep = 0;
 						g_enemies[j].stat = E_HIT;
+						g_soundArray = &g_soundBullet;
+						g_soundIndex = 0;
+						g_soundMax = SND_BULLET_LENGTH;
 						g_player.score += 25;
 					}
 					g_player.score += 25;
