@@ -385,6 +385,7 @@ void GameUpdate(void) {
 				g_stars[i].ypos	= 0;
 			}
 		}
+		g_levelTimer--;
 	}
 	g_step++;
 	if (g_bulletTimer > 0) {
