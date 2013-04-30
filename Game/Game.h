@@ -10,6 +10,9 @@
 #define MAX_STARS							30
 #define MAX_LEVELS						6
 
+#define ADC_MAX		1022
+#define ADC_MIN		88
+
 typedef enum {
 	E_ALIVE,													// self explanatory
 	E_FIRE,														// we need to dance
