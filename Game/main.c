@@ -87,8 +87,8 @@ int main(void) {
 	ADC_MID /= 32;
 	ADC_DEV = k-j;
 	
-	while (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) == 0) { }
-	HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) = 0;
+	while (HWREGBITW(&g_flags, FLAG_BUTTON_LEFT) == 0) { }
+	HWREGBITW(&g_flags, FLAG_BUTTON_LEFT) = 0;
 	RandomInit(NVIC_ST_CURRENT_R);
 	RandomGenerate();
 	GameInit();
@@ -191,9 +191,9 @@ int main(void) {
 			case P_DEAD:
 				DimScreen();
 				DrawString("Game Over",128/2-9*3,96/2);
-				if (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) == 1) {
+				if (HWREGBITW(&g_flags, FLAG_BUTTON_LEFT) == 1) {
 					GameInit();
-					HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) = 0;
+					HWREGBITW(&g_flags, FLAG_BUTTON_LEFT) = 0;
 				}
 				break;
 		}
@@ -201,9 +201,9 @@ int main(void) {
 			DimScreen();
 			DrawString("  You're a monster.  ", 128/2-21*3, 96/2-12);
 			DrawString("  Continue anyway?   ", 128/2-21*3, 96/2);
-			if (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) == 1) {
+			if (HWREGBITW(&g_flags, FLAG_BUTTON_LEFT) == 1) {
 				g_continue = 1;
-				HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) = 0;
+				HWREGBITW(&g_flags, FLAG_BUTTON_LEFT) = 0;
 			}
 		}
 		HWREGBITW(&g_flags, FLAG_BUFFER_READY) = 1;

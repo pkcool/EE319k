@@ -9,13 +9,12 @@
 
 extern volatile unsigned long g_step;
 extern volatile unsigned long g_flags;
-#define FLAG_BUTTON_SELECT	0
-#define FLAG_BUTTON_UP			1
-#define FLAG_BUTTON_DOWN		2
-#define FLAG_BUTTON_LEFT		3
-#define FLAG_BUTTON_RIGHT		4
-#define FLAG_BUFFER_READY		5
-#define FLAG_ADC_VALUE			6
+#define FLAG_BUTTON_UP			0
+#define FLAG_BUTTON_DOWN		1
+#define FLAG_BUTTON_LEFT		2
+#define FLAG_BUTTON_RIGHT		3
+#define FLAG_BUFFER_READY		4
+#define FLAG_ADC_VALUE			5
 
 void Delay(unsigned long ulCount);
 unsigned int abs(signed int a);

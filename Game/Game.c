@@ -209,16 +209,23 @@ void GameUpdate(void) {
 			j = ADCValue;
 			if (abs(j - ADC_MID) <= ADC_DEV) {
 				// pass
-			} else if (j > ADC_MID) {
-				if (g_player.xpos < 127-PLAYER_BOX)
-					g_player.xpos++;
 			} else {
-				if (g_player.xpos > 0)
-					g_player.xpos--;
+				g_soundArray = &g_soundMove;
+				g_soundMax = SND_MOVE_LENGTH;
+				if (g_soundIndex > SND_MOVE_LENGTH/2) {
+					g_soundIndex = 0;
+				}
+				if (j > ADC_MID) {
+					if (g_player.xpos < 127-PLAYER_BOX)
+						g_player.xpos++;
+				} else {
+					if (g_player.xpos > 0)
+						g_player.xpos--;
+				}
 			}
 			HWREGBITW(&g_flags, FLAG_ADC_VALUE) = 0;
 		}
-		if (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT)) {
+		if (HWREGBITW(&g_flags, FLAG_BUTTON_LEFT)) {
 			if (g_bulletTimer == 0) {
 				for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
 					if (g_playerBullets[i].stat == B_DEAD) {
@@ -235,7 +242,7 @@ void GameUpdate(void) {
 				g_bulletTimer = 15;
 			}
 		}
-		if (HWREGBITW(&g_flags, FLAG_BUTTON_UP)) {
+		if (HWREGBITW(&g_flags, FLAG_BUTTON_RIGHT)) {
 			if (g_shotgunTimer == 0) {
 				bullet = FreshBullet(&g_playerBullets, MAX_PLAYER_BULLETS);
 				BulletAngle(bullet, g_player.xpos, g_player.ypos, 17);
@@ -243,9 +250,13 @@ void GameUpdate(void) {
 				BulletAngle(bullet, g_player.xpos, g_player.ypos, 18);
 				bullet = FreshBullet(&g_playerBullets, MAX_PLAYER_BULLETS);
 				BulletAngle(bullet, g_player.xpos, g_player.ypos, 19);
+				g_soundArray = &g_soundBullet;
+				g_soundIndex = 0;
+				g_soundMax = SND_BULLET_LENGTH;
 				g_shotgunTimer = 100;
 			}
 		}
+		/*
 		if (HWREGBITW(&g_flags, FLAG_BUTTON_DOWN)) {
 			if (g_player.score > 500) {
 				g_player.score -= 500;
@@ -255,7 +266,7 @@ void GameUpdate(void) {
 		}
 		if (g_shieldTimer == 0) {
 			g_player.shield = 0;
-		}
+		}*/
 	}
 	j=0;
 	for (i = 0; i < MAX_ENEMIES; i++) {
@@ -388,7 +399,6 @@ void GameUpdate(void) {
 	HWREGBITW(&g_flags, FLAG_BUTTON_DOWN) = 0;
 	HWREGBITW(&g_flags, FLAG_BUTTON_LEFT) = 0;
 	HWREGBITW(&g_flags, FLAG_BUTTON_RIGHT) = 0;
-	HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) = 0;
 }
 
 void EnemyInit(void) {
