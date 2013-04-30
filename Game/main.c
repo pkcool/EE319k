@@ -77,8 +77,11 @@ int main(void) {
 		sc = StartCritical();
 		for (i = 0; i < MAX_STARS; i++) {
 			stary = 0;
-			for (j = RandomExtract()%10; j > -2; j--) {
-				SetPixel(g_stars[i].xpos, g_stars[i].ypos - stary, 2+j);
+			for (j = RandomExtract()%10; j > 0; j--) {
+				if (g_stars[i].ypos - stary >= 0) {
+					SetPixel(g_stars[i].xpos, g_stars[i].ypos - stary, 2+j);
+				}
+				if (g_levelTimer == 0) { j = 1; }
 				stary++;
 			}
 		}
