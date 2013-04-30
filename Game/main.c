@@ -99,9 +99,8 @@ int main(void) {
 		DrawString(level, 128/2-2*6, 0);
 		if (g_level == 5 && g_continue == 0) {
 			DimScreen();
-			DrawString("You're a monster. ", 128/2-18*3, 96/2-12);
-			DrawString(" To continue,     ", 128/2-18*3, 96/2);
-			DrawString("   press Select.  ", 128/2-18*3, 96/2+12);
+			DrawString("  You're a monster.  ", 128/2-21*3, 96/2-12);
+			DrawString("  Continue anyway?   ", 128/2-21*3, 96/2);
 		} else {
 			for (i = 0; i < MAX_ENEMY_BULLETS; i++) {
 				if (g_enemyBullets[i].stat == B_ALIVE) {
@@ -110,17 +109,17 @@ int main(void) {
 			}
 			for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
 				if (g_playerBullets[i].stat == B_ALIVE) {
-						DrawImageFast(g_bulletSprite, g_playerBullets[i].xpos, g_playerBullets[i].ypos, 2, 2);
+						DrawImageFast(g_playerBulletSprite, g_playerBullets[i].xpos, g_playerBullets[i].ypos, 2, 2);
 				}
 			}
 			for (i = 0; i < MAX_ENEMIES; i++) {
 				switch (g_enemies[i].stat) {
 					case E_ALIVE:
-						if (g_level >= 3) {
-							RotateImage(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX, ((int)(atan2(g_player.ypos - g_enemies[i].ypos, g_player.xpos - g_enemies[i].xpos)*4)+24+6)%24, 8);
-						} else {
+						//if (g_level >= 3) {
+						//	RotateImage(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX, ((int)(atan2(g_player.ypos - g_enemies[i].ypos, g_player.xpos - g_enemies[i].xpos)*4)+24+6)%24, 8);
+						//} else {
 							DrawImageFast(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX);
-						}
+						//}
 						break;
 					case E_FIRE:
 						if (g_enemies[i].animationStep/8 < MAX_DANCE) {
@@ -149,11 +148,11 @@ int main(void) {
 				}
 			}
 			if (g_levelTimer != 0) {
-				if (g_levelTimer < 450 && g_levelTimer > 350) {
+				if (g_levelTimer < 450 && g_levelTimer > 300) {
 					if ((g_levelTimer%2) == 0) {
 						for (i = 0; i < 21; i++) {
 							if (randomString[i] != g_Stringz[g_level][i]) {
-								if (RandomExtract()%16 == 1) {
+								if (RandomExtract()%32 == 1) {
 									randomString[i] = g_Stringz[g_level][i];
 								} else {
 									randomString[i] = (RandomExtract()%96)+' ';

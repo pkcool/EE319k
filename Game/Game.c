@@ -41,6 +41,7 @@ unsigned char g_playerExplosionSprites[MAX_EXPLOSION][728] = {
 };
 
 unsigned char g_bulletSprite[2] = { 0xFF, 0xFF };
+unsigned char g_playerBulletSprite[2] = { 0x88, 0x88 };
 
 EnemyR g_enemies[MAX_ENEMIES];
 BulletR g_enemyBullets[MAX_ENEMY_BULLETS];
@@ -88,7 +89,7 @@ void LevelOne(EnemyR* enemy) {
 	}
 	i = 1;
 	for (j = 0; j < MAX_PLAYER_BULLETS; j++) {
-		if ((g_playerBullets[j].stat == B_ALIVE) && (g_playerBullets[j].ypos < (*enemy).ypos0 + 20) &&
+		if ((g_playerBullets[j].stat == B_ALIVE) && (g_playerBullets[j].ypos < (*enemy).ypos0 + 36) &&
 			((g_playerBullets[j].xpos - (*enemy).xpos0) <= ENEMY_BOX) && 
 			((g_playerBullets[j].xpos + 2 - (*enemy).xpos0) >= 0) && 
 			(g_playerBullets[j].ypos > (*enemy).ypos0)) {
@@ -298,6 +299,19 @@ void GameUpdate(void) {
 	}
 	for (i = 0; i < MAX_ENEMY_BULLETS; i++) {
 		if (g_enemyBullets[i].stat == B_ALIVE) {
+			if ((g_player.stat == P_ALIVE) && (g_player.shield == 0) && 
+				((g_enemyBullets[i].xpos - g_player.xpos) <= PLAYER_BOX) && 
+				((g_enemyBullets[i].xpos + 2 - g_player.xpos) > 0) && 
+				((g_enemyBullets[i].ypos - g_player.ypos) <= PLAYER_BOX) && 
+				((g_enemyBullets[i].ypos + 2 - g_player.ypos) > 0)) {
+					g_player.health--;
+					g_player.score -= 25;
+					if (g_player.score < 0) {
+						g_player.score = 0;	
+					}
+					g_player.stat = P_HIT;
+					g_enemyBullets[i].stat = B_DEAD;
+			}
 			//	BULLET DIRECTION
 			if (g_enemyBullets[i].direction != 0) {		
 				g_enemyBullets[i].numerator += g_enemyBullets[i].shortest;
@@ -316,24 +330,27 @@ void GameUpdate(void) {
 			if ((g_enemyBullets[i].ypos >= 96) || (g_enemyBullets[i].xpos < 0) || (g_enemyBullets[i].xpos > 128)) {
 					g_enemyBullets[i].stat = B_DEAD;
 			}
-			
-			if ((g_player.stat == P_ALIVE) && (g_player.shield == 0) && 
-				((g_enemyBullets[i].xpos - g_player.xpos) <= PLAYER_BOX) && 
-				((g_enemyBullets[i].xpos + 2 - g_player.xpos) > 0) && 
-				((g_enemyBullets[i].ypos - g_player.ypos) <= PLAYER_BOX) && 
-				((g_enemyBullets[i].ypos + 2 - g_player.ypos) > 0)) {
-					g_player.health--;
-					g_player.score -= 25;
-					if (g_player.score < 0) {
-						g_player.score = 0;	
-					}
-					g_player.stat = P_HIT;
-					g_enemyBullets[i].stat = B_DEAD;
-			}
 		}
 	}
 	for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
 		if (g_playerBullets[i].stat == B_ALIVE) {
+			for (j = 0; j < MAX_ENEMIES; j++) {
+				if (((g_enemies[j].stat == E_ALIVE) || (g_enemies[j].stat == E_FIRE)) && 
+					((g_playerBullets[i].xpos - g_enemies[j].xpos) < ENEMY_BOX) && 
+					((g_playerBullets[i].xpos + 1 - g_enemies[j].xpos) > 0) && 
+					((g_playerBullets[i].ypos - g_enemies[j].ypos) < ENEMY_BOX) && 
+					((g_playerBullets[i].ypos + 1 - g_enemies[j].ypos) > 0)) {
+					g_enemies[j].health--;
+					if (g_enemies[j].health == 0) {
+						g_enemies[j].stat = E_HIT;
+						g_player.score += 25;
+					}
+					g_player.score += 25;
+					g_playerBullets[i].stat = B_DEAD;
+					break;
+				}
+			}
+
 			//	BULLET DIRECTION
 			if (g_playerBullets[i].direction != 0) {		
 				g_playerBullets[i].numerator += g_playerBullets[i].shortest;
@@ -348,26 +365,8 @@ void GameUpdate(void) {
 			} else {
 				g_playerBullets[i].ypos--;
 			}
-
 			if ((g_playerBullets[i].ypos < 0) || (g_playerBullets[i].xpos < 0) || (g_playerBullets[i].xpos > 128)) {
 					g_playerBullets[i].stat = B_DEAD;
-			}
-
-			for (j = 0; j < MAX_ENEMIES; j++) {
-				if (((g_enemies[j].stat == E_ALIVE) || (g_enemies[j].stat == E_FIRE)) && 
-					((g_playerBullets[i].xpos - g_enemies[j].xpos) <= ENEMY_BOX) && 
-					((g_playerBullets[i].xpos + 2 - g_enemies[j].xpos) > 0) && 
-					((g_playerBullets[i].ypos - g_enemies[j].ypos) <= ENEMY_BOX) && 
-					((g_playerBullets[i].ypos + 2 - g_enemies[j].ypos) > 0)) {
-					g_enemies[j].health--;
-					if (g_enemies[j].health == 0) {
-						g_enemies[j].stat = E_HIT;
-						g_player.score += 25;
-					}
-					g_player.score += 25;
-					g_playerBullets[i].stat = B_DEAD;
-					break;
-				}
 			}
 		}
 	}
