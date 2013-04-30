@@ -78,7 +78,7 @@ extern BulletR g_playerBullets[MAX_PLAYER_BULLETS];
 extern StarR g_stars[MAX_STARS];
 extern PlayerR g_player;
 
-extern unsigned char g_Stringz[6][21];
+extern unsigned char g_Stringz[6][22];
 extern unsigned char g_continue;
 extern unsigned char g_level;
 extern unsigned int g_bulletTimer;

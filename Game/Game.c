@@ -53,11 +53,11 @@ BulletR emptyBullet;
 
 
 void (*EnemyAI[MAX_LEVELS])(EnemyR* enemy);
-unsigned char g_Stringz[6][21] = {"    Why hurt us?     ",
-																	" We don't understand ",
-																	"    Please, stop!    ",
-																	"We just wanted peace.",
-																	"Well done... Murderer",
+unsigned char g_Stringz[6][22] = {"    Why hurt us?     \0",
+																	" We don't understand \0",
+																	"    Please, stop!    \0",
+																	"We just wanted peace.\0",
+																	"Well done... Murderer\0",
 																	"\0"};
 
 unsigned char g_level = 0;
