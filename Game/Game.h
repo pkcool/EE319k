@@ -40,6 +40,7 @@ typedef struct {
 	unsigned char row, col;
 	unsigned char flock;
 	signed char xdir;
+	unsigned char num;
 	EnemyStat stat;									// used for game state
 } EnemyR;
 
