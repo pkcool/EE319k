@@ -273,8 +273,8 @@ void GameUpdate(void) {
 	for (i = 0; i < MAX_ENEMIES; i++) {
 		if ((g_enemies[i].stat == E_ALIVE) || (g_enemies[i].stat == E_FIRE)) {
 			if (g_enemies[i].health == 0) {
-				g_enemies[i].stat = E_HIT;
 				g_enemies[i].animationStep = 0;
+				g_enemies[i].stat = E_HIT;
 			}
 			(*EnemyAI[g_level])(&g_enemies[i]);
 			j++;
@@ -337,7 +337,7 @@ void GameUpdate(void) {
 					((g_playerBullets[i].ypos + 1 - g_enemies[j].ypos) > 0)) {
 					g_enemies[j].health--;
 					if (g_enemies[j].health == 0) {
-						g_enemies[i].animationStep = 0;
+						g_enemies[j].animationStep = 0;
 						g_enemies[j].stat = E_HIT;
 						g_player.score += 25;
 					}
