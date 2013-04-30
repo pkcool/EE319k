@@ -204,18 +204,16 @@ void GameUpdate(void) {
 			g_player.stat = P_HIT;
 			g_player.animationStep = 0;
 		}
-		if ((g_step%2) == 0) {
-			if (HWREGBITW(&g_flags, FLAG_ADC_VALUE) == 1) {
-				j = ADCValue;
-				if (abs(j - ADC_MID) <= 50) {
-					// pass
-				} else if (j > ADC_MID) {
-					if (g_player.xpos < 127)
-						g_player.xpos++;
-				} else {
-					if (g_player.xpos > 0)
-						g_player.xpos--;
-				}
+		if (HWREGBITW(&g_flags, FLAG_ADC_VALUE) == 1) {
+			j = ADCValue;
+			if (abs(j - ADC_MID) <= 50) {
+				// pass
+			} else if (j > ADC_MID) {
+				if (g_player.xpos < 127)
+					g_player.xpos++;
+			} else {
+				if (g_player.xpos > 0)
+					g_player.xpos--;
 			}
 		}
 		/*
