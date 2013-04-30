@@ -8,7 +8,7 @@
 #include "globals.h"
 #include "timer.h"
 #include "graphics.h"
-#include <math.h>
+#include "ADCDriver.h"
 
 unsigned char g_enemySpritesIdle[MAX_DANCE][50] = {
 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x00, 0x55, 0x00, 0x50, 0x05, 0x00, 0xff, 0x00, 0x50, 0x0a, 0x55, 0x55, 0x55, 0xa0, 0x0a, 0xaa, 0x55, 0xaa, 0xa0, 0x00, 0xa0, 0x55, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
@@ -213,6 +213,13 @@ void GameUpdate(void) {
 			g_player.stat = P_HIT;
 			g_player.animationStep = 0;
 		}
+		j = (ADC_In()-ADC_MIN)*128/(ADC_MAX-ADC_MIN);
+		if (j > 0 && j < 128) {
+			g_soundArray = &g_soundMove;
+			g_soundIndex = 0;
+			g_soundMax = SND_MOVE_LENGTH;
+		}
+		/*
 		if ((GPIO_PORTG_DATA_R&0x20) == 0) {
 			if ((g_soundArray == 0) || (g_soundIndex > SND_MOVE_LENGTH/2)) {
 				g_soundArray = &g_soundMove;
@@ -232,6 +239,7 @@ void GameUpdate(void) {
 				g_player.xpos++;
 			}
 		}
+		*/
 		if (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT)) {
 			if (g_bulletTimer == 0) {
 				for (i = 0; i < MAX_PLAYER_BULLETS; i++) {

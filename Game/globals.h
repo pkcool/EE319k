@@ -17,6 +17,7 @@ extern volatile unsigned long g_flags;
 #define FLAG_BUFFER_READY		5
 
 void Delay(unsigned long ulCount);
+unsigned int abs(signed int a);
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
