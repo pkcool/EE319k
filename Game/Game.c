@@ -291,16 +291,16 @@ void GameUpdate(void) {
 				g_enemies[enemy_lookup[2]].health = 100;
 				g_enemies[enemy_lookup[0]].xpos0 = 48 - ENEMY_BOX/2;
 				g_enemies[enemy_lookup[0]].ypos0 = 48 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[2]].health = 5;				
+				g_enemies[enemy_lookup[0]].health = 5;				
 				g_enemies[enemy_lookup[1]].xpos0 = 64 - ENEMY_BOX/2;
 				g_enemies[enemy_lookup[1]].ypos0 = 32 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[2]].health = 5;
+				g_enemies[enemy_lookup[1]].health = 5;
 				g_enemies[enemy_lookup[3]].xpos0 = 80 - ENEMY_BOX/2;
 				g_enemies[enemy_lookup[3]].ypos0 = 48 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[2]].health = 5;
-				g_enemies[enemy_lookup[2]].xpos0 = 64 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[2]].ypos0 = 64 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[2]].health = 5;
+				g_enemies[enemy_lookup[3]].health = 5;
+				g_enemies[enemy_lookup[4]].xpos0 = 64 - ENEMY_BOX/2;
+				g_enemies[enemy_lookup[4]].ypos0 = 64 - ENEMY_BOX/2;
+				g_enemies[enemy_lookup[4]].health = 5;
 				boss_state++;
 			}
 			if (boss_state == 1) {
