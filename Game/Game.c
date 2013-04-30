@@ -141,7 +141,7 @@ void LevelThree(EnemyR* enemy) {
 }
 
 void LevelFour(EnemyR* enemy) {
-	LevelThree(enemy);
+//	LevelThree(enemy);
 }
 
 BulletR* FreshBullet(BulletR (*bullets)[], unsigned int max) {
@@ -272,7 +272,7 @@ void GameUpdate(void) {
 		}*/
 	}
 	j=0;
-	if (g_level == 4) {
+	if (g_level == 0) {
 		e_count = 0; 
 		for (i = 0; i < MAX_ENEMIES; i++)
 		{
@@ -330,7 +330,7 @@ void GameUpdate(void) {
 			}
 		}
 	} 
-	if ((g_level != 4) || (e_count > 5)) 
+	if ((g_level != 0) || (e_count > 5)) 
 	{
 		for (i = 0; i < MAX_ENEMIES; i++) {
 			if ((g_enemies[i].stat == E_ALIVE) || (g_enemies[i].stat == E_FIRE)) {
@@ -518,7 +518,7 @@ void GameInit(void) {
 	g_player.health = 5;
 	g_player.stat = P_ALIVE;
 	
-	EnemyAI[0] = LevelZero;
+	EnemyAI[0] = LevelFour;
 	EnemyAI[1] = LevelOne;
 	EnemyAI[2] = LevelTwo;
 	EnemyAI[3] = LevelThree;
