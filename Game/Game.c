@@ -379,12 +379,10 @@ void GameUpdate(void) {
 		}
 	} else { 
 		for (i = 0; i < MAX_STARS; i++) {
-			if (((g_step%2) == 0) || (g_levelTimer != 0)) {
-				g_stars[i].ypos++;
-				if (g_stars[i].ypos >= 96) {
-					g_stars[i].xpos	= RandomExtract()%128;
-					g_stars[i].ypos	= 0;
-				}
+			g_stars[i].ypos += 3;
+			if (g_stars[i].ypos >= 96) {
+				g_stars[i].xpos	= RandomExtract()%128;
+				g_stars[i].ypos	= 0;
 			}
 		}
 	}
