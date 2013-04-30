@@ -41,7 +41,8 @@ void IntToString(unsigned int a, unsigned char *str, int length) {
 }
 
 int main(void) {
-	int i;
+	int i, j;
+	char stary;
 	unsigned char lives[2] = "  ";
 	unsigned char level[2] = "  ";
 	unsigned char score[5] = "     ";
@@ -75,7 +76,11 @@ int main(void) {
 		while (HWREGBITW(&g_flags, FLAG_BUFFER_READY) == 1) { }
 		sc = StartCritical();
 		for (i = 0; i < MAX_STARS; i++) {
-			SetPixel(g_stars[i].xpos, g_stars[i].ypos, 2+(RandomExtract()%10));
+			stary = 0;
+			for (j = RandomExtract()%10; j > -2; j--) {
+				SetPixel(g_stars[i].xpos, g_stars[i].ypos - stary, 2+j);
+				stary++;
+			}
 		}
 		for (i = 0; i < MAX_ENEMY_BULLETS; i++) {
 			if (g_enemyBullets[i].stat == B_ALIVE) {
