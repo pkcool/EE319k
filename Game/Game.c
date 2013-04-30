@@ -88,7 +88,7 @@ void LevelOne(EnemyR* enemy) {
 	}
 	i = 1;
 	for (j = 0; j < MAX_PLAYER_BULLETS; j++) {
-		if ((g_playerBullets[j].stat == B_ALIVE) && 
+		if ((g_playerBullets[j].stat == B_ALIVE) && (g_playerBullets[j].ypos < (*enemy).ypos0 + 20) &&
 			((g_playerBullets[j].xpos - (*enemy).xpos0) <= ENEMY_BOX) && 
 			((g_playerBullets[j].xpos + 2 - (*enemy).xpos0) >= 0) && 
 			(g_playerBullets[j].ypos > (*enemy).ypos0)) {
