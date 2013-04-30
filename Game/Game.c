@@ -73,18 +73,42 @@ signed int LEVEL_RANDOM = 100;
 volatile unsigned long g_step = 0;
 
 void LevelZero(EnemyR* enemy) {
-	//	Innocence
-}
-
-void LevelOne(EnemyR* enemy) {
 	//	Avoidance
 	if ((g_step%16) == 0) {
 		(*enemy).xpos += (*enemy).flock;
 	}
 	if ((g_step%128) == 0) {
 		(*enemy).flock = -(*enemy).flock;
-	}
+	}	
 }
+
+void LevelOne(EnemyR* enemy) {
+	char i,j;
+	if ((*enemy).xpos0 == (*enemy).xpos) {
+		(*enemy).xdir = 0;
+	}
+	i = 1;
+	for (j = 0; j < MAX_PLAYER_BULLETS; j++) {
+		if ((g_playerBullets[j].stat == B_ALIVE) && 
+			((g_playerBullets[j].xpos - (*enemy).xpos0) <= ENEMY_BOX) && 
+			((g_playerBullets[j].xpos + 2 - (*enemy).xpos0) >= 0) && 
+			(g_playerBullets[j].ypos > (*enemy).ypos0)) {
+				if ((*enemy).xdir == 0) {
+					(*enemy).xdir = 2*(RandomExtract()%2) - 1;
+				}
+				i = 0;
+				break;
+		}
+	}
+	if ((*enemy).xpos > (*enemy).xpos0 + 10) {
+		(*enemy).xdir = -i;
+	}
+	if ((*enemy).xpos + 10 < (*enemy).xpos0) {
+		(*enemy).xdir = i;
+	}
+	(*enemy).xpos += (*enemy).xdir;
+}
+
 
 void LevelTwo(EnemyR* enemy) {
 	BulletR* bullet;
@@ -114,56 +138,7 @@ void LevelThree(EnemyR* enemy) {
 }
 
 void LevelFour(EnemyR* enemy) {
-	char i,j;
-	for (i = 0; i < MAX_ENEMIES; i++) {
-		for (j = 0; j < MAX_PLAYER_BULLETS; j++) {
-			if (g_enemies[i].xpos > g_enemies[i].xpos0 + 4) { 
-				g_enemies[i].xdir = -1;
-			}
-			if (g_enemies[i].xpos + 4 < g_enemies[i].xpos0) { 
-				g_enemies[i].xdir = 1;
-			}
-			if ((g_enemies[i].stat == E_ALIVE) && ((g_step%16) == 0) && (g_enemies[i].xdir == 0) &&
-				 ((g_playerBullets[j].xpos - g_enemies[i].xpos) <= ENEMY_BOX) && 
-				 ((g_playerBullets[j].xpos + 2 - g_enemies[i].xpos) >= 0)) {
-				g_enemies[i].xdir = 2*(RandomExtract()%2) - 1;
-			} else if (g_enemies[i].xpos0 == g_enemies[i].xpos) { g_enemies[i].xdir = 0;}
-			g_enemies[i].xpos += g_enemies[i].xdir;
-		}
-	}
-}
-	//	SWARM CODE HERE
-
-
-void LevelFive(EnemyR* enemy) {
-	/*
-	//	DODGING ALGORITHM
-	for (i = 0; i < MAX_ENEMIES; i++) {
-		for (j = 0; j < MAX_PLAYER_BULLETS; j++) {
-			if ((g_enemies[i].stat == E_ALIVE) && 
-					((g_playerBullets[j].xpos - g_enemies[i].xpos) <= g_enemies[i].width) && 
-					((g_playerBullets[j].xpos + 2 - g_enemies[i].xpos) > 0)) {
-					if (g_enemies[i].xpos0 <= g_enemies[i].xpos - 6) {
-						if (g_enemies[i].ypos0 > g_enemies[j].ypos) {
-							g_enemies[i].xpos--;
-							g_enemies[i].ypos++;
-						} else {
-							g_enemies[i].xpos--;
-							g_enemies[i].ypos--;
-						}
-					} else {
-						if (g_enemies[i].ypos0 > g_enemies[j].ypos) {
-							g_enemies[i].xpos++;
-							g_enemies[i].ypos++;
-						} else {
-							g_enemies[i].xpos++;
-							g_enemies[i].ypos--;
-						}
-					}
-			}
-		}
-	}
-	*/
+	// SUPER COOL BOSS
 }
 
 BulletR* FreshBullet(BulletR (*bullets)[], unsigned int max) {
