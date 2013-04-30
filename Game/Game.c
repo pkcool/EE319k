@@ -71,6 +71,7 @@ unsigned int g_shieldTimer = 0;
 unsigned int g_levelTimer = 0;
 unsigned int LEVEL_MAX_BULLETS = 1;
 signed int LEVEL_RANDOM = 100;
+char boss_state = 0;
 
 volatile unsigned long g_step = 0;
 
@@ -198,7 +199,6 @@ void BulletTarget(BulletR* bullet, int xpos, int ypos, int xdest, int ydest) {
 void GameUpdate(void) {
 	int i, j;
 	char e_count;
-	char boss_state = 0;
 	BulletR* bullet;
 	if (g_level == 5 && g_continue == 0) {
 		return;
