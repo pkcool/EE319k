@@ -60,7 +60,7 @@ unsigned char g_Stringz[6][21] = {"    Why hurt us?     ",
 																	"\0"};
 
 unsigned char g_level = 0;
-
+unsigned char g_continue = 0;
 unsigned int g_bulletTimer = 0;
 unsigned int g_shotgunTimer = 0;
 unsigned int g_shieldTimer = 0;
@@ -195,6 +195,10 @@ void BulletTarget(BulletR* bullet, int xpos, int ypos, int xdest, int ydest) {
 void GameUpdate(void) {
 	int i, j;
 	BulletR* bullet;
+	if (g_level == 5 && g_continue == 0) {
+		while (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT) == 0) { }
+		g_continue = 1;
+	}
 	if (g_player.score > rollover && (g_player.score%500) == 0) {
 		g_player.health++;
 		rollover = g_player.score;
@@ -281,7 +285,7 @@ void GameUpdate(void) {
 		}
 	}
 	if ((j == 0) && (g_levelTimer == 0)) {
-		g_levelTimer = 1000;
+		g_levelTimer = 500;
 	}
 	if (g_levelTimer == 1) {
 		EnemyInit();
@@ -406,7 +410,7 @@ void GameUpdate(void) {
 
 void EnemyInit(void) {
 	int x,y;
-	if (g_level > 3) {
+	if (g_level == 5) {
 		LEVEL_MAX_BULLETS += 10;
 		if (LEVEL_MAX_BULLETS > MAX_ENEMY_BULLETS) {
 			LEVEL_MAX_BULLETS = MAX_ENEMY_BULLETS;
@@ -457,11 +461,12 @@ void GameInit(void) {
 	EnemyAI[1] = LevelOne;
 	EnemyAI[2] = LevelTwo;
 	EnemyAI[3] = LevelThree;
-	EnemyAI[4] = LevelThree;
+	EnemyAI[4] = LevelFour;
 	EnemyAI[5] = LevelThree;
 	
 	g_step = 0;
 	g_level = 0;
+	g_continue = 0;
 	
 	Timer1AInit(*GameUpdate, 1000000/100);
 }
