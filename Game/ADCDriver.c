@@ -1,33 +1,9 @@
-// ADCSWTrigger.c
-// Runs on LM3S811
-// Provide functions that initialize ADC SS3 to be triggered by
-// software and trigger a conversion, wait for it to finish,
-// and return the result.
-// Daniel Valvano
-// June 30, 2011
-
-/* This example accompanies the book
-   "Embedded Systems: Real Time Interfacing to the Arm Cortex M3",
-   ISBN: 978-1463590154, Jonathan Valvano, copyright (c) 2011
-
- Copyright 2011 by Jonathan W. Valvano, valvano@mail.utexas.edu
-    You may use, edit, run or distribute this file
-    as long as the above copyright notice remains
- THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
- OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
- MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
- VALVANO SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL,
- OR CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- For more information about my classes, my research, and my books, see
- http://users.ece.utexas.edu/~valvano/
- */
-
-// Thumbwheel potentiometer with scaling resistor connected to ADC0
 
 #include "inc/hw_types.h"
 #include "inc/lm3s1968.h"
 
 #include "globals.h"
+#include "timer.h"
 #include "ADCDriver.h"
 
 #define ADC_ACTSS_R             (*((volatile unsigned long *)0x40038000))
@@ -124,18 +100,29 @@ void ADC_Init(unsigned char channelNum){
                    & ~ADC_SSCTL3_D0);       // differential mode not used (default setting)
   ADC0_IM_R &= ~ADC_IM_MASK3;               // disable SS3 interrupts (default setting)
   ADC_ACTSS_R |= ADC_ACTSS_ASEN3;           // enable sample sequencer 3
+	Timer0BInit(ADC_In);
 }
+
+unsigned long ADCValue;
+unsigned long tmpValue;
+unsigned int count;
+#define N	64
 // This function triggers an ADC conversion using sample
 // sequencer 3, waits for the conversion to finish, and returns
 // the result in the lower 10 bits of the return value.  It
 // assumes that the hardware has already been initialized
 // using ADC_InitSWTriggerSeq3().
-unsigned long ADC_In(void){
-  unsigned long result;
+void ADC_In(void){
   ADC0_PSSI_R = ADC_PSSI_SS3;               // initiate SS3
   while((ADC0_RIS_R&ADC_RIS_INR3)==0){};      // wait for conversion done
-  result = ADC0_SSFIFO3_R&ADC_SSFIFO3_DATA_M;
+  tmpValue += ADC0_SSFIFO3_R&ADC_SSFIFO3_DATA_M;
   ADC0_ISC_R = ADC_ISC_IN3;                 // acknowledge completion of current conversion
-  return result;
+	TIMER0_ICR_R = TIMER_ICR_TBTOCINT;    // acknowledge timer0A timeout
+	if (count++ == N) {
+		ADCValue = tmpValue/N;
+		tmpValue = 0;
+		count = 0;
+		HWREGBITW(&g_flags, FLAG_ADC_VALUE) = 1;
+	}
 }
 

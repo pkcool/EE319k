@@ -54,7 +54,7 @@ int main(void) {
 	unsigned char score[5] = "     ";
 	unsigned char randomString[21];
 	PLL_Init();
-	SysTick_Init(1000000/30);
+	SysTick_Init(50000000/30);
 	
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);
 	GPIOPinTypeGPIOInput(GPIO_PORTG_BASE,
@@ -68,7 +68,7 @@ int main(void) {
 	ADC_Init(2);
 	InputInit();
 	SoundInit();
-	RIT128x96x4Init(3500000);
+	RIT128x96x4Init(5000000);
 	SysTick_IntEnable();
 	EnableInterrupts();
 	
@@ -115,19 +115,11 @@ int main(void) {
 		for (i = 0; i < MAX_ENEMIES; i++) {
 			switch (g_enemies[i].stat) {
 				case E_ALIVE:
-					//if (g_level >= 3) {
-					//	RotateImage(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX, ((int)(atan2(g_player.ypos - g_enemies[i].ypos, g_player.xpos - g_enemies[i].xpos)*4)+24+6)%24, 8);
-					//} else {
-						DrawImageFast(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX);
-					//}
+					DrawImageFast(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX);
 					break;
 				case E_FIRE:
 					if (g_enemies[i].animationStep/8 < MAX_DANCE) {
-						//if (g_level >= 3) {
-						//	RotateImage(g_enemySpritesIdle[g_enemies[i].animationStep/8], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX, ((int)(atan2(g_player.ypos - g_enemies[i].ypos, g_player.xpos - g_enemies[i].xpos)*4)+24+6)%24, 8);
-						//} else {
-							DrawImageFast(g_enemySpritesIdle[g_enemies[i].animationStep/8], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX);
-						//}
+						DrawImageFast(g_enemySpritesIdle[g_enemies[i].animationStep/8], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX);
 						g_enemies[i].animationStep++;
 					} else {
 						g_enemies[i].animationStep = 0;
@@ -135,8 +127,8 @@ int main(void) {
 					}
 					break;
 				case E_HIT:
-					if (g_enemies[i].animationStep/8 < MAX_EXPLOSION) {
-						DrawImageFast(g_explosionSprites[g_enemies[i].animationStep/8], g_enemies[i].xpos, g_enemies[i].ypos, 14, 14);
+					if (g_enemies[i].animationStep/4 < MAX_EXPLOSION) {
+						DrawImageFast(g_explosionSprites[g_enemies[i].animationStep/4], g_enemies[i].xpos, g_enemies[i].ypos, 14, 14);
 						g_enemies[i].animationStep++;
 					} else {
 						g_enemies[i].animationStep = 0;
@@ -149,14 +141,12 @@ int main(void) {
 		}
 		if (g_levelTimer != 0) {
 			if (g_levelTimer < 450 && g_levelTimer > 300) {
-				if ((g_levelTimer%2) == 0) {
-					for (i = 0; i < 21; i++) {
-						if (randomString[i] != g_Stringz[g_level][i]) {
-							if (RandomExtract()%32 == 1) {
-								randomString[i] = g_Stringz[g_level][i];
-							} else {
-								randomString[i] = (RandomExtract()%96)+' ';
-							}
+				for (i = 0; i < 21; i++) {
+					if (randomString[i] != g_Stringz[g_level][i]) {
+						if (RandomExtract()%32 == 1) {
+							randomString[i] = g_Stringz[g_level][i];
+						} else {
+							randomString[i] = (RandomExtract()%96)+' ';
 						}
 					}
 				}

@@ -28,7 +28,7 @@ void SysTick_IntEnable(void) {
 }
 
 // Initialize SysTick with busy wait running at bus clock.
-void SysTick_Init(unsigned long period){
+void SysTick_Init(unsigned long period) {
   NVIC_ST_CTRL_R = 0;                   // disable SysTick during setup
   NVIC_ST_RELOAD_R = period - 1;  			// set reload value
   NVIC_ST_CURRENT_R = 0;                // any write to current clears it

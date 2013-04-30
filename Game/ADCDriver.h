@@ -2,7 +2,9 @@
 #ifndef __ADCDRIVER_H__
 #define __ADCDRIVER_H__
 
+extern unsigned long ADCValue;
+
 void ADC_Init(unsigned char channelNum);
-unsigned long ADC_In(void);
+void ADC_In(void);
 
 #endif // __ADCDRIVER_H__

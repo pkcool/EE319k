@@ -15,9 +15,11 @@ extern volatile unsigned long g_flags;
 #define FLAG_BUTTON_LEFT		3
 #define FLAG_BUTTON_RIGHT		4
 #define FLAG_BUFFER_READY		5
+#define FLAG_ADC_VALUE			6
 
 void Delay(unsigned long ulCount);
 unsigned int abs(signed int a);
+void IntToString(unsigned int a, unsigned char *str, int length);
 
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts

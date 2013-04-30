@@ -204,32 +204,41 @@ void GameUpdate(void) {
 			g_player.stat = P_HIT;
 			g_player.animationStep = 0;
 		}
+		if ((g_step%2) == 0) {
+			if (HWREGBITW(&g_flags, FLAG_ADC_VALUE) == 1) {
+				j = ADCValue;
+				if (abs(j - ADC_MID) <= 50) {
+					// pass
+				} else if (j > ADC_MID) {
+					if (g_player.xpos < 127)
+						g_player.xpos++;
+				} else {
+					if (g_player.xpos > 0)
+						g_player.xpos--;
+				}
+			}
+		}
 		/*
-		j = (ADC_In()-ADC_MIN)*128/(ADC_MAX-ADC_MIN);
-		if (j > 0 && j < 128) {
-			g_soundArray = &g_soundMove;
-			g_soundIndex = 0;
-			g_soundMax = SND_MOVE_LENGTH;
-		}*/
 		if ((GPIO_PORTG_DATA_R&0x20) == 0) {
 			if ((g_soundArray == 0) || (g_soundIndex > SND_MOVE_LENGTH/2)) {
-				g_soundArray = &g_soundMove;
-				g_soundIndex = 0;
-				g_soundMax = SND_MOVE_LENGTH; 
+				//g_soundArray = &g_soundMove;
+				//g_soundIndex = 0;
+				//g_soundMax = SND_MOVE_LENGTH; 
 			}
 			if (g_player.xpos > 0) {
 				g_player.xpos--;
 			}
 		} else if ((GPIO_PORTG_DATA_R&0x40) == 0) {
 			if ((g_soundArray == 0) || (g_soundIndex > SND_MOVE_LENGTH/2)) {
-				g_soundArray = &g_soundMove;
-				g_soundIndex = 0;
-				g_soundMax = SND_MOVE_LENGTH; 
+				//g_soundArray = &g_soundMove;
+				//g_soundIndex = 0;
+				//g_soundMax = SND_MOVE_LENGTH; 
 			}
 			if (g_player.xpos < (127-PLAYER_BOX)) {
 				g_player.xpos++;
 			}
 		}
+		*/
 		if (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT)) {
 			if (g_bulletTimer == 0) {
 				for (i = 0; i < MAX_PLAYER_BULLETS; i++) {
@@ -240,7 +249,7 @@ void GameUpdate(void) {
 						g_playerBullets[i].direction = 0;
 						g_soundArray = &g_soundBullet;
 						g_soundIndex = 0;
-						g_soundMax = SND_BULLET_LENGTH; 
+						g_soundMax = SND_BULLET_LENGTH;
 						break;
 					}
 				}

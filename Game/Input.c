@@ -20,7 +20,7 @@ void InputInit(void){
   EnableInterrupts();
 }
 
-void GPIOPortG_Handler(void){
+void GPIOPortG_Handler(void) {
 	GPIO_PORTG_DATA_R &= 0xF8;
 	GPIO_PORTG_RIS_R &= 0xF8;
 	GPIO_PORTG_MIS_R &= 0xF8;

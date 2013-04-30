@@ -14,7 +14,7 @@ unsigned long g_soundMax;
 
 void SoundInit(void) {
 	DACInit();
-	Timer0AInit(PlaySound, 1000000/16000);
+	Timer0AInit(PlaySound, 1000000/8000);
 }
 
 void PlaySound(void) {
@@ -22,7 +22,7 @@ void PlaySound(void) {
 		if (g_soundIndex >= g_soundMax*2) {
 			g_soundArray = 0;
 		} else {
-			if (g_soundIndex%2 == 0) {
+			if ((g_soundIndex%2) == 0) {
 				DACOut(((*g_soundArray)[g_soundIndex/2]&0xF0)>>4);
 			} else {
 				DACOut((*g_soundArray)[g_soundIndex/2]&0x0F);

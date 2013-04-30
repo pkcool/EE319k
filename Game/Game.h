@@ -10,8 +10,7 @@
 #define MAX_STARS							30
 #define MAX_LEVELS						6
 
-#define ADC_MAX		1022
-#define ADC_MIN		88
+#define ADC_MID		700
 
 #define PLAYER_BOX		12
 #define ENEMY_BOX			10
