@@ -370,7 +370,7 @@ void GameUpdate(void) {
 	if(g_levelTimer == 0) {
 		for (i = 0; i < MAX_STARS; i++) {
 			if (((g_step%2) == 0) || (g_levelTimer != 0)) {
-				g_stars[i].ypos += 3;
+				g_stars[i].ypos++;
 				if (g_stars[i].ypos >= 96) {
 					g_stars[i].xpos	= RandomExtract()%128;
 					g_stars[i].ypos	= 0;
@@ -378,7 +378,15 @@ void GameUpdate(void) {
 			}
 		}
 	} else { 
-		g_levelTimer--;
+		for (i = 0; i < MAX_STARS; i++) {
+			if (((g_step%2) == 0) || (g_levelTimer != 0)) {
+				g_stars[i].ypos++;
+				if (g_stars[i].ypos >= 96) {
+					g_stars[i].xpos	= RandomExtract()%128;
+					g_stars[i].ypos	= 0;
+				}
+			}
+		}
 	}
 	g_step++;
 	if (g_bulletTimer > 0) {
