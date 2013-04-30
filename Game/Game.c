@@ -418,9 +418,9 @@ void EnemyInit(void) {
 	for (y = 0; y < 3; y++) {
 		for (x = 0; x < 4; x++) {
 			g_enemies[y*4+x].xpos0 = x*24+12;
-			g_enemies[y*4+x].ypos0 = y*12+6;
+			g_enemies[y*4+x].ypos0 = y*12+8;
 			g_enemies[y*4+x].xpos = x*24+12;
-			g_enemies[y*4+x].ypos = y*12+6;
+			g_enemies[y*4+x].ypos = y*12+8;
 			g_enemies[y*4+x].col = x;
 			g_enemies[y*4+x].row = y;
 			g_enemies[y*4+x].flock = ((y%2)==0) ? 1 : -1;
