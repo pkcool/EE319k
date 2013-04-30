@@ -280,6 +280,7 @@ void GameUpdate(void) {
 				if (e_count < 5) {
 					enemy_lookup[e_count] = i; 
 				}
+				j++;
 				e_count++;
 			}
 		}
