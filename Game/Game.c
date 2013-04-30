@@ -112,11 +112,26 @@ void LevelThree(EnemyR* enemy) {
 }
 
 void LevelFour(EnemyR* enemy) {
-	
-	
-	
-	//	SWARM CODE HERE
+	char i,j;
+	char xdir = 1;
+	for (i = 0; i < MAX_ENEMIES; i++) {
+		for (j = 0; j < MAX_PLAYER_BULLETS; j++) {
+			if ((g_enemies[i].stat == E_ALIVE) && 
+				 ((g_playerBullets[j].xpos - g_enemies[i].xpos) < 6) && 
+				 ((g_playerBullets[j].xpos - g_enemies[i].xpos) >= 0)) {
+				if ((g_enemies[i].xpos > g_enemies[i].xpos0 + 4) || (xdir == 1)) { 
+					xdir = 0;
+				}
+				if (g_enemies[i].xpos + 4 < g_enemies[i].xpos0) { 
+					xdir = 2;
+				}
+			} else if (g_enemies[i].xpos0 == g_enemies[i].xpos) { xdir = 1;}
+			g_enemies[i].xpos += xdir - 1;
+		}
+	}
 }
+	//	SWARM CODE HERE
+
 
 void LevelFive(EnemyR* enemy) {
 	/*
@@ -471,9 +486,9 @@ void EnemyInit(void) {
 	}
 	for (y = 0; y < 3; y++) {
 		for (x = 0; x < 4; x++) {
-			g_enemies[y*4+x].xpos0 = x*20+24;
+			g_enemies[y*4+x].xpos0 = x*24+12;
 			g_enemies[y*4+x].ypos0 = y*12+6;
-			g_enemies[y*4+x].xpos = x*20+24;
+			g_enemies[y*4+x].xpos = x*24+12;
 			g_enemies[y*4+x].ypos = y*12+6;
 			g_enemies[y*4+x].width = 10;
 			g_enemies[y*4+x].height = 10;
