@@ -305,15 +305,27 @@ void GameUpdate(void) {
 			if (boss_state == 1) {
 				e_count = 0;
 				for (i = 0; i < 5; i++) {
-					if ((g_enemies[enemy_lookup[i]].xpos0 - g_enemies[enemy_lookup[i]].xpos) > 16) {
-						g_enemies[enemy_lookup[i]].xpos += (g_enemies[enemy_lookup[i]].xpos0 - g_enemies[enemy_lookup[i]].xpos)/16;					
-					} else { 
-						g_enemies[enemy_lookup[i]].xpos = g_enemies[enemy_lookup[i]].xpos0;
+					if (g_enemies[enemy_lookup[i]].xpos0 > g_enemies[enemy_lookup[i]].xpos) {
+						g_enemies[enemy_lookup[i]].xpos++;					
+					} 
+					if (g_enemies[enemy_lookup[i]].xpos0 < g_enemies[enemy_lookup[i]].xpos) {
+						g_enemies[enemy_lookup[i]].xpos--;
+					} 
+					if (g_enemies[enemy_lookup[i]].xpos0 == g_enemies[enemy_lookup[i]].xpos) {
 						e_count++;
-					}
+					} 
+					if (g_enemies[enemy_lookup[i]].ypos0 > g_enemies[enemy_lookup[i]].ypos) {
+						g_enemies[enemy_lookup[i]].ypos++;					
+					} 
+					if (g_enemies[enemy_lookup[i]].ypos0 < g_enemies[enemy_lookup[i]].ypos) {
+						g_enemies[enemy_lookup[i]].ypos--;
+					} 
+					if (g_enemies[enemy_lookup[i]].ypos0 == g_enemies[enemy_lookup[i]].ypos) {
+						e_count++;
+					} 
 				}
-				if (e_count == 5) {
-					boss_state++;
+				if (e_count == 10) {
+						boss_state++;
 				}
 			}
 		}
