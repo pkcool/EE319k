@@ -379,7 +379,7 @@ void GameUpdate(void) {
 		}
 	} else { 
 		for (i = 0; i < MAX_STARS; i++) {
-			g_stars[i].ypos += 3;
+			g_stars[i].ypos += 2;
 			if (g_stars[i].ypos >= 96) {
 				g_stars[i].xpos	= RandomExtract()%128;
 				g_stars[i].ypos	= 0;
