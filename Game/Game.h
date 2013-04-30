@@ -42,6 +42,7 @@ typedef struct {
 	char health;										// number of hits before death (decremented on each hit)
 	unsigned char row, col;
 	unsigned char flock;
+	signed char xdir;
 	EnemyStat stat;									// used for game state
 } EnemyR;
 

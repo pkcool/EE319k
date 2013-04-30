@@ -10,6 +10,7 @@
 #include "graphics.h"
 #include "ADCDriver.h"
 
+
 unsigned char g_enemySpritesIdle[MAX_DANCE][50] = {
 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x00, 0x55, 0x00, 0x50, 0x05, 0x00, 0xff, 0x00, 0x50, 0x0a, 0x55, 0x55, 0x55, 0xa0, 0x0a, 0xaa, 0x55, 0xaa, 0xa0, 0x00, 0xa0, 0x55, 0x0a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
 	{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x55, 0x00, 0x00, 0x05, 0x00, 0x55, 0x00, 0x50, 0x05, 0x55, 0xff, 0x55, 0x50, 0x0a, 0xa5, 0x55, 0x5a, 0xa0, 0x0a, 0x05, 0x55, 0x50, 0xa0, 0x00, 0x00, 0x55, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
@@ -49,6 +50,7 @@ StarR g_stars[MAX_STARS];
 PlayerR g_player;
 
 BulletR emptyBullet;
+
 
 void (*EnemyAI[MAX_LEVELS])(EnemyR* enemy);
 unsigned char g_Stringz[6][21] = {"  You're hurting us. ",
@@ -113,20 +115,19 @@ void LevelThree(EnemyR* enemy) {
 
 void LevelFour(EnemyR* enemy) {
 	char i,j;
-	char xdir = 1;
 	for (i = 0; i < MAX_ENEMIES; i++) {
 		for (j = 0; j < MAX_PLAYER_BULLETS; j++) {
 			if ((g_enemies[i].stat == E_ALIVE) && 
 				 ((g_playerBullets[j].xpos - g_enemies[i].xpos) < 6) && 
 				 ((g_playerBullets[j].xpos - g_enemies[i].xpos) >= 0)) {
-				if ((g_enemies[i].xpos > g_enemies[i].xpos0 + 4) || (xdir == 1)) { 
-					xdir = 0;
+				if ((g_enemies[i].xpos > g_enemies[i].xpos0 + 4) || (g_enemies[i].xdir == 0)) { 
+					g_enemies[i].xdir = -1;
 				}
 				if (g_enemies[i].xpos + 4 < g_enemies[i].xpos0) { 
-					xdir = 2;
+					g_enemies[i].xdir = 1;
 				}
-			} else if (g_enemies[i].xpos0 == g_enemies[i].xpos) { xdir = 1;}
-			g_enemies[i].xpos += xdir - 1;
+			} else if (g_enemies[i].xpos0 == g_enemies[i].xpos) { g_enemies[i].xdir = 0;}
+			g_enemies[i].xpos += g_enemies[i].xdir;
 		}
 	}
 }
@@ -495,6 +496,7 @@ void EnemyInit(void) {
 			g_enemies[y*4+x].animationStep = 0;
 			g_enemies[y*4+x].health = ((1+g_level/4) < 5) ? 1+g_level/4 : 4;
 			g_enemies[y*4+x].stat = E_ALIVE;
+			g_enemies[y*4+x].xdir = 0;
 		}
 	}
 }
