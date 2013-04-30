@@ -13,6 +13,9 @@
 #define ADC_MAX		1022
 #define ADC_MIN		88
 
+#define PLAYER_BOX		12
+#define ENEMY_BOX			10
+
 typedef enum {
 	E_ALIVE,													// self explanatory
 	E_FIRE,														// we need to dance
@@ -35,7 +38,6 @@ typedef enum {
 typedef struct {
 	signed char xpos0, ypos0;			// initial x and y (in case we need to return)
 	signed char xpos, ypos;				// current x and y
-	unsigned char width, height;		// width and height of sprite in pixels (10x10)
 	char animationStep;							// used for stepping through dance/explosion (please be nice and set to 0 if you're about to explode
 	char health;										// number of hits before death (decremented on each hit)
 	unsigned char row, col;
@@ -45,7 +47,6 @@ typedef struct {
 
 typedef struct {
 	signed char xpos, ypos;				// x and y
-	unsigned char width, height;		// width and height of sprite in pixels (12x14)
 	char animationStep;							// used for stepping through explosion
 	char shield;										// 0 for normal, 1 for shield (behavior to be determined)
 	signed int health;							// number of hits before death (decremented on each hit)

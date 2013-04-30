@@ -105,17 +105,17 @@ int main(void) {
 			switch (g_enemies[i].stat) {
 				case E_ALIVE:
 					if (g_level >= 3) {
-						RotateImage(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height, ((int)(atan2(g_player.ypos - g_enemies[i].ypos, g_player.xpos - g_enemies[i].xpos)*4)+24+6)%24, 8);
+						RotateImage(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX, ((int)(atan2(g_player.ypos - g_enemies[i].ypos, g_player.xpos - g_enemies[i].xpos)*4)+24+6)%24, 8);
 					} else {
-						DrawImageFast(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
+						DrawImageFast(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX);
 					}
 					break;
 				case E_FIRE:
 					if (g_enemies[i].animationStep/8 < MAX_DANCE) {
 						if (g_level >= 3) {
-						RotateImage(g_enemySpritesIdle[g_enemies[i].animationStep/8], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height, ((int)(atan2(g_player.ypos - g_enemies[i].ypos, g_player.xpos - g_enemies[i].xpos)*4)+24+6)%24, 8);
+						RotateImage(g_enemySpritesIdle[g_enemies[i].animationStep/8], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX, ((int)(atan2(g_player.ypos - g_enemies[i].ypos, g_player.xpos - g_enemies[i].xpos)*4)+24+6)%24, 8);
 					} else {
-						DrawImageFast(g_enemySpritesIdle[g_enemies[i].animationStep/8], g_enemies[i].xpos, g_enemies[i].ypos, g_enemies[i].width, g_enemies[i].height);
+						DrawImageFast(g_enemySpritesIdle[g_enemies[i].animationStep/8], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX);
 					}
 						g_enemies[i].animationStep++;
 					} else {
@@ -162,12 +162,12 @@ int main(void) {
 		}
 		switch (g_player.stat) {
 			case P_ALIVE:
-				DrawImageFast(g_playerSprites[g_player.shield], g_player.xpos, g_player.ypos, g_player.width, g_player.height);
+				DrawImageFast(g_playerSprites[g_player.shield], g_player.xpos, g_player.ypos, PLAYER_BOX, PLAYER_BOX);
 				break;
 			case P_HIT:
 				if (g_player.health == 0) {
 					if (g_player.animationStep/4 < MAX_EXPLOSION) {
-						DrawImageFast(g_playerExplosionSprites[g_player.animationStep/4], g_player.xpos - g_player.width/2 - 26/2, g_player.ypos + g_player.height/2 - 28/2, 26, 28);
+						DrawImageFast(g_playerExplosionSprites[g_player.animationStep/4], g_player.xpos - PLAYER_BOX/2 - 26/2, g_player.ypos + PLAYER_BOX/2 - 28/2, 26, 28);
 						g_player.animationStep++;
 					} else {
 						g_player.animationStep = 0;
@@ -175,7 +175,7 @@ int main(void) {
 					}
 				} else {
 					if (g_player.animationStep/4 < MAX_EXPLOSION) {
-						DrawImageFast(g_playerSprites[g_player.shield], g_player.xpos, g_player.ypos, g_player.width, g_player.height);
+						DrawImageFast(g_playerSprites[g_player.shield], g_player.xpos, g_player.ypos, PLAYER_BOX, PLAYER_BOX);
 						RotateImage(g_explosionSprites[g_player.animationStep/4], g_player.xpos - 2, g_player.ypos - 4, 14, 14, 0, 6);
 						g_player.animationStep++;
 					} else {
