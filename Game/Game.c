@@ -71,7 +71,7 @@ unsigned int g_shieldTimer = 0;
 unsigned int g_levelTimer = 0;
 unsigned int LEVEL_MAX_BULLETS = 1;
 signed int LEVEL_RANDOM = 100;
-char boss_state = 10;
+char boss_state = 0;
 
 volatile unsigned long g_step = 0;
 
@@ -260,19 +260,21 @@ void GameUpdate(void) {
 			}
 		}
 	}
-	j=0;
-	if (g_level == 0) {
-		e_count = 0; 
-		for (i = 0; i < MAX_ENEMIES; i++)
-		{
-			if (g_enemies[i].stat == E_ALIVE) {
-				if (e_count < 5) {
-					enemy_lookup[e_count] = i; 
-				}
-				j++;
-				e_count++;
+	e_count=0;
+	for (i = 0; i < MAX_ENEMIES; i++) {
+		if ((g_enemies[i].stat == E_ALIVE) || (g_enemies[i].stat == E_FIRE)) {
+			if (g_enemies[i].health == 0) {
+				g_enemies[i].animationStep = 0;
+				g_enemies[i].stat = E_HIT;
 			}
+			(*EnemyAI[g_level])(&g_enemies[i]);
+			if (e_count < 5) {
+				enemy_lookup[e_count] = i; 
+			}
+			e_count++;
 		}
+	}
+	if (g_level == 0) {
 		if (e_count <= 5) {
 			if (boss_state == 0) {
 				g_enemies[enemy_lookup[2]].xpos0 = 64 - ENEMY_BOX/2;
@@ -293,7 +295,7 @@ void GameUpdate(void) {
 				boss_state++;
 			}
 			if (boss_state == 1) {
-				e_count = 0;
+				j = 0;
 				for (i = 0; i < 5; i++) {
 					if (g_enemies[enemy_lookup[i]].xpos0 > g_enemies[enemy_lookup[i]].xpos) {
 						g_enemies[enemy_lookup[i]].xpos++;					
@@ -302,7 +304,7 @@ void GameUpdate(void) {
 						g_enemies[enemy_lookup[i]].xpos--;
 					} 
 					if (g_enemies[enemy_lookup[i]].xpos0 == g_enemies[enemy_lookup[i]].xpos) {
-						e_count++;
+						j++;
 					} 
 					if (g_enemies[enemy_lookup[i]].ypos0 > g_enemies[enemy_lookup[i]].ypos) {
 						g_enemies[enemy_lookup[i]].ypos++;					
@@ -311,29 +313,16 @@ void GameUpdate(void) {
 						g_enemies[enemy_lookup[i]].ypos--;
 					} 
 					if (g_enemies[enemy_lookup[i]].ypos0 == g_enemies[enemy_lookup[i]].ypos) {
-						e_count++;
+						j++;
 					} 
 				}
-				if (e_count == 10) {
+				if (j == 10) {
 						boss_state++;
 				}
 			}
 		}
 	} 
-	if ((g_level != 0) || (e_count > 5)) 
-	{
-		for (i = 0; i < MAX_ENEMIES; i++) {
-			if ((g_enemies[i].stat == E_ALIVE) || (g_enemies[i].stat == E_FIRE)) {
-				if (g_enemies[i].health == 0) {
-					g_enemies[i].animationStep = 0;
-					g_enemies[i].stat = E_HIT;
-				}
-				(*EnemyAI[g_level])(&g_enemies[i]);
-				j++;
-			}
-		}
-	}
-	if ((j == 0) && (g_levelTimer == 0)) {
+	if ((e_count == 0) && (g_levelTimer == 0)) {
 		g_levelTimer = 500;
 	}
 	if (g_levelTimer == 1) {
