@@ -267,7 +267,7 @@ void GameUpdate(void) {
 				g_enemies[i].stat = E_HIT;
 			}
 			(*EnemyAI[g_level])(&g_enemies[i]);
-			if (e_count < 5) {
+			if ((e_count < 5) && (boss_state > 0)) {
 				enemy_lookup[e_count] = i; 
 			}
 			e_count++;
