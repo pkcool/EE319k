@@ -323,12 +323,12 @@ void GameUpdate(void) {
 				g_enemies[enemy_lookup[2]].xpos0 = g_player.xpos;
 				if (g_enemies[enemy_lookup[2]].xpos0 > g_enemies[enemy_lookup[2]].xpos) {
 					for (i = 0; i < 5; i++) {
-						g_enemies[enemy_lookup[i]].xpos--;
+						g_enemies[enemy_lookup[i]].xpos++;
 					}
 				}
 				if (g_enemies[enemy_lookup[2]].xpos0 < g_enemies[enemy_lookup[2]].xpos) {
 					for (i = 0; i < 5; i++) {
-						g_enemies[enemy_lookup[i]].xpos++;
+						g_enemies[enemy_lookup[i]].xpos--;
 					}
 				}				
 				for (i = 0; i < 5; i++) {
@@ -342,16 +342,16 @@ void GameUpdate(void) {
 																								+ g_enemies[enemy_lookup[i]].ypos;
 						}
 						if (g_enemies[enemy_lookup[i]].xpos0 > g_enemies[enemy_lookup[i]].xpos) {
-							g_enemies[enemy_lookup[i]].xpos--;
-						}
-						if (g_enemies[enemy_lookup[i]].xpos0 < g_enemies[enemy_lookup[i]].xpos) {
 							g_enemies[enemy_lookup[i]].xpos++;
 						}
+						if (g_enemies[enemy_lookup[i]].xpos0 < g_enemies[enemy_lookup[i]].xpos) {
+							g_enemies[enemy_lookup[i]].xpos--;
+						}
 						if (g_enemies[enemy_lookup[i]].ypos0 > g_enemies[enemy_lookup[i]].ypos) {
-							g_enemies[enemy_lookup[i]].ypos--;
+							g_enemies[enemy_lookup[i]].ypos++;
 						}
 						if (g_enemies[enemy_lookup[i]].ypos0 < g_enemies[enemy_lookup[i]].ypos) {
-							g_enemies[enemy_lookup[i]].ypos++;
+							g_enemies[enemy_lookup[i]].ypos--;
 						}
 					}
 				}
