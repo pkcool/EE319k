@@ -287,10 +287,10 @@ void GameUpdate(void) {
 				g_enemies[enemy_lookup[1]].ypos0 = 24 - ENEMY_BOX/2;
 				g_enemies[enemy_lookup[1]].health = 5;
 				g_enemies[enemy_lookup[3]].xpos0 = 80 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[3]].ypos0 = 24 - ENEMY_BOX/2;
+				g_enemies[enemy_lookup[3]].ypos0 = 40 - ENEMY_BOX/2;
 				g_enemies[enemy_lookup[3]].health = 5;
 				g_enemies[enemy_lookup[4]].xpos0 = 64 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[4]].ypos0 = 24 - ENEMY_BOX/2;
+				g_enemies[enemy_lookup[4]].ypos0 = 56 - ENEMY_BOX/2;
 				g_enemies[enemy_lookup[4]].health = 5;
 				boss_state++;
 			}

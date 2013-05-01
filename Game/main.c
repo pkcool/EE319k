@@ -122,7 +122,7 @@ int main(void) {
 						if ((g_enemies[i].xpos == g_enemies[enemy_lookup[2]].xpos) && (g_enemies[i].ypos == g_enemies[enemy_lookup[2]].ypos)){
 							DrawImageFast(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX);
 						} else {
-							RotateImage(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX, ((int)(atan2(g_enemies[i].ypos - g_enemies[i].ypos, g_enemies[i].xpos - g_enemies[i].xpos)*4)+24+6)%24, 8);
+							RotateImage(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX, ((int)(atan2(g_enemies[enemy_lookup[2]].ypos - g_enemies[i].ypos, g_enemies[enemy_lookup[2]].xpos - g_enemies[i].xpos)*4)+24+6)%24, 8);
 						}
 					} else if (g_level >= 3) {
 						RotateImage(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX, ((int)(atan2(g_player.ypos - g_enemies[i].ypos, g_player.xpos - g_enemies[i].xpos)*4)+24+6)%24, 8);
