@@ -52,9 +52,6 @@ PlayerR g_player;
 
 BulletR emptyBullet;
 
-unsigned long ADC_MID = 700;
-unsigned long ADC_DEV = 25;
-
 void (*EnemyAI[MAX_LEVELS])(EnemyR* enemy);
 unsigned char g_Stringz[6][22] = {"    Why hurt us?     \0",
 																	" We don't understand \0",
@@ -209,16 +206,11 @@ void GameUpdate(void) {
 			g_player.animationStep = 0;
 		}
 		if (HWREGBITW(&g_flags, FLAG_ADC_VALUE) == 1) {
-			j = ADCValue;
-			if (abs(j - ADC_MID) <= ADC_DEV) {
+			j = (ADCValue-ADC_MIN)*128/(ADC_MAX-ADC_MIN);
+			if (abs(g_player.xpos - j) <= 10) {
 				// pass
 			} else {
-				g_soundArray = &g_soundMove;
-				g_soundMax = SND_MOVE_LENGTH;
-				if (g_soundIndex > SND_MOVE_LENGTH/2) {
-					g_soundIndex = 0;
-				}
-				if (j > ADC_MID) {
+				if (g_player.xpos < j) {
 					if (g_player.xpos < 127-PLAYER_BOX)
 						g_player.xpos++;
 				} else {
@@ -226,6 +218,7 @@ void GameUpdate(void) {
 						g_player.xpos--;
 				}
 			}
+			HWREGBITW(&g_flags, FLAG_ADC_VALUE) = 0;
 		}
 		if (HWREGBITW(&g_flags, FLAG_BUTTON_LEFT)) {
 			if (g_bulletTimer == 0) {
@@ -444,7 +437,6 @@ void GameUpdate(void) {
 	HWREGBITW(&g_flags, FLAG_BUTTON_DOWN) = 0;
 	HWREGBITW(&g_flags, FLAG_BUTTON_LEFT) = 0;
 	HWREGBITW(&g_flags, FLAG_BUTTON_RIGHT) = 0;
-	HWREGBITW(&g_flags, FLAG_ADC_VALUE) = 0;
 }
 
 void EnemyInit(void) {
