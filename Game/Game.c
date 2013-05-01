@@ -259,17 +259,6 @@ void GameUpdate(void) {
 				g_shotgunTimer = 100;
 			}
 		}
-		/*
-		if (HWREGBITW(&g_flags, FLAG_BUTTON_DOWN)) {
-			if (g_player.score > 500) {
-				g_player.score -= 500;
-				g_player.shield = 1;
-				g_shieldTimer = 200;
-			}
-		}
-		if (g_shieldTimer == 0) {
-			g_player.shield = 0;
-		}*/
 	}
 	j=0;
 	if (g_level == 0) {
