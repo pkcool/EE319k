@@ -13,6 +13,9 @@
 #define PLAYER_BOX		12
 #define ENEMY_BOX			10
 
+#define ADC_MAX				1023
+#define ADC_MIN				88
+
 typedef enum {
 	E_ALIVE,													// self explanatory
 	E_FIRE,														// we need to dance
@@ -85,9 +88,6 @@ extern unsigned int g_levelTimer;
 
 extern char boss_state;
 extern unsigned char enemy_lookup[5];
-
-extern unsigned long ADC_MID;
-extern unsigned long ADC_DEV;
 
 extern void (*EnemyAI[MAX_LEVELS])(EnemyR* enemy);
 

@@ -47,7 +47,7 @@ void IntToString(unsigned int a, unsigned char *str, int length) {
 }
 
 int main(void) {
-	int i, j, k, l;
+	int i, j;
 	char stary;
 	unsigned char lives[2] = "  ";
 	unsigned char level[2] = "  ";
@@ -71,21 +71,6 @@ int main(void) {
 	RIT128x96x4Init(5000000);
 	SysTick_IntEnable();
 	EnableInterrupts();
-	
-	j = 1024;
-	k = 0;
-	for (i = 0; i < 32; i++) {
-		while (HWREGBITW(&g_flags, FLAG_ADC_VALUE) == 0) { }
-		l = ADCValue;
-		if (l < j)
-			j = l;
-		if (l > k)
-			k = l;
-		ADC_MID += l;
-		HWREGBITW(&g_flags, FLAG_ADC_VALUE) = 0;
-	}
-	ADC_MID /= 32;
-	ADC_DEV = k-j;
 	
 	while (HWREGBITW(&g_flags, FLAG_BUTTON_LEFT) == 0) { }
 	HWREGBITW(&g_flags, FLAG_BUTTON_LEFT) = 0;
