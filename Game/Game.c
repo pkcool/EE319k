@@ -260,7 +260,7 @@ void GameUpdate(void) {
 				g_enemies[i].stat = E_HIT;
 			}
 			(*EnemyAI[g_level])(&g_enemies[i]);
-			if (e_count < 5) {
+			if ((e_count < 5) && (boss_state > 0)) {
 				enemy_lookup[e_count] = i; 
 			}
 			e_count++;
@@ -311,6 +311,44 @@ void GameUpdate(void) {
 				if (j == 10) {
 						boss_state++;
 				}
+			}
+			if (boss_state == 2) {
+				g_enemies[enemy_lookup[2]].xpos0 = g_player.xpos;
+				if (g_enemies[enemy_lookup[2]].xpos0 > g_enemies[enemy_lookup[2]].xpos) {
+					for (i = 0; i < 5; i++) {
+						g_enemies[enemy_lookup[i]].xpos--;
+					}
+				}
+				if (g_enemies[enemy_lookup[2]].xpos0 < g_enemies[enemy_lookup[2]].xpos) {
+					for (i = 0; i < 5; i++) {
+						g_enemies[enemy_lookup[i]].xpos++;
+					}
+				}				
+				for (i = 0; i < 5; i++) {
+					if (i != 2) {
+						if ((g_step%4) == 0) {
+							g_enemies[enemy_lookup[i]].xpos0 = ((cosarr[g_step%24])/8)*(g_enemies[enemy_lookup[2]].xpos - g_enemies[enemy_lookup[i]].xpos) 
+																								+ (-(sinarr[g_step%24])/8)*(g_enemies[enemy_lookup[2]].ypos - g_enemies[enemy_lookup[i]].ypos)
+																								+ g_enemies[enemy_lookup[i]].xpos;
+							g_enemies[enemy_lookup[i]].ypos0 = ((sinarr[g_step%24])/8)*(g_enemies[enemy_lookup[2]].xpos - g_enemies[enemy_lookup[i]].xpos) 
+																								+ ((cosarr[g_step%24])/8)*(g_enemies[enemy_lookup[2]].ypos - g_enemies[enemy_lookup[i]].ypos)
+																								+ g_enemies[enemy_lookup[i]].ypos;
+						}
+						if (g_enemies[enemy_lookup[i]].xpos0 > g_enemies[enemy_lookup[i]].xpos) {
+							g_enemies[enemy_lookup[i]].xpos--;
+						}
+						if (g_enemies[enemy_lookup[i]].xpos0 < g_enemies[enemy_lookup[i]].xpos) {
+							g_enemies[enemy_lookup[i]].xpos++;
+						}
+						if (g_enemies[enemy_lookup[i]].ypos0 > g_enemies[enemy_lookup[i]].ypos) {
+							g_enemies[enemy_lookup[i]].ypos--;
+						}
+						if (g_enemies[enemy_lookup[i]].ypos0 < g_enemies[enemy_lookup[i]].ypos) {
+							g_enemies[enemy_lookup[i]].ypos++;
+						}
+					}
+				}
+
 			}
 		}
 	} 
