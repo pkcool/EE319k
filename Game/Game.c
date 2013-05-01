@@ -71,7 +71,7 @@ unsigned int g_shieldTimer = 0;
 unsigned int g_levelTimer = 0;
 unsigned int LEVEL_MAX_BULLETS = 1;
 signed int LEVEL_RANDOM = 100;
-char boss_state = 0;
+char boss_state = 10;
 
 volatile unsigned long g_step = 0;
 
@@ -287,19 +287,19 @@ void GameUpdate(void) {
 		if (e_count <= 5) {
 			if (boss_state == 0) {
 				g_enemies[enemy_lookup[2]].xpos0 = 64 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[2]].ypos0 = 48 - ENEMY_BOX/2;
+				g_enemies[enemy_lookup[2]].ypos0 = 40 - ENEMY_BOX/2;
 				g_enemies[enemy_lookup[2]].health = 100;
 				g_enemies[enemy_lookup[0]].xpos0 = 48 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[0]].ypos0 = 48 - ENEMY_BOX/2;
+				g_enemies[enemy_lookup[0]].ypos0 = 40 - ENEMY_BOX/2;
 				g_enemies[enemy_lookup[0]].health = 5;				
 				g_enemies[enemy_lookup[1]].xpos0 = 64 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[1]].ypos0 = 32 - ENEMY_BOX/2;
+				g_enemies[enemy_lookup[1]].ypos0 = 24 - ENEMY_BOX/2;
 				g_enemies[enemy_lookup[1]].health = 5;
 				g_enemies[enemy_lookup[3]].xpos0 = 80 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[3]].ypos0 = 48 - ENEMY_BOX/2;
+				g_enemies[enemy_lookup[3]].ypos0 = 24 - ENEMY_BOX/2;
 				g_enemies[enemy_lookup[3]].health = 5;
 				g_enemies[enemy_lookup[4]].xpos0 = 64 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[4]].ypos0 = 64 - ENEMY_BOX/2;
+				g_enemies[enemy_lookup[4]].ypos0 = 24 - ENEMY_BOX/2;
 				g_enemies[enemy_lookup[4]].health = 5;
 				boss_state++;
 			}

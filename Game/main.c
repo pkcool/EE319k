@@ -118,7 +118,13 @@ int main(void) {
        for (i = 0; i < MAX_ENEMIES; i++) {
          switch (g_enemies[i].stat) {
            case E_ALIVE:
-						if (g_level >= 3) {
+						if ((g_level == 4) && (boss_state > 0)) {
+							if ((g_enemies[i].xpos == g_enemies[enemy_lookup[2]].xpos) && (g_enemies[i].ypos == g_enemies[enemy_lookup[2]].ypos)){
+								DrawImageFast(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX);
+							} else {
+								RotateImage(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX, ((int)(atan2(g_enemies[i].ypos - g_enemies[i].ypos, g_enemies[i].xpos - g_enemies[i].xpos)*4)+24+6)%24, 8);
+							}
+						} else if (g_level >= 3) {
 							RotateImage(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX, ((int)(atan2(g_player.ypos - g_enemies[i].ypos, g_player.xpos - g_enemies[i].xpos)*4)+24+6)%24, 8);
 						} else {
 							DrawImageFast(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX);
