@@ -13,8 +13,8 @@
 #define PLAYER_BOX		12
 #define ENEMY_BOX			10
 
-#define ADC_MAX				1023
-#define ADC_MIN				88
+#define ADC_MAX				1054
+#define ADC_MIN				87
 
 typedef enum {
 	E_ALIVE,													// self explanatory

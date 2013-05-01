@@ -115,7 +115,7 @@ unsigned int count;
 void ADC_In(void){
   ADC0_PSSI_R = ADC_PSSI_SS3;               // initiate SS3
   while((ADC0_RIS_R&ADC_RIS_INR3)==0){};      // wait for conversion done
-  tmpValue += (1023 - ADC0_SSFIFO3_R&ADC_SSFIFO3_DATA_M);
+  tmpValue += ADC0_SSFIFO3_R&ADC_SSFIFO3_DATA_M;
   ADC0_ISC_R = ADC_ISC_IN3;                 // acknowledge completion of current conversion
 	TIMER0_ICR_R = TIMER_ICR_TBTOCINT;    // acknowledge timer0A timeout
 	if (count++ == N) {

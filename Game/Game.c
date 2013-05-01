@@ -206,7 +206,11 @@ void GameUpdate(void) {
 			g_player.animationStep = 0;
 		}
 		if (HWREGBITW(&g_flags, FLAG_ADC_VALUE) == 1) {
-			j = (ADCValue-ADC_MIN)*128/(ADC_MAX-ADC_MIN);
+			j = ADCValue-ADC_MIN;
+			if (j < 0) {
+				j = 0;
+			}
+			j = 128 - j*128/(ADC_MAX-ADC_MIN);
 			if (abs(g_player.xpos - j) <= 10) {
 				// pass
 			} else {
@@ -266,7 +270,7 @@ void GameUpdate(void) {
 			e_count++;
 		}
 	}
-	if (g_level == 0) {
+	if (g_level == 6) {
 		if (e_count <= 5) {
 			if (boss_state == 0) {
 				g_enemies[enemy_lookup[2]].xpos0 = 64 - ENEMY_BOX/2;
@@ -527,11 +531,11 @@ void GameInit(void) {
 	g_player.health = 5;
 	g_player.stat = P_ALIVE;
 	
-	EnemyAI[0] = LevelFour;
+	EnemyAI[0] = LevelZero;
 	EnemyAI[1] = LevelOne;
 	EnemyAI[2] = LevelTwo;
 	EnemyAI[3] = LevelThree;
-	EnemyAI[4] = LevelFour;
+	EnemyAI[4] = LevelThree;
 	EnemyAI[5] = LevelThree;
 	
 	g_step = 0;
