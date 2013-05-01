@@ -226,7 +226,6 @@ void GameUpdate(void) {
 						g_player.xpos--;
 				}
 			}
-			HWREGBITW(&g_flags, FLAG_ADC_VALUE) = 0;
 		}
 		if (HWREGBITW(&g_flags, FLAG_BUTTON_LEFT)) {
 			if (g_bulletTimer == 0) {
@@ -445,6 +444,7 @@ void GameUpdate(void) {
 	HWREGBITW(&g_flags, FLAG_BUTTON_DOWN) = 0;
 	HWREGBITW(&g_flags, FLAG_BUTTON_LEFT) = 0;
 	HWREGBITW(&g_flags, FLAG_BUTTON_RIGHT) = 0;
+	HWREGBITW(&g_flags, FLAG_ADC_VALUE) = 0;
 }
 
 void EnemyInit(void) {
@@ -507,7 +507,7 @@ void GameInit(void) {
 	g_step = 0;
 	g_level = 0;
 	g_continue = 0;
+	boss_state = 0;
 	
 	Timer1AInit(*GameUpdate, 1000000/100);
 }
-
