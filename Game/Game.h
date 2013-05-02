@@ -86,7 +86,7 @@ extern unsigned int g_bulletTimer;
 extern unsigned int g_shotgunTimer;
 extern unsigned int g_levelTimer;
 
-extern char boss_state;
+extern unsigned long boss_state;
 extern unsigned char enemy_lookup[5];
 
 extern void (*EnemyAI[MAX_LEVELS])(EnemyR* enemy);

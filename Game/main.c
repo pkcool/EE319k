@@ -103,7 +103,7 @@ int main(void) {
 		for (i = 0; i < MAX_ENEMIES; i++) {
 			switch (g_enemies[i].stat) {
 				case E_ALIVE:
-					if ((g_level == 6) && (boss_state > 0)) {
+					if ((g_level == 0) && (boss_state > 0)) {
 						if ((g_enemies[i].xpos == g_enemies[enemy_lookup[2]].xpos) && (g_enemies[i].ypos == g_enemies[enemy_lookup[2]].ypos)){
 							DrawImageFast(g_enemySpritesIdle[1], g_enemies[i].xpos, g_enemies[i].ypos, ENEMY_BOX, ENEMY_BOX);
 						} else {

@@ -68,7 +68,7 @@ unsigned int g_shieldTimer = 0;
 unsigned int g_levelTimer = 0;
 unsigned int LEVEL_MAX_BULLETS = 1;
 signed int LEVEL_RANDOM = 100;
-char boss_state = 0;
+unsigned long boss_state = 0;
 
 volatile unsigned long g_step = 0;
 
@@ -264,29 +264,29 @@ void GameUpdate(void) {
 				g_enemies[i].stat = E_HIT;
 			}
 			(*EnemyAI[g_level])(&g_enemies[i]);
-			if ((e_count < 5) && (boss_state > 0)) {
+			if ((e_count < 5) && (boss_state == 0)) {
 				enemy_lookup[e_count] = i; 
 			}
 			e_count++;
 		}
 	}
-	if (g_level == 6) {
+	if (g_level == 0) {
 		if (e_count <= 5) {
 			if (boss_state == 0) {
-				g_enemies[enemy_lookup[2]].xpos0 = 64 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[2]].ypos0 = 40 - ENEMY_BOX/2;
+				g_enemies[enemy_lookup[2]].xpos0 = 64;
+				g_enemies[enemy_lookup[2]].ypos0 = 40 - 8;
 				g_enemies[enemy_lookup[2]].health = 100;
-				g_enemies[enemy_lookup[0]].xpos0 = 48 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[0]].ypos0 = 40 - ENEMY_BOX/2;
+				g_enemies[enemy_lookup[0]].xpos0 = 56 - ENEMY_BOX;
+				g_enemies[enemy_lookup[0]].ypos0 = 40 - 8;
 				g_enemies[enemy_lookup[0]].health = 5;				
-				g_enemies[enemy_lookup[1]].xpos0 = 64 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[1]].ypos0 = 24 - ENEMY_BOX/2;
+				g_enemies[enemy_lookup[1]].xpos0 = 64;
+				g_enemies[enemy_lookup[1]].ypos0 = 32 - ENEMY_BOX - 8;
 				g_enemies[enemy_lookup[1]].health = 5;
-				g_enemies[enemy_lookup[3]].xpos0 = 80 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[3]].ypos0 = 40 - ENEMY_BOX/2;
+				g_enemies[enemy_lookup[3]].xpos0 = 72 + ENEMY_BOX;
+				g_enemies[enemy_lookup[3]].ypos0 = 40 - 8;
 				g_enemies[enemy_lookup[3]].health = 5;
-				g_enemies[enemy_lookup[4]].xpos0 = 64 - ENEMY_BOX/2;
-				g_enemies[enemy_lookup[4]].ypos0 = 56 - ENEMY_BOX/2;
+				g_enemies[enemy_lookup[4]].xpos0 = 64;
+				g_enemies[enemy_lookup[4]].ypos0 = 48 + ENEMY_BOX - 8;
 				g_enemies[enemy_lookup[4]].health = 5;
 				boss_state++;
 			}
@@ -316,28 +316,30 @@ void GameUpdate(void) {
 						boss_state++;
 				}
 			}
-			if (boss_state == 2) {
+			if (boss_state >= 2) {
 				g_enemies[enemy_lookup[2]].xpos0 = g_player.xpos;
 				if (g_enemies[enemy_lookup[2]].xpos0 > g_enemies[enemy_lookup[2]].xpos) {
 					for (i = 0; i < 5; i++) {
 						g_enemies[enemy_lookup[i]].xpos++;
+						g_enemies[enemy_lookup[i]].xpos0++;
 					}
 				}
 				if (g_enemies[enemy_lookup[2]].xpos0 < g_enemies[enemy_lookup[2]].xpos) {
 					for (i = 0; i < 5; i++) {
 						g_enemies[enemy_lookup[i]].xpos--;
+						g_enemies[enemy_lookup[i]].xpos0--;
 					}
-				}				
+				}			
 				for (i = 0; i < 5; i++) {
 					if (i != 2) {
-						if ((g_step%4) == 0) {
-							g_enemies[enemy_lookup[i]].xpos0 = (((cosarr[g_step%24])/8)*(g_enemies[enemy_lookup[2]].xpos - g_enemies[enemy_lookup[i]].xpos) 
-																								+ (-(sinarr[g_step%24])/8)*(g_enemies[enemy_lookup[2]].ypos - g_enemies[enemy_lookup[i]].ypos)) /16
-																								+ g_enemies[enemy_lookup[i]].xpos;
-							g_enemies[enemy_lookup[i]].ypos0 = (((sinarr[g_step%24])/8)*(g_enemies[enemy_lookup[2]].xpos - g_enemies[enemy_lookup[i]].xpos) 
-																								+ ((cosarr[g_step%24])/8)*(g_enemies[enemy_lookup[2]].ypos - g_enemies[enemy_lookup[i]].ypos)) /16
-																								+ g_enemies[enemy_lookup[i]].ypos;
-						}
+						if ((g_step%8) == 0) {
+							g_enemies[enemy_lookup[i]].xpos = (((cosarr[boss_state%24]))*(g_enemies[enemy_lookup[i]].xpos0 - g_enemies[enemy_lookup[2]].xpos) 
+																								+ (-(sinarr[boss_state%24]))*(g_enemies[enemy_lookup[i]].ypos0 - g_enemies[enemy_lookup[2]].ypos)) / 128
+																								+ g_enemies[enemy_lookup[2]].xpos;
+							g_enemies[enemy_lookup[i]].ypos = (((sinarr[boss_state%24]))*(g_enemies[enemy_lookup[i]].xpos0 - g_enemies[enemy_lookup[2]].xpos) 
+																								+ ((cosarr[boss_state%24]))*(g_enemies[enemy_lookup[i]].ypos0 - g_enemies[enemy_lookup[2]].ypos)) /128
+																								+ g_enemies[enemy_lookup[2]].ypos;
+						} /*
 						if (g_enemies[enemy_lookup[i]].xpos0 > g_enemies[enemy_lookup[i]].xpos) {
 							g_enemies[enemy_lookup[i]].xpos++;
 						}
@@ -349,10 +351,12 @@ void GameUpdate(void) {
 						}
 						if (g_enemies[enemy_lookup[i]].ypos0 < g_enemies[enemy_lookup[i]].ypos) {
 							g_enemies[enemy_lookup[i]].ypos--;
-						}
+						} */
 					}
 				}
-
+				if ((g_step%8) == 0) {
+					boss_state++;
+				}
 			}
 		}
 	} 
@@ -531,11 +535,11 @@ void GameInit(void) {
 	g_player.health = 5;
 	g_player.stat = P_ALIVE;
 	
-	EnemyAI[0] = LevelZero;
+	EnemyAI[0] = LevelFour;
 	EnemyAI[1] = LevelOne;
 	EnemyAI[2] = LevelTwo;
 	EnemyAI[3] = LevelThree;
-	EnemyAI[4] = LevelThree;
+	EnemyAI[4] = LevelFour;
 	EnemyAI[5] = LevelThree;
 	
 	g_step = 0;
