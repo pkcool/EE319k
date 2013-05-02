@@ -270,24 +270,24 @@ void GameUpdate(void) {
 			e_count++;
 		}
 	}
-	if (g_level == 0) {
-		if (e_count <= 5) {
+	if (g_level == 4) {
+		if (e_count <= 5 && g_enemies[enemy_lookup[2]].stat == E_ALIVE) {
 			if (boss_state == 0) {
 				g_enemies[enemy_lookup[2]].xpos0 = 64;
 				g_enemies[enemy_lookup[2]].ypos0 = 40 - 8;
-				g_enemies[enemy_lookup[2]].health = 100;
+				g_enemies[enemy_lookup[2]].health = 7;
 				g_enemies[enemy_lookup[0]].xpos0 = 56 - ENEMY_BOX;
 				g_enemies[enemy_lookup[0]].ypos0 = 40 - 8;
-				g_enemies[enemy_lookup[0]].health = 5;				
+				g_enemies[enemy_lookup[0]].health = 3;				
 				g_enemies[enemy_lookup[1]].xpos0 = 64;
 				g_enemies[enemy_lookup[1]].ypos0 = 32 - ENEMY_BOX - 8;
-				g_enemies[enemy_lookup[1]].health = 5;
+				g_enemies[enemy_lookup[1]].health = 3;
 				g_enemies[enemy_lookup[3]].xpos0 = 72 + ENEMY_BOX;
 				g_enemies[enemy_lookup[3]].ypos0 = 40 - 8;
-				g_enemies[enemy_lookup[3]].health = 5;
+				g_enemies[enemy_lookup[3]].health = 3;
 				g_enemies[enemy_lookup[4]].xpos0 = 64;
 				g_enemies[enemy_lookup[4]].ypos0 = 48 + ENEMY_BOX - 8;
-				g_enemies[enemy_lookup[4]].health = 5;
+				g_enemies[enemy_lookup[4]].health = 3;
 				boss_state++;
 			}
 			if (boss_state == 1) {
@@ -317,19 +317,21 @@ void GameUpdate(void) {
 				}
 			}
 			if (boss_state >= 2) {
-				g_enemies[enemy_lookup[2]].xpos0 = g_player.xpos;
-				if (g_enemies[enemy_lookup[2]].xpos0 > g_enemies[enemy_lookup[2]].xpos) {
-					for (i = 0; i < 5; i++) {
-						g_enemies[enemy_lookup[i]].xpos++;
-						g_enemies[enemy_lookup[i]].xpos0++;
+				if ((g_step%4) == 0) {
+					g_enemies[enemy_lookup[2]].xpos0 = g_player.xpos;
+					if (g_enemies[enemy_lookup[2]].xpos0 > g_enemies[enemy_lookup[2]].xpos) {
+						for (i = 0; i < 5; i++) {
+							g_enemies[enemy_lookup[i]].xpos++;
+							g_enemies[enemy_lookup[i]].xpos0++;
+						}
+					}
+					if (g_enemies[enemy_lookup[2]].xpos0 < g_enemies[enemy_lookup[2]].xpos) {
+						for (i = 0; i < 5; i++) {
+							g_enemies[enemy_lookup[i]].xpos--;
+							g_enemies[enemy_lookup[i]].xpos0--;
+						}
 					}
 				}
-				if (g_enemies[enemy_lookup[2]].xpos0 < g_enemies[enemy_lookup[2]].xpos) {
-					for (i = 0; i < 5; i++) {
-						g_enemies[enemy_lookup[i]].xpos--;
-						g_enemies[enemy_lookup[i]].xpos0--;
-					}
-				}			
 				for (i = 0; i < 5; i++) {
 					if (i != 2) {
 						if ((g_step%8) == 0) {
@@ -339,23 +341,16 @@ void GameUpdate(void) {
 							g_enemies[enemy_lookup[i]].ypos = (((sinarr[boss_state%24]))*(g_enemies[enemy_lookup[i]].xpos0 - g_enemies[enemy_lookup[2]].xpos) 
 																								+ ((cosarr[boss_state%24]))*(g_enemies[enemy_lookup[i]].ypos0 - g_enemies[enemy_lookup[2]].ypos)) /128
 																								+ g_enemies[enemy_lookup[2]].ypos;
-						} /*
-						if (g_enemies[enemy_lookup[i]].xpos0 > g_enemies[enemy_lookup[i]].xpos) {
-							g_enemies[enemy_lookup[i]].xpos++;
 						}
-						if (g_enemies[enemy_lookup[i]].xpos0 < g_enemies[enemy_lookup[i]].xpos) {
-							g_enemies[enemy_lookup[i]].xpos--;
-						}
-						if (g_enemies[enemy_lookup[i]].ypos0 > g_enemies[enemy_lookup[i]].ypos) {
-							g_enemies[enemy_lookup[i]].ypos++;
-						}
-						if (g_enemies[enemy_lookup[i]].ypos0 < g_enemies[enemy_lookup[i]].ypos) {
-							g_enemies[enemy_lookup[i]].ypos--;
-						} */
 					}
 				}
 				if ((g_step%8) == 0) {
 					boss_state++;
+				}
+				if ((g_step%2) == 0) {
+					if (g_player.stat == P_ALIVE) {
+ 						BulletTarget(FreshBullet(&g_enemyBullets, MAX_ENEMY_BULLETS), g_enemies[enemy_lookup[2]].xpos+ ENEMY_BOX/2, g_enemies[enemy_lookup[2]].ypos + 2, g_enemies[enemy_lookup[2]].xpos+ ENEMY_BOX/2+(RandomExtract()%16)-8, g_player.ypos);
+					}
 				}
 			}
 		}
@@ -535,7 +530,7 @@ void GameInit(void) {
 	g_player.health = 5;
 	g_player.stat = P_ALIVE;
 	
-	EnemyAI[0] = LevelFour;
+	EnemyAI[0] = LevelZero;
 	EnemyAI[1] = LevelOne;
 	EnemyAI[2] = LevelTwo;
 	EnemyAI[3] = LevelThree;
