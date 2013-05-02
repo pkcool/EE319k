@@ -331,11 +331,11 @@ void GameUpdate(void) {
 				for (i = 0; i < 5; i++) {
 					if (i != 2) {
 						if ((g_step%4) == 0) {
-							g_enemies[enemy_lookup[i]].xpos0 = ((cosarr[g_step%24])/8)*(g_enemies[enemy_lookup[2]].xpos - g_enemies[enemy_lookup[i]].xpos) 
-																								+ (-(sinarr[g_step%24])/8)*(g_enemies[enemy_lookup[2]].ypos - g_enemies[enemy_lookup[i]].ypos)
+							g_enemies[enemy_lookup[i]].xpos0 = (((cosarr[g_step%24])/8)*(g_enemies[enemy_lookup[2]].xpos - g_enemies[enemy_lookup[i]].xpos) 
+																								+ (-(sinarr[g_step%24])/8)*(g_enemies[enemy_lookup[2]].ypos - g_enemies[enemy_lookup[i]].ypos)) /16
 																								+ g_enemies[enemy_lookup[i]].xpos;
-							g_enemies[enemy_lookup[i]].ypos0 = ((sinarr[g_step%24])/8)*(g_enemies[enemy_lookup[2]].xpos - g_enemies[enemy_lookup[i]].xpos) 
-																								+ ((cosarr[g_step%24])/8)*(g_enemies[enemy_lookup[2]].ypos - g_enemies[enemy_lookup[i]].ypos)
+							g_enemies[enemy_lookup[i]].ypos0 = (((sinarr[g_step%24])/8)*(g_enemies[enemy_lookup[2]].xpos - g_enemies[enemy_lookup[i]].xpos) 
+																								+ ((cosarr[g_step%24])/8)*(g_enemies[enemy_lookup[2]].ypos - g_enemies[enemy_lookup[i]].ypos)) /16
 																								+ g_enemies[enemy_lookup[i]].ypos;
 						}
 						if (g_enemies[enemy_lookup[i]].xpos0 > g_enemies[enemy_lookup[i]].xpos) {
