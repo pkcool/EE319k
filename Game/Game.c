@@ -238,7 +238,7 @@ void GameUpdate(void) {
 						break;
 					}
 				}
-				g_bulletTimer = 15;
+				g_bulletTimer = 10;
 			}
 		}
 		if (HWREGBITW(&g_flags, FLAG_BUTTON_RIGHT)) {
@@ -494,9 +494,9 @@ void EnemyInit(void) {
 	}
 	for (y = 0; y < 3; y++) {
 		for (x = 0; x < 4; x++) {
-			g_enemies[y*4+x].xpos0 = x*24+12;
+			g_enemies[y*4+x].xpos0 = x*24+16;
 			g_enemies[y*4+x].ypos0 = y*12+8;
-			g_enemies[y*4+x].xpos = x*24+12;
+			g_enemies[y*4+x].xpos = x*24+16;
 			g_enemies[y*4+x].ypos = y*12+8;
 			g_enemies[y*4+x].col = x;
 			g_enemies[y*4+x].row = y;
@@ -527,7 +527,7 @@ void GameInit(void) {
 	g_player.ypos = 96-14-4;
 	g_player.shield = 0;
 	g_player.score = 0;
-	g_player.health = 5;
+	g_player.health = 30;
 	g_player.stat = P_ALIVE;
 	
 	EnemyAI[0] = LevelZero;
@@ -538,7 +538,7 @@ void GameInit(void) {
 	EnemyAI[5] = LevelThree;
 	
 	g_step = 0;
-	g_level = 0;
+	g_level = 3;
 	g_continue = 0;
 	boss_state = 0;
 	

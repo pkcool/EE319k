@@ -10,6 +10,7 @@ void InputInit(void){
   NOP();	
   GPIO_PORTD_DIR_R &= ~0x0F;// make PG3-7 in (PC3-7 button)
   GPIO_PORTD_DEN_R |= 0x0F; // enable digital I/O on PC7
+	GPIO_PORTD_PDR_R |= 0x0F; // enable digital I/O on PC7
   GPIO_PORTD_IS_R &= ~0x0F; // PC7 is edge-sensitive (default setting)
   GPIO_PORTD_IBE_R &= ~0x0F;// PC7 is not both edges (default setting)
   GPIO_PORTD_IEV_R |= 0x0F; // PC7 rising edge event
