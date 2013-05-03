@@ -202,7 +202,6 @@ void GameUpdate(void) {
 	int i, j;
 	char e_count;
 	BulletR* bullet;
-	unsigned char DEBUG[5] = "    \0";
 	if (g_level == 5 && g_continue == 0) {
 		return;
 	}
@@ -227,12 +226,10 @@ void GameUpdate(void) {
 				}
 			}
 			if ((g_step%8) == 0) {
-				BulletTarget(FreshBullet(&g_playerBullets, MAX_PLAYER_BULLETS), g_player.xpos, g_player.ypos, extraBulletX, 20);
+				BulletTarget(FreshBullet(&g_playerBullets, MAX_PLAYER_BULLETS), g_player.xpos+2=, g_player.ypos, extraBulletX, 20);
 			}
 		} else {
 			if (HWREGBITW(&g_flags, FLAG_ADC_VALUE) == 1) {
-				IntToString(ADCValue, DEBUG, 4);
-				DrawString(DEBUG, 0, 70);
 				j = ADCValue;
 				if (abs(j - ADC_MID) <= ADC_DEV) {
 					// pass
