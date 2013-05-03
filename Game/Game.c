@@ -70,6 +70,11 @@ unsigned int LEVEL_MAX_BULLETS = 1;
 signed int LEVEL_RANDOM = 100;
 unsigned long boss_state = 0;
 
+unsigned char extraBulletX = 0;
+
+unsigned long ADC_MID = 590;
+unsigned long ADC_DEV = 50;
+
 volatile unsigned long g_step = 0;
 
 void LevelZero(EnemyR* enemy) {
@@ -197,6 +202,7 @@ void GameUpdate(void) {
 	int i, j;
 	char e_count;
 	BulletR* bullet;
+	unsigned char DEBUG[5] = "    \0";
 	if (g_level == 5 && g_continue == 0) {
 		return;
 	}
@@ -205,24 +211,41 @@ void GameUpdate(void) {
 			g_player.stat = P_HIT;
 			g_player.animationStep = 0;
 		}
-		if (HWREGBITW(&g_flags, FLAG_ADC_VALUE) == 1) {
-			j = ADCValue-ADC_MIN;
-			if (j < 0) {
-				j = 0;
-			}
-			j = 128 - j*128/(ADC_MAX-ADC_MIN);
-			if (abs(g_player.xpos - j) <= 10) {
-				// pass
-			} else {
-				if (g_player.xpos < j) {
-					if (g_player.xpos < 127-PLAYER_BOX)
-						g_player.xpos++;
+		if (HWREGBITW(&g_flags, FLAG_BUTTON_SELECT)) {
+			if (HWREGBITW(&g_flags, FLAG_ADC_VALUE) == 1) {
+				j = ADCValue;
+				if (abs(j - ADC_MID) <= ADC_DEV) {
+					// pass
 				} else {
-					if (g_player.xpos > 0)
-						g_player.xpos--;
+					if (j < ADC_MID) {
+						if (extraBulletX < 127-2)
+							extraBulletX+=3;
+					} else {
+						if (extraBulletX > 2)
+							extraBulletX-=3;
+					}
 				}
 			}
-			HWREGBITW(&g_flags, FLAG_ADC_VALUE) = 0;
+			if ((g_step%8) == 0) {
+				BulletTarget(FreshBullet(&g_playerBullets, MAX_PLAYER_BULLETS), g_player.xpos, g_player.ypos, extraBulletX, 20);
+			}
+		} else {
+			if (HWREGBITW(&g_flags, FLAG_ADC_VALUE) == 1) {
+				IntToString(ADCValue, DEBUG, 4);
+				DrawString(DEBUG, 0, 70);
+				j = ADCValue;
+				if (abs(j - ADC_MID) <= ADC_DEV) {
+					// pass
+				} else {
+					if (j < ADC_MID) {
+						if (g_player.xpos < 127-PLAYER_BOX)
+							g_player.xpos++;
+					} else {
+						if (g_player.xpos > 0)
+							g_player.xpos--;
+					}
+				}
+			}
 		}
 		if (HWREGBITW(&g_flags, FLAG_BUTTON_LEFT)) {
 			if (g_bulletTimer == 0) {
@@ -238,7 +261,7 @@ void GameUpdate(void) {
 						break;
 					}
 				}
-				g_bulletTimer = 10;
+				g_bulletTimer = 6;
 			}
 		}
 		if (HWREGBITW(&g_flags, FLAG_BUTTON_RIGHT)) {
@@ -252,7 +275,7 @@ void GameUpdate(void) {
 				g_soundArray = &g_soundBullet;
 				g_soundIndex = 0;
 				g_soundMax = SND_BULLET_LENGTH;
-				g_shotgunTimer = 100;
+				g_shotgunTimer = 50;
 			}
 		}
 	}
@@ -538,7 +561,7 @@ void GameInit(void) {
 	EnemyAI[5] = LevelThree;
 	
 	g_step = 0;
-	g_level = 3;
+	g_level = 0;
 	g_continue = 0;
 	boss_state = 0;
 	

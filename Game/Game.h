@@ -6,7 +6,7 @@
 #define MAX_EXPLOSION					5
 #define MAX_ENEMIES						12
 #define MAX_ENEMY_BULLETS			80
-#define MAX_PLAYER_BULLETS		6
+#define MAX_PLAYER_BULLETS		36
 #define MAX_STARS							30
 #define MAX_LEVELS						6
 
